@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Mail, Calendar, FileText, Plus, Search, Code, Terminal, Zap } from "lucide-react";
+import { Users, Mail, Calendar, FileText, Plus, Search, Zap, Brain, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import CandidateCard from "@/components/CandidateCard";
 import InterviewQueue from "@/components/InterviewQueue";
@@ -14,62 +14,63 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* IDE-style Header */}
+      {/* Header */}
       <header className="bg-card border-b border-border">
         <div className="max-w-full px-6">
-          <div className="flex justify-between items-center h-14">
+          <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Terminal className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold text-foreground font-mono">Scorecard.dev</h1>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Brain className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <h1 className="text-xl font-bold text-foreground">Scorecard</h1>
               </div>
-              <Badge variant="secondary" className="text-xs font-mono bg-accent/20 text-accent border-accent/30">
-                ATS v2.1.0
+              <Badge variant="secondary" className="text-xs bg-accent/20 text-accent border-accent/30">
+                AI-Powered ATS
               </Badge>
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                  placeholder="Search candidates, skills..."
-                  className="pl-10 w-80 bg-input border-border font-mono text-sm"
+                  placeholder="Search candidates..."
+                  className="pl-10 w-80 bg-input border-border"
                 />
               </div>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-mono">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                 <Plus className="h-4 w-4 mr-2" />
-                Import Resume
+                Add Resume
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* IDE-style Tab Navigation */}
+      {/* Navigation */}
       <nav className="bg-card border-b border-border">
         <div className="max-w-full px-6">
           <div className="flex space-x-0">
             {[
-              { id: "pipeline", label: "candidates.tsx", icon: Users },
-              { id: "interviews", label: "interviews.tsx", icon: Calendar },
-              { id: "parsing", label: "parser.tsx", icon: Code },
-              { id: "analytics", label: "metrics.tsx", icon: Zap },
-            ].map((tab, index) => (
+              { id: "pipeline", label: "Candidates", icon: Users },
+              { id: "interviews", label: "Interviews", icon: Calendar },
+              { id: "parsing", label: "Resume Parser", icon: FileText },
+              { id: "analytics", label: "Analytics", icon: BarChart3 },
+            ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`
-                  flex items-center space-x-2 px-4 py-3 text-sm font-mono border-r border-border
+                  flex items-center space-x-2 px-6 py-4 text-sm border-r border-border transition-colors
                   ${activeTab === tab.id
                     ? "bg-background text-primary border-b-2 border-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                   }
-                  ${index === 0 ? "border-l border-border" : ""}
                 `}
               >
                 <tab.icon className="h-4 w-4" />
                 <span>{tab.label}</span>
                 {activeTab === tab.id && (
-                  <div className="w-2 h-2 rounded-full bg-accent ml-2" />
+                  <div className="w-2 h-2 rounded-full bg-accent" />
                 )}
               </button>
             ))}
@@ -86,16 +87,16 @@ const Index = () => {
               <div className="lg:col-span-2">
                 <div className="flex justify-between items-center mb-6">
                   <div className="flex items-center space-x-3">
-                    <h2 className="text-lg font-bold text-foreground font-mono">
-                      ~/candidates/active
+                    <h2 className="text-xl font-semibold text-foreground">
+                      Active Candidates
                     </h2>
-                    <Badge variant="outline" className="font-mono text-xs">
-                      24 records
+                    <Badge variant="outline" className="text-sm">
+                      24 candidates
                     </Badge>
                   </div>
-                  <Button variant="outline" size="sm" className="font-mono">
+                  <Button variant="outline" size="sm">
                     <Mail className="h-4 w-4 mr-2" />
-                    Parse Emails
+                    Import from Email
                   </Button>
                 </div>
                 <div className="space-y-4">
@@ -136,14 +137,14 @@ const Index = () => {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3">
-                <h2 className="text-lg font-bold text-foreground font-mono">
-                  ~/interviews/technical
+                <h2 className="text-xl font-semibold text-foreground">
+                  Technical Interviews
                 </h2>
-                <Badge variant="outline" className="font-mono text-xs">
-                  AI Generated
+                <Badge variant="outline" className="text-sm">
+                  AI Generated Questions
                 </Badge>
               </div>
-              <Button className="bg-primary hover:bg-primary/90 font-mono">
+              <Button className="bg-primary hover:bg-primary/90">
                 <Zap className="h-4 w-4 mr-2" />
                 Generate Questions
               </Button>
@@ -151,29 +152,36 @@ const Index = () => {
             
             <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="font-mono text-foreground flex items-center space-x-2">
-                  <Terminal className="h-5 w-5 text-primary" />
-                  <span>Interview Generator</span>
+                <CardTitle className="text-foreground flex items-center space-x-2">
+                  <Brain className="h-5 w-5 text-primary" />
+                  <span>AI Interview Assistant</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="code-block">
-                    <div className="text-accent text-sm font-mono mb-2">// Auto-generated from resume analysis</div>
-                    <div className="text-foreground">
-                      <p className="mb-2">const interviewQuestions = [</p>
-                      <p className="ml-4 text-blue-400">"Explain React hooks and their lifecycle",</p>
-                      <p className="ml-4 text-blue-400">"How do you handle state management at scale?",</p>
-                      <p className="ml-4 text-blue-400">"Describe your TypeScript experience with generics"</p>
-                      <p>];</p>
+                  <div className="bg-muted/30 border border-border rounded-lg p-4">
+                    <div className="text-accent text-sm mb-3">Generated from candidate's resume and job requirements</div>
+                    <div className="text-foreground space-y-2">
+                      <div className="flex items-start space-x-2">
+                        <span className="text-primary font-semibold">1.</span>
+                        <span>Explain React hooks and their lifecycle management</span>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <span className="text-primary font-semibold">2.</span>
+                        <span>How do you handle state management in large applications?</span>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <span className="text-primary font-semibold">3.</span>
+                        <span>Describe your experience with TypeScript generics</span>
+                      </div>
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" className="font-mono">
-                      <Code className="h-4 w-4 mr-2" />
-                      Customize
+                    <Button variant="outline">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Customize Questions
                     </Button>
-                    <Button className="bg-accent hover:bg-accent/90 font-mono">
+                    <Button className="bg-accent hover:bg-accent/90">
                       <Zap className="h-4 w-4 mr-2" />
                       Start Interview
                     </Button>
@@ -187,31 +195,42 @@ const Index = () => {
         {activeTab === "parsing" && (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold text-foreground font-mono">
-                ~/parser/resume-engine
+              <h2 className="text-xl font-semibold text-foreground">
+                Resume Parser
               </h2>
-              <Button variant="outline" className="font-mono">
+              <Button variant="outline">
                 <Mail className="h-4 w-4 mr-2" />
                 Connect Email
               </Button>
             </div>
             
             <Card className="bg-card border-border">
-              <CardContent className="p-6">
+              <CardContent className="p-8">
                 <div className="text-center py-12">
-                  <Code className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-foreground mb-2 font-mono">
-                    Resume Parser Engine
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <FileText className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    Smart Resume Processing
                   </h3>
-                  <p className="text-muted-foreground font-mono text-sm">
-                    AI-powered parsing from LinkedIn & Email attachments
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Automatically extract candidate information from resumes and LinkedIn profiles
                   </p>
-                  <div className="mt-6 code-block text-left max-w-md mx-auto">
-                    <div className="text-accent text-xs font-mono mb-2">// Supported formats</div>
-                    <div className="text-foreground text-sm">
-                      <p>PDF, DOC, DOCX ✓</p>
-                      <p>LinkedIn profiles ✓</p>
-                      <p>Email attachments ✓</p>
+                  <div className="bg-muted/20 border border-border rounded-lg p-6 max-w-md mx-auto">
+                    <div className="text-accent text-sm mb-3">Supported Sources:</div>
+                    <div className="text-foreground text-sm space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span>PDF & Word Documents</span>
+                        <span className="text-accent">✓</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>LinkedIn Profiles</span>
+                        <span className="text-accent">✓</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Email Attachments</span>
+                        <span className="text-accent">✓</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -222,18 +241,20 @@ const Index = () => {
 
         {activeTab === "analytics" && (
           <div className="space-y-6">
-            <h2 className="text-lg font-bold text-foreground font-mono">
-              ~/metrics/dashboard
+            <h2 className="text-xl font-semibold text-foreground">
+              Recruitment Analytics
             </h2>
             <Card className="bg-card border-border">
-              <CardContent className="p-6">
+              <CardContent className="p-8">
                 <div className="text-center py-12">
-                  <Zap className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-foreground mb-2 font-mono">
-                    Recruiting Metrics
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <BarChart3 className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    Pipeline Insights
                   </h3>
-                  <p className="text-muted-foreground font-mono text-sm">
-                    Pipeline analytics & performance tracking
+                  <p className="text-muted-foreground">
+                    Track your recruitment performance and identify bottlenecks
                   </p>
                 </div>
               </CardContent>
