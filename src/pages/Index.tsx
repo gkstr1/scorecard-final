@@ -1,4 +1,5 @@
 
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,22 +47,6 @@ const Index = () => {
               </Badge>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 bg-primary/10 border-2 border-primary/30 rounded-lg p-2">
-                <span className="text-sm font-medium text-primary">Filter by Role:</span>
-                <Select value={selectedRole} onValueChange={setSelectedRole}>
-                  <SelectTrigger className="w-56 h-10 text-sm bg-background border-primary/50 hover:border-primary focus:border-primary shadow-sm">
-                    <SelectValue placeholder="Select role to filter" />
-                    <ChevronDown className="h-4 w-4 text-primary ml-2" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-card border-border shadow-lg">
-                    {roles.map((role) => (
-                      <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
@@ -134,6 +119,23 @@ const Index = () => {
                   Import from Email
                 </Button>
               </div>
+            </div>
+
+            <div className="flex items-center space-x-2 bg-primary/10 border-2 border-primary/30 rounded-lg p-2 w-fit">
+              <span className="text-sm font-medium text-primary">Role:</span>
+              <Select value={selectedRole} onValueChange={setSelectedRole}>
+                <SelectTrigger className="w-56 h-10 text-sm bg-background border-primary/50 hover:border-primary focus:border-primary shadow-sm">
+                  <SelectValue placeholder="Select role to filter" />
+                  <ChevronDown className="h-4 w-4 text-primary ml-2" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border shadow-lg">
+                  {roles.map((role) => (
+                    <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             
             <StatsOverview />
@@ -328,3 +330,4 @@ const Index = () => {
 };
 
 export default Index;
+
