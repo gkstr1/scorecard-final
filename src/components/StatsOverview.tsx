@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, Mail, TrendingUp } from "lucide-react";
+import { Users, Calendar, Mail, Zap } from "lucide-react";
 
 const StatsOverview = () => {
   const stats = [
@@ -12,42 +12,42 @@ const StatsOverview = () => {
       trend: "up",
     },
     {
-      title: "Interviews This Week",
+      title: "Technical Interviews",
       value: "8",
       change: "+25%",
       icon: Calendar,
       trend: "up",
     },
     {
-      title: "Email Responses",
+      title: "Resumes Parsed",
       value: "156",
       change: "+8%",
       icon: Mail,
       trend: "up",
     },
     {
-      title: "Conversion Rate",
-      value: "18%",
-      change: "+3%",
-      icon: TrendingUp,
+      title: "Questions Generated",
+      value: "342",
+      change: "+15%",
+      icon: Zap,
       trend: "up",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat, index) => (
-        <Card key={index} className="hover:shadow-md transition-shadow">
+        <Card key={index} className="bg-card border-border hover:border-primary/30 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">
+            <CardTitle className="text-xs font-medium text-muted-foreground font-mono">
               {stat.title}
             </CardTitle>
-            <stat.icon className="h-4 w-4 text-gray-500" />
+            <stat.icon className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline space-x-2">
-              <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-              <div className="text-sm font-medium text-green-600">{stat.change}</div>
+              <div className="text-xl font-bold text-foreground font-mono">{stat.value}</div>
+              <div className="text-xs font-medium text-accent font-mono">{stat.change}</div>
             </div>
           </CardContent>
         </Card>
