@@ -13,6 +13,7 @@ import StatsOverview from "@/components/StatsOverview";
 import KanbanBoard from "@/components/KanbanBoard";
 import JobCreator from "@/components/JobCreator";
 import PipelineSettings from "@/components/PipelineSettings";
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState("candidates");
   const [selectedRole, setSelectedRole] = useState("all");
@@ -32,6 +33,7 @@ const Index = () => {
     value: "designer",
     label: "Product Designer"
   }];
+
   return <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="bg-card border-b border-border">
@@ -58,7 +60,7 @@ const Index = () => {
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input placeholder="Search candidates..." className="pl-10 w-64 bg-input border-border h-9 text-sm" />
+                <Input placeholder="Search" className="pl-10 w-64 bg-input border-border h-9 text-sm" />
               </div>
             </div>
           </div>
@@ -326,4 +328,5 @@ const Index = () => {
       </main>
     </div>;
 };
+
 export default Index;
