@@ -1,5 +1,3 @@
-
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,10 +52,6 @@ const Index = () => {
                   className="pl-10 w-64 bg-input border-border h-9 text-sm"
                 />
               </div>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground h-9 px-4 text-sm">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Candidate
-              </Button>
             </div>
           </div>
         </div>
@@ -72,8 +66,8 @@ const Index = () => {
               { id: "jobs", label: "Job Management", icon: FileText },
               { id: "interviews", label: "Interview Center", icon: Calendar },
               { id: "parsing", label: "Resume Upload", icon: Mail },
-              { id: "settings", label: "Settings", icon: Settings },
               { id: "analytics", label: "Reports", icon: BarChart3 },
+              { id: "settings", label: "Settings", icon: Settings },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -162,21 +156,6 @@ const Index = () => {
             </div>
             
             <JobCreator />
-          </div>
-        )}
-
-        {activeTab === "settings" && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">
-                Pipeline Settings
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Configure your hiring pipeline stages and workflow
-              </p>
-            </div>
-            
-            <PipelineSettings />
           </div>
         )}
 
@@ -324,10 +303,24 @@ const Index = () => {
             </Card>
           </div>
         )}
+
+        {activeTab === "settings" && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold text-foreground mb-1">
+                Pipeline Settings
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Configure your hiring pipeline stages and workflow
+              </p>
+            </div>
+            
+            <PipelineSettings />
+          </div>
+        )}
       </main>
     </div>
   );
 };
 
 export default Index;
-
