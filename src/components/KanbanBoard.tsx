@@ -12,7 +12,7 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
   const columns = [
     {
       id: "applied",
-      title: "New Applications",
+      title: "Applied",
       count: 8,
       color: "bg-blue-500/10 border-blue-500/30",
       candidates: [
@@ -37,10 +37,10 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
       ]
     },
     {
-      id: "screening",
-      title: "Phone Screening",
+      id: "sourced",
+      title: "Sourced",
       count: 6,
-      color: "bg-yellow-500/10 border-yellow-500/30",
+      color: "bg-gray-500/10 border-gray-500/30",
       candidates: [
         {
           id: 3,
@@ -71,16 +71,16 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
       ]
     },
     {
-      id: "final",
-      title: "Final Round",
+      id: "submitted",
+      title: "Submitted",
       count: 3,
-      color: "bg-orange-500/10 border-orange-500/30",
+      color: "bg-yellow-500/10 border-yellow-500/30",
       candidates: []
     },
     {
-      id: "offer",
-      title: "Offer Extended",
-      count: 3,
+      id: "hired",
+      title: "Hired",
+      count: 2,
       color: "bg-green-500/10 border-green-500/30",
       candidates: [
         {
@@ -93,6 +93,13 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
           role: "designer"
         },
       ]
+    },
+    {
+      id: "rejected",
+      title: "Rejected",
+      count: 1,
+      color: "bg-red-500/10 border-red-500/30",
+      candidates: []
     },
   ];
 
