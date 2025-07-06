@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,12 +7,12 @@ import { Plus, X, Save, Settings, Move, Lock } from "lucide-react";
 
 const PipelineSettings = () => {
   const [defaultStages, setDefaultStages] = useState([
-    { name: "Sourced", required: true, color: "bg-gray-500/10 border-gray-500/30" },
     { name: "Applied", required: true, color: "bg-blue-500/10 border-blue-500/30" },
-    { name: "Phone Screening", required: false, color: "bg-yellow-500/10 border-yellow-500/30" },
+    { name: "Sourced", required: true, color: "bg-gray-500/10 border-gray-500/30" },
     { name: "Technical Interview", required: true, color: "bg-purple-500/10 border-purple-500/30" },
-    { name: "Final Round", required: false, color: "bg-orange-500/10 border-orange-500/30" },
-    { name: "Offer Extended", required: false, color: "bg-green-500/10 border-green-500/30" },
+    { name: "Submitted", required: false, color: "bg-yellow-500/10 border-yellow-500/30" },
+    { name: "Hired", required: false, color: "bg-green-500/10 border-green-500/30" },
+    { name: "Rejected", required: false, color: "bg-red-500/10 border-red-500/30" },
   ]);
 
   const [newStageName, setNewStageName] = useState("");
@@ -87,8 +86,8 @@ const PipelineSettings = () => {
           <div className="bg-muted/20 border border-border rounded-lg p-4">
             <h4 className="font-medium text-foreground mb-2">Stage Requirements:</h4>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• <strong>Sourced:</strong> Initial candidate identification - cannot be removed</li>
               <li>• <strong>Applied:</strong> Formal application submission - cannot be removed</li>
+              <li>• <strong>Sourced:</strong> Initial candidate identification - cannot be removed</li>
               <li>• <strong>Technical Interview:</strong> Skills assessment - cannot be removed</li>
               <li>• Other stages can be customized, reordered, or removed as needed</li>
             </ul>
