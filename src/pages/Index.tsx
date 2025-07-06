@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,12 +34,12 @@ const Index = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                  <Brain className="h-6 w-6 text-primary-foreground" />
+                <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center">
+                  <Brain className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-foreground">Scorecard</h1>
-                  <p className="text-xs text-muted-foreground">Smart Hiring Platform</p>
+                  <h1 className="text-2xl font-bold text-foreground">Scorecard</h1>
+                  <p className="text-sm text-muted-foreground">Smart Hiring Platform</p>
                 </div>
               </div>
               <Badge variant="secondary" className="text-xs bg-accent/20 text-accent border-accent/30 px-2 py-1">
