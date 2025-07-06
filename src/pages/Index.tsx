@@ -13,21 +13,26 @@ import StatsOverview from "@/components/StatsOverview";
 import KanbanBoard from "@/components/KanbanBoard";
 import JobCreator from "@/components/JobCreator";
 import PipelineSettings from "@/components/PipelineSettings";
-
 const Index = () => {
   const [activeTab, setActiveTab] = useState("candidates");
   const [selectedRole, setSelectedRole] = useState("all");
-
-  const roles = [
-    { value: "all", label: "All Roles" },
-    { value: "frontend", label: "Frontend Developer" },
-    { value: "backend", label: "Backend Developer" },
-    { value: "fullstack", label: "Full Stack Engineer" },
-    { value: "designer", label: "Product Designer" },
-  ];
-
-  return (
-    <div className="min-h-screen bg-background text-foreground">
+  const roles = [{
+    value: "all",
+    label: "All Roles"
+  }, {
+    value: "frontend",
+    label: "Frontend Developer"
+  }, {
+    value: "backend",
+    label: "Backend Developer"
+  }, {
+    value: "fullstack",
+    label: "Full Stack Engineer"
+  }, {
+    value: "designer",
+    label: "Product Designer"
+  }];
+  return <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="bg-card border-b border-border">
         <div className="max-w-full px-6">
@@ -35,7 +40,7 @@ const Index = () => {
             <div className="flex items-center space-x-4">
               <Link to="/" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors">
                 <ArrowLeft className="h-4 w-4" />
-                <span className="text-sm">Back to Home</span>
+                
               </Link>
               <div className="flex items-center space-x-3">
                 <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center">
@@ -53,10 +58,7 @@ const Index = () => {
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search candidates..."
-                  className="pl-10 w-64 bg-input border-border h-9 text-sm"
-                />
+                <Input placeholder="Search candidates..." className="pl-10 w-64 bg-input border-border h-9 text-sm" />
               </div>
             </div>
           </div>
@@ -67,40 +69,45 @@ const Index = () => {
       <nav className="bg-card border-b border-border">
         <div className="max-w-full px-6">
           <div className="flex space-x-0">
-            {[
-              { id: "candidates", label: "Candidate Pipeline", icon: Users },
-              { id: "jobs", label: "Job Management", icon: FileText },
-              { id: "interviews", label: "Interview Center", icon: Calendar },
-              { id: "parsing", label: "Resume Upload", icon: Mail },
-              { id: "analytics", label: "Reports", icon: BarChart3 },
-              { id: "settings", label: "Settings", icon: Settings },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`
+            {[{
+            id: "candidates",
+            label: "Candidate Pipeline",
+            icon: Users
+          }, {
+            id: "jobs",
+            label: "Job Management",
+            icon: FileText
+          }, {
+            id: "interviews",
+            label: "Interview Center",
+            icon: Calendar
+          }, {
+            id: "parsing",
+            label: "Resume Upload",
+            icon: Mail
+          }, {
+            id: "analytics",
+            label: "Reports",
+            icon: BarChart3
+          }, {
+            id: "settings",
+            label: "Settings",
+            icon: Settings
+          }].map(tab => <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`
                   flex items-center space-x-2 px-4 py-3 text-sm border-r border-border transition-colors
-                  ${activeTab === tab.id
-                    ? "bg-background text-primary border-b-2 border-primary font-medium"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
-                  }
-                `}
-              >
+                  ${activeTab === tab.id ? "bg-background text-primary border-b-2 border-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"}
+                `}>
                 <tab.icon className="h-4 w-4" />
                 <span>{tab.label}</span>
-                {activeTab === tab.id && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                )}
-              </button>
-            ))}
+                {activeTab === tab.id && <div className="w-1.5 h-1.5 rounded-full bg-accent" />}
+              </button>)}
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
       <main className="max-w-full px-6 py-6">
-        {activeTab === "candidates" && (
-          <div className="space-y-6">
+        {activeTab === "candidates" && <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-bold text-foreground mb-1">
@@ -128,11 +135,9 @@ const Index = () => {
                   <SelectValue placeholder="Select role to filter" />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border shadow-lg">
-                  {roles.map((role) => (
-                    <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
+                  {roles.map(role => <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
                       {role.label}
-                    </SelectItem>
-                  ))}
+                    </SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -140,11 +145,9 @@ const Index = () => {
             <StatsOverview />
             
             <KanbanBoard selectedRole={selectedRole} />
-          </div>
-        )}
+          </div>}
 
-        {activeTab === "jobs" && (
-          <div className="space-y-6">
+        {activeTab === "jobs" && <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-bold text-foreground mb-1">
@@ -161,11 +164,9 @@ const Index = () => {
             </div>
             
             <JobCreator />
-          </div>
-        )}
+          </div>}
 
-        {activeTab === "interviews" && (
-          <div className="space-y-6">
+        {activeTab === "interviews" && <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-bold text-foreground mb-1">
@@ -232,11 +233,9 @@ const Index = () => {
                 </Card>
               </div>
             </div>
-          </div>
-        )}
+          </div>}
 
-        {activeTab === "parsing" && (
-          <div className="space-y-6">
+        {activeTab === "parsing" && <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-bold text-foreground mb-1">
@@ -284,11 +283,9 @@ const Index = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        )}
+          </div>}
 
-        {activeTab === "analytics" && (
-          <div className="space-y-6">
+        {activeTab === "analytics" && <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">
                 Hiring Reports
@@ -312,11 +309,9 @@ const Index = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        )}
+          </div>}
 
-        {activeTab === "settings" && (
-          <div className="space-y-6">
+        {activeTab === "settings" && <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">
                 Pipeline Settings
@@ -327,11 +322,8 @@ const Index = () => {
             </div>
             
             <PipelineSettings />
-          </div>
-        )}
+          </div>}
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
