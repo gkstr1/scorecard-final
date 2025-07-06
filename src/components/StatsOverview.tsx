@@ -39,22 +39,22 @@ const StatsOverview = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat, index) => (
         <Card key={index} className="bg-card border-border hover:border-primary/30 transition-colors">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <div>
-              <CardTitle className="text-base font-medium text-muted-foreground">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 {stat.title}
               </CardTitle>
               <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
             </div>
-            <stat.icon className="h-6 w-6 text-primary" />
+            <stat.icon className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="flex items-baseline space-x-3">
-              <div className="text-3xl font-bold text-foreground">{stat.value}</div>
-              <div className="text-sm font-medium text-accent">{stat.change}</div>
+            <div className="flex items-baseline space-x-2">
+              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+              <div className="text-xs font-medium text-accent">{stat.change}</div>
             </div>
           </CardContent>
         </Card>
