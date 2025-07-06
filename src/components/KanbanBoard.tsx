@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { User, Mail, Calendar, Zap, Eye, Plus } from "lucide-react";
 
 interface KanbanBoardProps {
@@ -112,87 +113,90 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 min-h-[500px]">
-        {filteredColumns.map((column) => (
-          <div key={column.id} className="space-y-3">
-            <Card className={`${column.color} border-2`}>
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center justify-between text-sm">
-                  <span className="text-foreground">{column.title}</span>
-                  <Badge variant="secondary" className="text-xs">
-                    {selectedRole === "all" ? column.count : column.candidates.length}
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            
-            <div className="space-y-3">
-              {column.candidates.map((candidate) => (
-                <Card key={candidate.id} className="bg-card border-border hover:border-primary/30 transition-all duration-200 cursor-pointer">
-                  <CardContent className="p-3">
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <div className="h-6 w-6 bg-primary/10 rounded-full border border-primary/20 flex items-center justify-center">
-                          <User className="h-3 w-3 text-primary" />
+      <ScrollArea className="w-full whitespace-nowrap">
+        <div className="flex gap-3 min-h-[500px] pb-4">
+          {filteredColumns.map((column) => (
+            <div key={column.id} className="flex-shrink-0 w-72 space-y-3">
+              <Card className={`${column.color} border-2`}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center justify-between text-sm">
+                    <span className="text-foreground truncate">{column.title}</span>
+                    <Badge variant="secondary" className="text-xs">
+                      {selectedRole === "all" ? column.count : column.candidates.length}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+              </Card>
+              
+              <div className="space-y-3">
+                {column.candidates.map((candidate) => (
+                  <Card key={candidate.id} className="bg-card border-border hover:border-primary/30 transition-all duration-200 cursor-pointer">
+                    <CardContent className="p-3">
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="h-6 w-6 bg-primary/10 rounded-full border border-primary/20 flex items-center justify-center flex-shrink-0">
+                            <User className="h-3 w-3 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-foreground text-xs truncate">{candidate.name}</h4>
+                            <p className="text-xs text-muted-foreground truncate">{candidate.position}</p>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-foreground text-xs">{candidate.name}</h4>
-                          <p className="text-xs text-muted-foreground">{candidate.position}</p>
+                        
+                        <div className="text-xs text-muted-foreground flex items-center space-x-1">
+                          <Mail className="h-3 w-3 flex-shrink-0" />
+                          <span className="truncate">{candidate.email}</span>
                         </div>
-                      </div>
-                      
-                      <div className="text-xs text-muted-foreground flex items-center space-x-1">
-                        <Mail className="h-3 w-3" />
-                        <span className="truncate">{candidate.email}</span>
-                      </div>
-                      
-                      <div className="text-xs text-muted-foreground flex items-center space-x-1">
-                        <Calendar className="h-3 w-3" />
-                        <span>Applied {candidate.appliedDate}</span>
-                      </div>
+                        
+                        <div className="text-xs text-muted-foreground flex items-center space-x-1">
+                          <Calendar className="h-3 w-3 flex-shrink-0" />
+                          <span>Applied {candidate.appliedDate}</span>
+                        </div>
 
-                      <div className="flex flex-wrap gap-1">
-                        {candidate.skills.slice(0, 2).map((skill) => (
-                          <Badge key={skill} variant="secondary" className="text-xs bg-secondary/50 text-foreground border-border px-1 py-0">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {candidate.skills.length > 2 && (
-                          <Badge variant="secondary" className="text-xs bg-secondary/50 text-foreground border-border px-1 py-0">
-                            +{candidate.skills.length - 2}
-                          </Badge>
-                        )}
-                      </div>
+                        <div className="flex flex-wrap gap-1">
+                          {candidate.skills.slice(0, 2).map((skill) => (
+                            <Badge key={skill} variant="secondary" className="text-xs bg-secondary/50 text-foreground border-border px-1 py-0">
+                              {skill}
+                            </Badge>
+                          ))}
+                          {candidate.skills.length > 2 && (
+                            <Badge variant="secondary" className="text-xs bg-secondary/50 text-foreground border-border px-1 py-0">
+                              +{candidate.skills.length - 2}
+                            </Badge>
+                          )}
+                        </div>
 
-                      <div className="flex space-x-1 pt-1">
-                        {column.id === "technical" && (
-                          <Button size="sm" variant="outline" className="text-xs bg-accent/10 border-accent/30 text-accent hover:bg-accent/20 h-6 px-2">
-                            <Zap className="h-2 w-2 mr-1" />
-                            Questions
+                        <div className="flex space-x-1 pt-1">
+                          {column.id === "technical" && (
+                            <Button size="sm" variant="outline" className="text-xs bg-accent/10 border-accent/30 text-accent hover:bg-accent/20 h-6 px-2">
+                              <Zap className="h-2 w-2 mr-1" />
+                              Questions
+                            </Button>
+                          )}
+                          <Button size="sm" className="text-xs h-6 px-2">
+                            <Eye className="h-2 w-2 mr-1" />
+                            View
                           </Button>
-                        )}
-                        <Button size="sm" className="text-xs h-6 px-2">
-                          <Eye className="h-2 w-2 mr-1" />
-                          View
-                        </Button>
+                        </div>
                       </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                
+                <Card className="bg-muted/20 border-dashed border-2 border-muted-foreground/30 hover:border-primary/50 transition-colors cursor-pointer">
+                  <CardContent className="p-4">
+                    <div className="text-center">
+                      <Plus className="h-4 w-4 text-muted-foreground mx-auto mb-1" />
+                      <p className="text-xs text-muted-foreground">Add candidate</p>
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-              
-              <Card className="bg-muted/20 border-dashed border-2 border-muted-foreground/30 hover:border-primary/50 transition-colors cursor-pointer">
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <Plus className="h-4 w-4 text-muted-foreground mx-auto mb-1" />
-                    <p className="text-xs text-muted-foreground">Add candidate</p>
-                  </div>
-                </CardContent>
-              </Card>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </div>
   );
 };
