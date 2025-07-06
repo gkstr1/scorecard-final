@@ -32,8 +32,8 @@ const Index = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Brain className="h-4 w-4 text-primary-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                  <Brain className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <div>
                   <h1 className="text-lg font-bold text-foreground">Scorecard</h1>
@@ -120,7 +120,6 @@ const Index = () => {
               <Select value={selectedRole} onValueChange={setSelectedRole}>
                 <SelectTrigger className="w-56 h-10 text-sm bg-background border-primary/50 hover:border-primary focus:border-primary shadow-sm">
                   <SelectValue placeholder="Select role to filter" />
-                  <ChevronDown className="h-4 w-4 text-primary ml-2" />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border shadow-lg">
                   {roles.map((role) => (
