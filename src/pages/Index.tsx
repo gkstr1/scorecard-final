@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Mail, Calendar, FileText, Plus, Search, Zap, Brain, BarChart3, Settings } from "lucide-react";
+import { Users, Mail, Calendar, FileText, Plus, Search, Zap, Brain, BarChart3, Settings, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CandidateCard from "@/components/CandidateCard";
@@ -45,18 +46,22 @@ const Index = () => {
               </Badge>
             </div>
             <div className="flex items-center space-x-4">
-              <Select value={selectedRole} onValueChange={setSelectedRole}>
-                <SelectTrigger className="w-48 h-9 text-sm">
-                  <SelectValue placeholder="Select role to filter" />
-                </SelectTrigger>
-                <SelectContent>
-                  {roles.map((role) => (
-                    <SelectItem key={role.value} value={role.value}>
-                      {role.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center space-x-2 bg-primary/10 border-2 border-primary/30 rounded-lg p-2">
+                <span className="text-sm font-medium text-primary">Filter by Role:</span>
+                <Select value={selectedRole} onValueChange={setSelectedRole}>
+                  <SelectTrigger className="w-56 h-10 text-sm bg-background border-primary/50 hover:border-primary focus:border-primary shadow-sm">
+                    <SelectValue placeholder="Select role to filter" />
+                    <ChevronDown className="h-4 w-4 text-primary ml-2" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border shadow-lg">
+                    {roles.map((role) => (
+                      <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
+                        {role.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
