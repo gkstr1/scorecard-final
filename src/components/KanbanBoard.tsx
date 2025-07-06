@@ -4,7 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { User, Mail, Calendar, Zap, Eye, Plus } from "lucide-react";
 
-const KanbanBoard = () => {
+interface KanbanBoardProps {
+  selectedRole: string;
+}
+
+const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
   const columns = [
     {
       id: "applied",
@@ -19,6 +23,7 @@ const KanbanBoard = () => {
           email: "sarah.chen@email.com",
           skills: ["React", "TypeScript", "Node.js"],
           appliedDate: "2 days ago",
+          role: "frontend"
         },
         {
           id: 2,
@@ -27,6 +32,7 @@ const KanbanBoard = () => {
           email: "m.rodriguez@email.com",
           skills: ["Python", "Django", "PostgreSQL"],
           appliedDate: "5 days ago",
+          role: "fullstack"
         },
       ]
     },
@@ -43,6 +49,7 @@ const KanbanBoard = () => {
           email: "emily.j@email.com",
           skills: ["Vue.js", "JavaScript", "CSS"],
           appliedDate: "1 week ago",
+          role: "frontend"
         },
       ]
     },
@@ -59,6 +66,7 @@ const KanbanBoard = () => {
           email: "david.kim@email.com",
           skills: ["Java", "Spring", "MySQL"],
           appliedDate: "3 days ago",
+          role: "backend"
         },
       ]
     },
@@ -82,22 +90,30 @@ const KanbanBoard = () => {
           email: "lisa.wang@email.com",
           skills: ["Figma", "UI/UX", "Prototyping"],
           appliedDate: "2 weeks ago",
+          role: "designer"
         },
       ]
     },
   ];
 
+  const filteredColumns = columns.map(column => ({
+    ...column,
+    candidates: selectedRole === "all" 
+      ? column.candidates 
+      : column.candidates.filter(candidate => candidate.role === selectedRole)
+  }));
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 min-h-[500px]">
-        {columns.map((column) => (
+        {filteredColumns.map((column) => (
           <div key={column.id} className="space-y-3">
             <Card className={`${column.color} border-2`}>
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center justify-between text-sm">
                   <span className="text-foreground">{column.title}</span>
                   <Badge variant="secondary" className="text-xs">
-                    {column.count}
+                    {selectedRole === "all" ? column.count : column.candidates.length}
                   </Badge>
                 </CardTitle>
               </CardHeader>

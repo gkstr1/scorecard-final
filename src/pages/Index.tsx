@@ -1,17 +1,28 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Mail, Calendar, FileText, Plus, Search, Zap, Brain, BarChart3 } from "lucide-react";
+import { Users, Mail, Calendar, FileText, Plus, Search, Zap, Brain, BarChart3, Settings } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CandidateCard from "@/components/CandidateCard";
 import InterviewQueue from "@/components/InterviewQueue";
 import StatsOverview from "@/components/StatsOverview";
 import KanbanBoard from "@/components/KanbanBoard";
+import JobCreator from "@/components/JobCreator";
+import PipelineSettings from "@/components/PipelineSettings";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("candidates");
+  const [selectedRole, setSelectedRole] = useState("all");
+
+  const roles = [
+    { value: "all", label: "All Roles" },
+    { value: "frontend", label: "Frontend Developer" },
+    { value: "backend", label: "Backend Developer" },
+    { value: "fullstack", label: "Full Stack Engineer" },
+    { value: "designer", label: "Product Designer" },
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -34,11 +45,23 @@ const Index = () => {
               </Badge>
             </div>
             <div className="flex items-center space-x-4">
+              <Select value={selectedRole} onValueChange={setSelectedRole}>
+                <SelectTrigger className="w-48 h-9 text-sm">
+                  <SelectValue placeholder="Select role to filter" />
+                </SelectTrigger>
+                <SelectContent>
+                  {roles.map((role) => (
+                    <SelectItem key={role.value} value={role.value}>
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                  placeholder="Search candidates by name or role..."
-                  className="pl-10 w-80 bg-input border-border h-9 text-sm"
+                  placeholder="Search candidates..."
+                  className="pl-10 w-64 bg-input border-border h-9 text-sm"
                 />
               </div>
               <Button className="bg-primary hover:bg-primary/90 text-primary-foreground h-9 px-4 text-sm">
@@ -56,15 +79,17 @@ const Index = () => {
           <div className="flex space-x-0">
             {[
               { id: "candidates", label: "Candidate Pipeline", icon: Users },
+              { id: "jobs", label: "Job Management", icon: FileText },
               { id: "interviews", label: "Interview Center", icon: Calendar },
-              { id: "parsing", label: "Resume Upload", icon: FileText },
+              { id: "parsing", label: "Resume Upload", icon: Mail },
+              { id: "settings", label: "Settings", icon: Settings },
               { id: "analytics", label: "Reports", icon: BarChart3 },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`
-                  flex items-center space-x-2 px-6 py-4 text-sm border-r border-border transition-colors
+                  flex items-center space-x-2 px-4 py-3 text-sm border-r border-border transition-colors
                   ${activeTab === tab.id
                     ? "bg-background text-primary border-b-2 border-primary font-medium"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
@@ -88,7 +113,7 @@ const Index = () => {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-1">
+                <h2 className="text-xl font-bold text-foreground mb-1">
                   Candidate Pipeline
                 </h2>
                 <p className="text-sm text-muted-foreground">
@@ -99,7 +124,7 @@ const Index = () => {
                 <Badge variant="outline" className="text-sm px-3 py-1">
                   24 Active Candidates
                 </Badge>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="text-sm">
                   <Mail className="h-4 w-4 mr-2" />
                   Import from Email
                 </Button>
@@ -108,7 +133,43 @@ const Index = () => {
             
             <StatsOverview />
             
-            <KanbanBoard />
+            <KanbanBoard selectedRole={selectedRole} />
+          </div>
+        )}
+
+        {activeTab === "jobs" && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold text-foreground mb-1">
+                  Job Management
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Create and manage job postings with custom pipelines
+                </p>
+              </div>
+              <Button className="bg-primary hover:bg-primary/90" size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Create New Job
+              </Button>
+            </div>
+            
+            <JobCreator />
+          </div>
+        )}
+
+        {activeTab === "settings" && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold text-foreground mb-1">
+                Pipeline Settings
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Configure your hiring pipeline stages and workflow
+              </p>
+            </div>
+            
+            <PipelineSettings />
           </div>
         )}
 
@@ -116,7 +177,7 @@ const Index = () => {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-1">
+                <h2 className="text-xl font-bold text-foreground mb-1">
                   Interview Center
                 </h2>
                 <p className="text-sm text-muted-foreground">
@@ -181,7 +242,7 @@ const Index = () => {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-1">
+                <h2 className="text-xl font-bold text-foreground mb-1">
                   Resume Upload
                 </h2>
                 <p className="text-sm text-muted-foreground">
@@ -232,7 +293,7 @@ const Index = () => {
         {activeTab === "analytics" && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-1">
+              <h2 className="text-xl font-bold text-foreground mb-1">
                 Hiring Reports
               </h2>
               <p className="text-sm text-muted-foreground">
