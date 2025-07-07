@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -243,14 +244,14 @@ const Index = () => {
                 <JobCreator onJobCreated={handleJobCreated} />
               </>
             ) : (
-              <div className="mb-6">
+              <div>
                 <h2 className="text-xl font-bold text-foreground mb-1">
                   Job Management
                 </h2>
                 <p className="text-sm text-muted-foreground">
                   Manage your job postings and client relationships
                 </p>
-                {/* Jobs list and clients will be displayed here after first job is created */}
+                {/* This is where actual job listings would go - currently empty since we just have the header */}
               </div>
             )}
           </div>
