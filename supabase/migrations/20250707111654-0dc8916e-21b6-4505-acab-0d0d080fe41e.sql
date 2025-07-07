@@ -1,0 +1,145 @@
+
+-- First, let's check if there's any data in the candidates table
+SELECT COUNT(*) FROM public.candidates;
+
+-- If the table is empty, let's insert the sample data again with proper handling
+-- Delete any existing data first to avoid duplicates
+DELETE FROM public.candidates;
+
+-- Insert sample candidates data with explicit status values
+INSERT INTO public.candidates (
+  name, 
+  email, 
+  position, 
+  phone, 
+  location, 
+  linkedin_url, 
+  github_url, 
+  portfolio_url, 
+  skills, 
+  experience_years, 
+  education, 
+  current_company, 
+  current_salary, 
+  expected_salary, 
+  role_category, 
+  status,
+  applied_date
+) VALUES 
+(
+  'John Smith',
+  'john.smith@email.com',
+  'Senior Frontend Developer',
+  '+1-555-0123',
+  'San Francisco, CA',
+  'https://linkedin.com/in/johnsmith',
+  'https://github.com/johnsmith',
+  'https://johnsmith.dev',
+  ARRAY['React', 'TypeScript', 'JavaScript', 'CSS', 'HTML'],
+  5,
+  'Computer Science, Stanford University',
+  'Tech Corp',
+  95000,
+  110000,
+  'frontend',
+  'applied',
+  NOW() - INTERVAL '5 days'
+),
+(
+  'Sarah Johnson',
+  'sarah.johnson@email.com',
+  'Full Stack Engineer',
+  '+1-555-0124',
+  'New York, NY',
+  'https://linkedin.com/in/sarahjohnson',
+  'https://github.com/sarahjohnson',
+  'https://sarahjohnson.com',
+  ARRAY['React', 'Node.js', 'Python', 'PostgreSQL', 'AWS'],
+  3,
+  'Software Engineering, MIT',
+  'StartupCo',
+  85000,
+  100000,
+  'fullstack',
+  'sourced',
+  NOW() - INTERVAL '3 days'
+),
+(
+  'Mike Chen',
+  'mike.chen@email.com',
+  'Backend Developer',
+  '+1-555-0125',
+  'Seattle, WA',
+  'https://linkedin.com/in/mikechen',
+  'https://github.com/mikechen',
+  NULL,
+  ARRAY['Python', 'Django', 'PostgreSQL', 'Redis', 'Docker'],
+  4,
+  'Computer Engineering, University of Washington',
+  'CloudTech',
+  90000,
+  105000,
+  'backend',
+  'technical_interview',
+  NOW() - INTERVAL '7 days'
+),
+(
+  'Emily Davis',
+  'emily.davis@email.com',
+  'UI/UX Designer',
+  '+1-555-0126',
+  'Austin, TX',
+  'https://linkedin.com/in/emilydavis',
+  NULL,
+  'https://emilydavis.design',
+  ARRAY['Figma', 'Adobe Creative Suite', 'Sketch', 'Prototyping', 'User Research'],
+  2,
+  'Design, Art Institute',
+  'Design Studio',
+  70000,
+  80000,
+  'designer',
+  'submitted',
+  NOW() - INTERVAL '2 days'
+),
+(
+  'Alex Rodriguez',
+  'alex.rodriguez@email.com',
+  'Mobile Developer',
+  '+1-555-0127',
+  'Los Angeles, CA',
+  'https://linkedin.com/in/alexrodriguez',
+  'https://github.com/alexrodriguez',
+  'https://alexrodriguez.dev',
+  ARRAY['React Native', 'Swift', 'Kotlin', 'Firebase', 'iOS'],
+  6,
+  'Computer Science, UCLA',
+  'MobileFirst',
+  100000,
+  120000,
+  'mobile',
+  'hired',
+  NOW() - INTERVAL '10 days'
+),
+(
+  'Jessica Wang',
+  'jessica.wang@email.com',
+  'Frontend Developer',
+  '+1-555-0128',
+  'Boston, MA',
+  'https://linkedin.com/in/jessicawang',
+  'https://github.com/jessicawang',
+  NULL,
+  ARRAY['Vue.js', 'JavaScript', 'SCSS', 'Webpack', 'Testing'],
+  3,
+  'Information Systems, Boston University',
+  'WebDev Inc',
+  75000,
+  90000,
+  'frontend',
+  'rejected',
+  NOW() - INTERVAL '1 day'
+);
+
+-- Verify the data was inserted
+SELECT name, position, role_category, status FROM public.candidates ORDER BY created_at DESC;
