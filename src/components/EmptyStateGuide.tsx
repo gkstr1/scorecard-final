@@ -1,7 +1,8 @@
-
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building2, Users, FileText, ArrowRight, Plus, Upload } from "lucide-react";
+import JobCreationModal from "./JobCreationModal";
 
 interface EmptyStateGuideProps {
   type: "jobs" | "candidates" | "dashboard";
@@ -11,74 +12,94 @@ interface EmptyStateGuideProps {
 }
 
 const EmptyStateGuide = ({ type, onCreateJob, onAddCandidate, onUploadResume }: EmptyStateGuideProps) => {
+  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
+
+  const handleJobCreated = () => {
+    if (onCreateJob) {
+      onCreateJob();
+    }
+  };
+
   if (type === "jobs") {
     return (
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader className="text-center">
-          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Building2 className="h-10 w-10 text-primary" />
-          </div>
-          <CardTitle className="text-2xl">Welcome to Job Management</CardTitle>
-          <p className="text-muted-foreground">
-            Let's get started by creating your first job posting and client relationship
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-sm">
-                  1
-                </div>
-                <h3 className="font-semibold">Add Your First Client</h3>
-              </div>
-              <p className="text-sm text-muted-foreground ml-11">
-                Start by adding a client company. This could be your own company if you're hiring internally, 
-                or a client company if you're a recruiting agency.
-              </p>
-              <div className="ml-11 p-3 bg-muted/30 rounded-lg">
-                <p className="text-xs text-muted-foreground mb-2">Example:</p>
-                <div className="text-sm">
-                  <div><strong>Company:</strong> TechCorp Inc.</div>
-                  <div><strong>Contact:</strong> Sarah Johnson</div>
-                  <div><strong>Email:</strong> sarah@techcorp.com</div>
-                </div>
-              </div>
+      <>
+        <Card className="w-full max-w-4xl mx-auto">
+          <CardHeader className="text-center">
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Building2 className="h-10 w-10 text-primary" />
             </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-sm">
-                  2
-                </div>
-                <h3 className="font-semibold">Create Your First Job</h3>
-              </div>
-              <p className="text-sm text-muted-foreground ml-11">
-                Once you have a client, create a job posting with details like title, department, 
-                salary range, and custom pipeline stages.
-              </p>
-              <div className="ml-11 p-3 bg-muted/30 rounded-lg">
-                <p className="text-xs text-muted-foreground mb-2">Example:</p>
-                <div className="text-sm">
-                  <div><strong>Title:</strong> Senior Frontend Developer</div>
-                  <div><strong>Department:</strong> Engineering</div>
-                  <div><strong>Salary:</strong> $100k - $130k</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center pt-4">
-            <Button onClick={onCreateJob} size="lg" className="bg-primary hover:bg-primary/90">
-              <Plus className="h-5 w-5 mr-2" />
-              Create Your First Job
-            </Button>
-            <p className="text-xs text-muted-foreground mt-2">
-              Don't worry, you can always edit or add more jobs later
+            <CardTitle className="text-2xl">Welcome to Job Management</CardTitle>
+            <p className="text-muted-foreground">
+              Let's get started by creating your first job posting and client relationship
             </p>
-          </div>
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-sm">
+                    1
+                  </div>
+                  <h3 className="font-semibold">Add Your First Client</h3>
+                </div>
+                <p className="text-sm text-muted-foreground ml-11">
+                  Start by adding a client company. This could be your own company if you're hiring internally, 
+                  or a client company if you're a recruiting agency.
+                </p>
+                <div className="ml-11 p-3 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-2">Example:</p>
+                  <div className="text-sm">
+                    <div><strong>Company:</strong> TechCorp Inc.</div>
+                    <div><strong>Contact:</strong> Sarah Johnson</div>
+                    <div><strong>Email:</strong> sarah@techcorp.com</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-sm">
+                    2
+                  </div>
+                  <h3 className="font-semibold">Create Your First Job</h3>
+                </div>
+                <p className="text-sm text-muted-foreground ml-11">
+                  Once you have a client, create a job posting with details like title, department, 
+                  salary range, and custom pipeline stages.
+                </p>
+                <div className="ml-11 p-3 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-2">Example:</p>
+                  <div className="text-sm">
+                    <div><strong>Title:</strong> Senior Frontend Developer</div>
+                    <div><strong>Department:</strong> Engineering</div>
+                    <div><strong>Salary:</strong> $100k - $130k</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center pt-4">
+              <Button 
+                onClick={() => setIsJobModalOpen(true)} 
+                size="lg" 
+                className="bg-primary hover:bg-primary/90"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Create Your First Job
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2">
+                Don't worry, you can always edit or add more jobs later
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <JobCreationModal 
+          isOpen={isJobModalOpen}
+          onClose={() => setIsJobModalOpen(false)}
+          onJobCreated={handleJobCreated}
+        />
+      </>
     );
   }
 
