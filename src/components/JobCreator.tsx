@@ -30,7 +30,11 @@ interface Job {
   candidates?: number;
 }
 
-const JobCreator = () => {
+interface JobCreatorProps {
+  onJobCreated?: () => void;
+}
+
+const JobCreator = ({ onJobCreated }: JobCreatorProps) => {
   const [clients, setClients] = useState<Client[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -242,6 +246,11 @@ const JobCreator = () => {
         title: "Success",
         description: "Job posting created successfully"
       });
+
+      // Call the callback to notify parent component
+      if (onJobCreated) {
+        onJobCreated();
+      }
     } catch (error) {
       console.error("Error creating job:", error);
       toast({
