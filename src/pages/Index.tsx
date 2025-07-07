@@ -255,6 +255,7 @@ const Index = () => {
                     Create New Job
                   </Button>
                 </div>
+                {/* Jobs list and clients will be displayed here after first job is created */}
               </div>
             )}
             
