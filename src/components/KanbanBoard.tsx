@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import CandidateProfileModal from "./CandidateProfileModal";
 import AddCandidateForm from "./AddCandidateForm";
+import ClientCreationModal from "./ClientCreationModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,6 +19,7 @@ interface KanbanBoardProps {
 const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showClientModal, setShowClientModal] = useState(false);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -146,13 +148,24 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
     }
   };
 
+  const handleClientCreated = () => {
+    setShowClientModal(false);
+    // Optionally refresh any data that depends on clients
+  };
+
   if (isLoading) {
     return <div className="p-4">Loading candidates...</div>;
   }
 
   return (
     <div className="space-y-4">
-      <AddCandidateForm onCandidateAdded={fetchCandidates} />
+      <div className="flex gap-2">
+        <AddCandidateForm onCandidateAdded={fetchCandidates} />
+        <Button onClick={() => setShowClientModal(true)} variant="outline">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Client
+        </Button>
+      </div>
       
       <DragDropContext onDragEnd={handleDragEnd}>
         <ScrollArea className="w-full whitespace-nowrap">
@@ -276,6 +289,12 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         jobDescription={sampleJobDescription}
+      />
+
+      <ClientCreationModal
+        isOpen={showClientModal}
+        onClose={() => setShowClientModal(false)}
+        onClientCreated={handleClientCreated}
       />
     </div>
   );

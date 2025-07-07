@@ -1,13 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Building2, FileText, Users, Edit, Trash2 } from "lucide-react";
+import { Plus, Building2, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import JobCreationModal from "./JobCreationModal";
-import ClientCreationModal from "./ClientCreationModal";
 import {
   Table,
   TableBody,
@@ -42,7 +40,6 @@ const JobManagement = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showJobModal, setShowJobModal] = useState(false);
-  const [showClientModal, setShowClientModal] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -98,11 +95,6 @@ const JobManagement = () => {
     setShowJobModal(false);
   };
 
-  const handleClientCreated = () => {
-    fetchJobsAndClients();
-    setShowClientModal(false);
-  };
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -139,14 +131,6 @@ const JobManagement = () => {
           <Badge variant="outline" className="text-sm px-3 py-1">
             {jobs.length} Jobs
           </Badge>
-          <Button 
-            onClick={() => setShowClientModal(true)}
-            variant="outline"
-            size="sm"
-          >
-            <Building2 className="h-4 w-4 mr-2" />
-            Add Client
-          </Button>
           <Button 
             onClick={() => setShowJobModal(true)}
             className="bg-primary hover:bg-primary/90" 
@@ -209,61 +193,10 @@ const JobManagement = () => {
         </CardContent>
       </Card>
 
-      {/* Clients Section */}
-      <Card className="bg-card border-border">
-        <CardHeader>
-          <CardTitle className="text-foreground flex items-center space-x-2">
-            <Building2 className="h-5 w-5" />
-            <span>Clients</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {clients.length === 0 ? (
-            <div className="text-center py-6">
-              <Building2 className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground mb-4">
-                No clients added yet
-              </p>
-              <Button onClick={() => setShowClientModal(true)} variant="outline">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Your First Client
-              </Button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {clients.map((client) => (
-                <div key={client.id} className="border border-border rounded-lg p-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Building2 className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-foreground">{client.name}</h4>
-                      {client.contact_person && (
-                        <p className="text-sm text-muted-foreground">{client.contact_person}</p>
-                      )}
-                      {client.email && (
-                        <p className="text-xs text-muted-foreground">{client.email}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
       <JobCreationModal
         isOpen={showJobModal}
         onClose={() => setShowJobModal(false)}
         onJobCreated={handleJobCreated}
-      />
-      
-      <ClientCreationModal
-        isOpen={showClientModal}
-        onClose={() => setShowClientModal(false)}
-        onClientCreated={handleClientCreated}
       />
     </div>
   );
