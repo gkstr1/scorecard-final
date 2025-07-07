@@ -25,27 +25,34 @@ const Index = () => {
   const [hasJobs, setHasJobs] = useState(false);
   const [hasCandidates, setHasCandidates] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const roles = [{
-    value: "all",
-    label: "All Roles"
-  }, {
-    value: "frontend",
-    label: "Frontend Developer"
-  }, {
-    value: "backend",
-    label: "Backend Developer"
-  }, {
-    value: "fullstack",
-    label: "Full Stack Engineer"
-  }, {
-    value: "designer",
-    label: "Product Designer"
-  }];
+  const [availableRoles, setAvailableRoles] = useState([{ value: "all", label: "All Roles" }]);
 
   useEffect(() => {
     checkDataExists();
+    fetchAvailableRoles();
   }, []);
+
+  const fetchAvailableRoles = async () => {
+    try {
+      const { data: jobsData } = await supabase
+        .from("job_descriptions")
+        .select("title")
+        .eq("is_active", true);
+
+      if (jobsData && jobsData.length > 0) {
+        const roles = [
+          { value: "all", label: "All Roles" },
+          ...jobsData.map(job => ({
+            value: job.title.toLowerCase().replace(/\s+/g, '_'),
+            label: job.title
+          }))
+        ];
+        setAvailableRoles(roles);
+      }
+    } catch (error) {
+      console.error("Error fetching available roles:", error);
+    }
+  };
 
   const checkDataExists = async () => {
     setIsLoading(true);
@@ -80,6 +87,7 @@ const Index = () => {
     console.log("Job created, refreshing data...");
     // Force refresh the data state
     checkDataExists();
+    fetchAvailableRoles();
   };
 
   const handleCandidateCreated = () => {
@@ -214,7 +222,7 @@ const Index = () => {
                   <SelectValue placeholder="Select role to filter" />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border shadow-lg">
-                  {roles.map(role => <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
+                  {availableRoles.map(role => <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
                       {role.label}
                     </SelectItem>)}
                 </SelectContent>
