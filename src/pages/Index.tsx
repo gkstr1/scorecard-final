@@ -17,6 +17,7 @@ import PipelineSettings from "@/components/PipelineSettings";
 import ResumeUpload from "@/components/ResumeUpload";
 import EmptyStateGuide from "@/components/EmptyStateGuide";
 import AddCandidateForm from "@/components/AddCandidateForm";
+import JobManagement from "@/components/JobManagement";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("candidates");
@@ -242,129 +243,7 @@ const Index = () => {
                 onCreateJob={handleJobCreated}
               />
             ) : (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="text-xl font-bold text-foreground mb-1">
-                      Job Management
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      Manage your job postings and client relationships
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Badge variant="outline" className="text-sm px-3 py-1">
-                      Active Jobs
-                    </Badge>
-                    <Button className="bg-primary hover:bg-primary/90" size="sm">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add New Job
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Job listings and management interface */}
-                <div className="grid grid-cols-1 gap-6">
-                  <Card className="bg-card border-border">
-                    <CardHeader>
-                      <CardTitle className="text-foreground flex items-center justify-between">
-                        <span>Active Job Postings</span>
-                        <Badge variant="secondary" className="text-xs">
-                          {/* This would show actual count */}
-                          Active
-                        </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                              <FileText className="h-6 w-6 text-primary" />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold text-foreground">Recent Job Postings</h3>
-                              <p className="text-sm text-muted-foreground">
-                                View and manage your active job listings
-                              </p>
-                            </div>
-                          </div>
-                          <Button variant="outline" size="sm">
-                            <Settings className="h-4 w-4 mr-2" />
-                            Manage
-                          </Button>
-                        </div>
-
-                        <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
-                              <Building2 className="h-6 w-6 text-accent" />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold text-foreground">Client Relationships</h3>
-                              <p className="text-sm text-muted-foreground">
-                                Manage your client companies and contacts
-                              </p>
-                            </div>
-                          </div>
-                          <Button variant="outline" size="sm">
-                            <Users className="h-4 w-4 mr-2" />
-                            View Clients
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card className="bg-card border-border">
-                      <CardHeader>
-                        <CardTitle className="text-foreground text-lg">
-                          Quick Actions
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <Button variant="outline" className="w-full justify-start" size="sm">
-                          <Plus className="h-4 w-4 mr-2" />
-                          Create New Job Posting
-                        </Button>
-                        <Button variant="outline" className="w-full justify-start" size="sm">
-                          <Building2 className="h-4 w-4 mr-2" />
-                          Add New Client
-                        </Button>
-                        <Button variant="outline" className="w-full justify-start" size="sm">
-                          <FileText className="h-4 w-4 mr-2" />
-                          Job Templates
-                        </Button>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="bg-card border-border">
-                      <CardHeader>
-                        <CardTitle className="text-foreground text-lg">
-                          Recent Activity
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3 text-sm">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-2 h-2 bg-primary rounded-full"></div>
-                            <span className="text-muted-foreground">Job posting created</span>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <div className="w-2 h-2 bg-accent rounded-full"></div>
-                            <span className="text-muted-foreground">Client added</span>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <div className="w-2 h-2 bg-muted-foreground rounded-full"></div>
-                            <span className="text-muted-foreground">Pipeline configured</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              </div>
+              <JobManagement />
             )}
           </div>
         )}
