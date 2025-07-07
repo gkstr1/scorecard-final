@@ -57,6 +57,35 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
     }
   };
 
+  const extractTextFromPDF = async (file: File): Promise<string> => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      
+      // Use pdf-parse to extract text from PDF
+      const pdfParse = await import('pdf-parse/lib/pdf-parse.js');
+      const pdfData = await pdfParse.default(uint8Array);
+      return pdfData.text;
+    } catch (error) {
+      console.error("Error parsing PDF:", error);
+      throw new Error("Failed to extract text from PDF file");
+    }
+  };
+
+  const extractTextFromDOCX = async (file: File): Promise<string> => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      
+      // Use mammoth to extract text from DOCX
+      const mammoth = await import('mammoth');
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      return result.value;
+    } catch (error) {
+      console.error("Error parsing DOCX:", error);
+      throw new Error("Failed to extract text from DOCX file");
+    }
+  };
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -64,21 +93,35 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
     setIsUploading(true);
 
     try {
+      let extractedText = "";
+
       if (file.type === "text/plain") {
-        const text = await file.text();
-        setResumeText(text);
+        extractedText = await file.text();
+      } else if (file.type === "application/pdf") {
+        extractedText = await extractTextFromPDF(file);
+      } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+        extractedText = await extractTextFromDOCX(file);
       } else {
         toast({
           title: "Unsupported file type",
-          description: "Please upload a text file (.txt). PDF support coming soon!",
+          description: "Please upload a text file (.txt), PDF (.pdf), or Word document (.docx)",
           variant: "destructive"
         });
+        return;
       }
+
+      setResumeText(extractedText);
+      
+      toast({
+        title: "File uploaded successfully",
+        description: "Resume text has been extracted and is ready for parsing"
+      });
+
     } catch (error) {
       console.error("Error reading file:", error);
       toast({
         title: "Error",
-        description: "Failed to read the file",
+        description: error instanceof Error ? error.message : "Failed to read the file",
         variant: "destructive"
       });
     } finally {
@@ -225,13 +268,13 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
             <Input
               id="resume-file"
               type="file"
-              accept=".txt"
+              accept=".txt,.pdf,.docx"
               onChange={handleFileUpload}
               disabled={isUploading}
               className="mt-1"
             />
             <p className="text-xs text-muted-foreground mt-1">
-              Currently supports .txt files. PDF support coming soon.
+              Supports .txt, .pdf, and .docx files
             </p>
           </div>
 
@@ -249,7 +292,7 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
             <textarea
               id="resume-text"
               className="w-full min-h-[200px] p-3 border border-input rounded-md resize-none"
-              placeholder="Paste resume content here..."
+              placeholder="Paste resume content here or upload a file above..."
               value={resumeText}
               onChange={(e) => setResumeText(e.target.value)}
               disabled={isUploading}

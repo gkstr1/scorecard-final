@@ -70,7 +70,7 @@ const ResumeUpload = ({ onCandidateCreated }: ResumeUploadProps) => {
               </div>
               <h4 className="font-medium text-foreground mb-1">Multiple Formats</h4>
               <p className="text-xs text-muted-foreground">
-                Support for text files with PDF support coming soon
+                Support for PDF, DOCX, and text files
               </p>
             </div>
           </div>
