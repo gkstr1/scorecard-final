@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -241,8 +240,8 @@ const Index = () => {
                 onCreateJob={() => {/* JobCreator will handle this */}}
               />
             ) : (
-              <>
-                <div className="flex justify-between items-center">
+              <div>
+                <div className="flex justify-between items-center mb-6">
                   <div>
                     <h2 className="text-xl font-bold text-foreground mb-1">
                       Job Management
@@ -256,10 +255,10 @@ const Index = () => {
                     Create New Job
                   </Button>
                 </div>
-              </>
+              </div>
             )}
             
-            <JobCreator />
+            <JobCreator onJobCreated={handleJobCreated} />
           </div>
         )}
 
