@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -236,13 +235,10 @@ const Index = () => {
         {activeTab === "jobs" && (
           <div className="space-y-6">
             {!hasJobs ? (
-              <>
-                <EmptyStateGuide 
-                  type="jobs"
-                  onCreateJob={() => {/* JobCreator will handle this */}}
-                />
-                <JobCreator onJobCreated={handleJobCreated} />
-              </>
+              <EmptyStateGuide 
+                type="jobs"
+                onCreateJob={handleJobCreated}
+              />
             ) : (
               <div>
                 <h2 className="text-xl font-bold text-foreground mb-1">
