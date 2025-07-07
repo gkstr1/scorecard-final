@@ -241,19 +241,13 @@ const Index = () => {
               />
             ) : (
               <div>
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h2 className="text-xl font-bold text-foreground mb-1">
-                      Job Management
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      Create and manage job postings with custom pipelines
-                    </p>
-                  </div>
-                  <Button className="bg-primary hover:bg-primary/90" size="sm">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create New Job
-                  </Button>
+                <div className="mb-6">
+                  <h2 className="text-xl font-bold text-foreground mb-1">
+                    Job Management
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Manage your job postings and client relationships
+                  </p>
                 </div>
                 {/* Jobs list and clients will be displayed here after first job is created */}
               </div>
