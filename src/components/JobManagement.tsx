@@ -7,6 +7,7 @@ import { Plus, Building2, FileText, Users, Edit, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import JobCreationModal from "./JobCreationModal";
+import ClientCreationModal from "./ClientCreationModal";
 import {
   Table,
   TableBody,
@@ -41,6 +42,7 @@ const JobManagement = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showJobModal, setShowJobModal] = useState(false);
+  const [showClientModal, setShowClientModal] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -96,6 +98,11 @@ const JobManagement = () => {
     setShowJobModal(false);
   };
 
+  const handleClientCreated = () => {
+    fetchJobsAndClients();
+    setShowClientModal(false);
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -132,6 +139,14 @@ const JobManagement = () => {
           <Badge variant="outline" className="text-sm px-3 py-1">
             {jobs.length} Jobs
           </Badge>
+          <Button 
+            onClick={() => setShowClientModal(true)}
+            variant="outline"
+            size="sm"
+          >
+            <Building2 className="h-4 w-4 mr-2" />
+            Add Client
+          </Button>
           <Button 
             onClick={() => setShowJobModal(true)}
             className="bg-primary hover:bg-primary/90" 
@@ -206,9 +221,13 @@ const JobManagement = () => {
           {clients.length === 0 ? (
             <div className="text-center py-6">
               <Building2 className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">
-                Clients will appear here when you create jobs
+              <p className="text-sm text-muted-foreground mb-4">
+                No clients added yet
               </p>
+              <Button onClick={() => setShowClientModal(true)} variant="outline">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Your First Client
+              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -239,6 +258,12 @@ const JobManagement = () => {
         isOpen={showJobModal}
         onClose={() => setShowJobModal(false)}
         onJobCreated={handleJobCreated}
+      />
+      
+      <ClientCreationModal
+        isOpen={showClientModal}
+        onClose={() => setShowClientModal(false)}
+        onClientCreated={handleClientCreated}
       />
     </div>
   );
