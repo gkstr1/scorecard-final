@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -67,12 +66,20 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
 
   const fetchCandidates = async () => {
     try {
+      console.log("Fetching candidates...");
       const { data, error } = await supabase
         .from("candidates")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      console.log("Supabase response:", { data, error });
+      
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
+      
+      console.log("Candidates fetched:", data?.length || 0, "candidates");
       setCandidates(data || []);
     } catch (error) {
       console.error("Error fetching candidates:", error);
@@ -94,8 +101,12 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
     ? candidates 
     : candidates.filter(candidate => candidate.role_category === selectedRole);
 
+  console.log("Filtered candidates:", filteredCandidates.length, "for role:", selectedRole);
+
   const getCandidatesByStatus = (status: string) => {
-    return filteredCandidates.filter(candidate => candidate.status === status);
+    const statusCandidates = filteredCandidates.filter(candidate => candidate.status === status);
+    console.log(`Candidates with status '${status}':`, statusCandidates.length);
+    return statusCandidates;
   };
 
   const handleViewCandidate = (candidate: any) => {
@@ -145,6 +156,18 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
 
   if (isLoading) {
     return <div className="p-4">Loading candidates...</div>;
+  }
+
+  if (candidates.length === 0) {
+    return (
+      <div className="p-4">
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">No candidates found in the database.</p>
+          <p className="text-sm text-muted-foreground mt-2">Check the console for debugging information.</p>
+        </div>
+        <AddCandidateForm onCandidateAdded={fetchCandidates} />
+      </div>
+    );
   }
 
   return (
