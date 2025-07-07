@@ -13,6 +13,7 @@ import StatsOverview from "@/components/StatsOverview";
 import KanbanBoard from "@/components/KanbanBoard";
 import JobCreator from "@/components/JobCreator";
 import PipelineSettings from "@/components/PipelineSettings";
+import ResumeUpload from "@/components/ResumeUpload";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("candidates");
@@ -241,10 +242,10 @@ const Index = () => {
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-bold text-foreground mb-1">
-                  Resume Upload
+                  Resume Upload & Candidate Creation
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Upload and parse resumes automatically
+                  Upload resumes and automatically create candidate profiles
                 </p>
               </div>
               <Button variant="outline" size="sm">
@@ -253,38 +254,10 @@ const Index = () => {
               </Button>
             </div>
             
-            <Card className="bg-card border-border">
-              <CardContent className="p-8">
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FileText className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold text-foreground mb-3">
-                    Smart Resume Processing
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                    Drop your resume files here or connect your email to automatically process new applications
-                  </p>
-                  <div className="bg-muted/20 border border-border rounded-lg p-6 max-w-lg mx-auto">
-                    <div className="text-accent text-sm mb-3 font-medium">Supported Sources:</div>
-                    <div className="text-foreground text-sm space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span>PDF & Word Documents</span>
-                        <span className="text-accent text-lg">✓</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>LinkedIn Profiles</span>
-                        <span className="text-accent text-lg">✓</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Email Attachments</span>
-                        <span className="text-accent text-lg">✓</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <ResumeUpload onCandidateCreated={() => {
+              // Optionally refresh candidate data or show success message
+              console.log("New candidate created from resume upload");
+            }} />
           </div>}
 
         {activeTab === "analytics" && <div className="space-y-6">
