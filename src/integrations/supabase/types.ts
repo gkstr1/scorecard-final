@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           applied_date: string
           availability_date: string | null
+          certifications: string[] | null
           cover_letter_url: string | null
           created_at: string
           current_company: string | null
@@ -28,21 +29,26 @@ export type Database = {
           experience_years: number | null
           github_url: string | null
           id: string
+          key_achievements: string[] | null
           linkedin_url: string | null
           location: string | null
           name: string
           phone: string | null
           portfolio_url: string | null
           position: string
+          resume_parsed_data: Json | null
+          resume_summary: string | null
           resume_url: string | null
           role_category: string
           skills: string[] | null
           status: string
           updated_at: string
+          work_experience: Json[] | null
         }
         Insert: {
           applied_date?: string
           availability_date?: string | null
+          certifications?: string[] | null
           cover_letter_url?: string | null
           created_at?: string
           current_company?: string | null
@@ -53,21 +59,26 @@ export type Database = {
           experience_years?: number | null
           github_url?: string | null
           id?: string
+          key_achievements?: string[] | null
           linkedin_url?: string | null
           location?: string | null
           name: string
           phone?: string | null
           portfolio_url?: string | null
           position: string
+          resume_parsed_data?: Json | null
+          resume_summary?: string | null
           resume_url?: string | null
           role_category: string
           skills?: string[] | null
           status?: string
           updated_at?: string
+          work_experience?: Json[] | null
         }
         Update: {
           applied_date?: string
           availability_date?: string | null
+          certifications?: string[] | null
           cover_letter_url?: string | null
           created_at?: string
           current_company?: string | null
@@ -78,17 +89,21 @@ export type Database = {
           experience_years?: number | null
           github_url?: string | null
           id?: string
+          key_achievements?: string[] | null
           linkedin_url?: string | null
           location?: string | null
           name?: string
           phone?: string | null
           portfolio_url?: string | null
           position?: string
+          resume_parsed_data?: Json | null
+          resume_summary?: string | null
           resume_url?: string | null
           role_category?: string
           skills?: string[] | null
           status?: string
           updated_at?: string
+          work_experience?: Json[] | null
         }
         Relationships: []
       }
