@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,8 +62,13 @@ const Index = () => {
         .select("id")
         .limit(1);
 
-      setHasJobs((jobsData && jobsData.length > 0) || false);
-      setHasCandidates((candidatesData && candidatesData.length > 0) || false);
+      const jobsExist = (jobsData && jobsData.length > 0) || false;
+      const candidatesExist = (candidatesData && candidatesData.length > 0) || false;
+      
+      setHasJobs(jobsExist);
+      setHasCandidates(candidatesExist);
+      
+      console.log("Data check - Jobs:", jobsExist, "Candidates:", candidatesExist);
     } catch (error) {
       console.error("Error checking data:", error);
     } finally {
@@ -71,12 +77,14 @@ const Index = () => {
   };
 
   const handleJobCreated = () => {
-    setHasJobs(true);
+    console.log("Job created, refreshing data...");
+    // Force refresh the data state
     checkDataExists();
   };
 
   const handleCandidateCreated = () => {
-    setHasCandidates(true);
+    console.log("Candidate created, refreshing data...");
+    // Force refresh the data state
     checkDataExists();
   };
 
@@ -90,6 +98,8 @@ const Index = () => {
       </div>
     );
   }
+
+  console.log("Render state - hasJobs:", hasJobs, "hasCandidates:", hasCandidates, "activeTab:", activeTab);
 
   return <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -177,58 +187,43 @@ const Index = () => {
         {/* Show candidates management when jobs exist */}
         {hasJobs && activeTab === "candidates" && (
           <div className="space-y-6">
-            {!hasCandidates ? (
-              <EmptyStateGuide 
-                type="candidates"
-                onAddCandidate={() => {/* Will be handled by AddCandidateForm */}}
-                onUploadResume={() => setActiveTab("parsing")}
-              />
-            ) : (
-              <>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="text-xl font-bold text-foreground mb-1">
-                      Candidate Pipeline
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      Manage your hiring process from application to offer
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Badge variant="outline" className="text-sm px-3 py-1">
-                      Active Candidates
-                    </Badge>
-                    <Button variant="outline" size="sm" className="text-sm">
-                      <Mail className="h-4 w-4 mr-2" />
-                      Import from Email
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2 bg-primary/10 border-2 border-primary/30 rounded-lg p-2 w-fit">
-                  <span className="text-sm font-medium text-primary">Role:</span>
-                  <Select value={selectedRole} onValueChange={setSelectedRole}>
-                    <SelectTrigger className="w-56 h-10 text-sm bg-background border-primary/50 hover:border-primary focus:border-primary shadow-sm">
-                      <SelectValue placeholder="Select role to filter" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-border shadow-lg">
-                      {roles.map(role => <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
-                          {role.label}
-                        </SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <StatsOverview />
-                
-                <KanbanBoard selectedRole={selectedRole} />
-              </>
-            )}
-
-            {/* Show Add Candidate Form */}
-            <div className="flex justify-center">
-              <AddCandidateForm onCandidateAdded={handleCandidateCreated} />
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold text-foreground mb-1">
+                  Candidate Pipeline
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Manage your hiring process from application to offer
+                </p>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Badge variant="outline" className="text-sm px-3 py-1">
+                  Active Candidates
+                </Badge>
+                <Button variant="outline" size="sm" className="text-sm">
+                  <Mail className="h-4 w-4 mr-2" />
+                  Import from Email
+                </Button>
+              </div>
             </div>
+
+            <div className="flex items-center space-x-2 bg-primary/10 border-2 border-primary/30 rounded-lg p-2 w-fit">
+              <span className="text-sm font-medium text-primary">Role:</span>
+              <Select value={selectedRole} onValueChange={setSelectedRole}>
+                <SelectTrigger className="w-56 h-10 text-sm bg-background border-primary/50 hover:border-primary focus:border-primary shadow-sm">
+                  <SelectValue placeholder="Select role to filter" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border shadow-lg">
+                  {roles.map(role => <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
+                      {role.label}
+                    </SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <StatsOverview />
+            
+            <KanbanBoard selectedRole={selectedRole} />
           </div>
         )}
 
