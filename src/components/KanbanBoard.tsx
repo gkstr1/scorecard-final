@@ -4,8 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { User, Mail, Calendar, Zap, Eye, Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import CandidateProfileModal from "./CandidateProfileModal";
+import AddCandidateForm from "./AddCandidateForm";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface KanbanBoardProps {
   selectedRole: string;
@@ -14,6 +18,9 @@ interface KanbanBoardProps {
 const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [candidates, setCandidates] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   // Sample job description for skill matching
   const sampleJobDescription = {
@@ -29,249 +36,237 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
     {
       id: "applied",
       title: "Applied",
-      count: 8,
       color: "bg-blue-500/10 border-blue-500/30",
-      candidates: [
-        {
-          id: "1",
-          name: "Sarah Chen",
-          position: "Senior React Developer",
-          email: "sarah.chen@email.com",
-          phone: "+1 (555) 123-4567",
-          location: "San Francisco, CA",
-          linkedin_url: "https://linkedin.com/in/sarahchen",
-          github_url: "https://github.com/sarahchen",
-          portfolio_url: "https://sarahchen.dev",
-          resume_url: "https://example.com/resume-sarah.pdf",
-          skills: ["React", "TypeScript", "Node.js", "GraphQL", "AWS"],
-          experience_years: 5,
-          education: "BS Computer Science - Stanford University",
-          current_company: "TechCorp Inc.",
-          current_salary: 95000,
-          expected_salary: 110000,
-          availability_date: "2024-02-01",
-          status: "applied",
-          role_category: "frontend",
-          applied_date: "2024-01-15T10:30:00Z"
-        },
-        {
-          id: "2",
-          name: "Michael Rodriguez",
-          position: "Full Stack Engineer",
-          email: "m.rodriguez@email.com",
-          phone: "+1 (555) 987-6543",
-          location: "Austin, TX",
-          linkedin_url: "https://linkedin.com/in/mrodriguez",
-          github_url: "https://github.com/mrodriguez",
-          skills: ["Python", "Django", "PostgreSQL", "React", "Docker"],
-          experience_years: 4,
-          education: "MS Software Engineering - UT Austin",
-          current_company: "StartupXYZ",
-          current_salary: 85000,
-          expected_salary: 100000,
-          status: "applied",
-          role_category: "fullstack",
-          applied_date: "2024-01-10T14:20:00Z"
-        },
-      ]
     },
     {
       id: "sourced",
       title: "Sourced",
-      count: 6,
       color: "bg-gray-500/10 border-gray-500/30",
-      candidates: [
-        {
-          id: "3",
-          name: "Emily Johnson",
-          position: "Frontend Developer",
-          email: "emily.j@email.com",
-          phone: "+1 (555) 456-7890",
-          location: "New York, NY",
-          skills: ["Vue.js", "JavaScript", "CSS", "Webpack"],
-          experience_years: 3,
-          education: "BA Computer Science - NYU",
-          current_company: "DesignStudio",
-          current_salary: 75000,
-          expected_salary: 85000,
-          status: "sourced",
-          role_category: "frontend",
-          applied_date: "2024-01-08T09:15:00Z"
-        },
-      ]
     },
     {
-      id: "technical",
+      id: "technical_interview",
       title: "Technical Interview",
-      count: 4,
       color: "bg-purple-500/10 border-purple-500/30",
-      candidates: [
-        {
-          id: "4",
-          name: "David Kim",
-          position: "Backend Engineer",
-          email: "david.kim@email.com",
-          phone: "+1 (555) 321-0987",
-          location: "Seattle, WA",
-          linkedin_url: "https://linkedin.com/in/davidkim",
-          github_url: "https://github.com/davidkim",
-          skills: ["Java", "Spring", "MySQL", "Redis", "Kubernetes"],
-          experience_years: 6,
-          education: "MS Computer Science - University of Washington",
-          current_company: "CloudTech Solutions",
-          current_salary: 105000,
-          expected_salary: 120000,
-          status: "technical_interview",
-          role_category: "backend",
-          applied_date: "2024-01-12T16:45:00Z"
-        },
-      ]
     },
     {
       id: "submitted",
       title: "Submitted",
-      count: 3,
       color: "bg-yellow-500/10 border-yellow-500/30",
-      candidates: []
     },
     {
       id: "hired",
       title: "Hired",
-      count: 2,
       color: "bg-green-500/10 border-green-500/30",
-      candidates: [
-        {
-          id: "5",
-          name: "Lisa Wang",
-          position: "Product Designer",
-          email: "lisa.wang@email.com",
-          phone: "+1 (555) 654-3210",
-          location: "Los Angeles, CA",
-          linkedin_url: "https://linkedin.com/in/lisawang",
-          portfolio_url: "https://lisawang.design",
-          skills: ["Figma", "UI/UX", "Prototyping", "Design Systems"],
-          experience_years: 4,
-          education: "BFA Design - Art Center College of Design",
-          current_company: "Creative Agency",
-          current_salary: 80000,
-          expected_salary: 95000,
-          status: "hired",
-          role_category: "designer",
-          applied_date: "2023-12-20T11:30:00Z"
-        },
-      ]
     },
     {
       id: "rejected",
       title: "Rejected",
-      count: 1,
       color: "bg-red-500/10 border-red-500/30",
-      candidates: []
     },
   ];
 
-  const filteredColumns = columns.map(column => ({
-    ...column,
-    candidates: selectedRole === "all" 
-      ? column.candidates 
-      : column.candidates.filter(candidate => candidate.role_category === selectedRole)
-  }));
+  const fetchCandidates = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("candidates")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setCandidates(data || []);
+    } catch (error) {
+      console.error("Error fetching candidates:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch candidates",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCandidates();
+  }, []);
+
+  const filteredCandidates = selectedRole === "all" 
+    ? candidates 
+    : candidates.filter(candidate => candidate.role_category === selectedRole);
+
+  const getCandidatesByStatus = (status: string) => {
+    return filteredCandidates.filter(candidate => candidate.status === status);
+  };
 
   const handleViewCandidate = (candidate: any) => {
     setSelectedCandidate(candidate);
     setIsModalOpen(true);
   };
 
+  const handleDragEnd = async (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) return;
+    if (destination.droppableId === source.droppableId) return;
+
+    const candidateId = draggableId;
+    const newStatus = destination.droppableId === "technical_interview" ? "technical_interview" : destination.droppableId;
+
+    try {
+      const { error } = await supabase
+        .from("candidates")
+        .update({ status: newStatus })
+        .eq("id", candidateId);
+
+      if (error) throw error;
+
+      // Update local state
+      setCandidates(prev => 
+        prev.map(candidate => 
+          candidate.id === candidateId 
+            ? { ...candidate, status: newStatus }
+            : candidate
+        )
+      );
+
+      toast({
+        title: "Success",
+        description: `Candidate moved to ${destination.droppableId.replace("_", " ")}`,
+      });
+    } catch (error) {
+      console.error("Error updating candidate status:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update candidate status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  if (isLoading) {
+    return <div className="p-4">Loading candidates...</div>;
+  }
+
   return (
     <div className="space-y-4">
-      <ScrollArea className="w-full whitespace-nowrap">
-        <div className="flex gap-3 min-h-[500px] pb-4">
-          {filteredColumns.map((column) => (
-            <div key={column.id} className="flex-shrink-0 w-72 space-y-3">
-              <Card className={`${column.color} border-2`}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center justify-between text-sm">
-                    <span className="text-foreground truncate">{column.title}</span>
-                    <Badge variant="secondary" className="text-xs">
-                      {selectedRole === "all" ? column.count : column.candidates.length}
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-              </Card>
+      <AddCandidateForm onCandidateAdded={fetchCandidates} />
+      
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <ScrollArea className="w-full whitespace-nowrap">
+          <div className="flex gap-3 min-h-[500px] pb-4">
+            {columns.map((column) => {
+              const columnCandidates = getCandidatesByStatus(column.id);
               
-              <div className="space-y-3">
-                {column.candidates.map((candidate) => (
-                  <Card key={candidate.id} className="bg-card border-border hover:border-primary/30 transition-all duration-200 cursor-pointer">
-                    <CardContent className="p-3">
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <div className="h-6 w-6 bg-primary/10 rounded-full border border-primary/20 flex items-center justify-center flex-shrink-0">
-                            <User className="h-3 w-3 text-primary" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-foreground text-xs truncate">{candidate.name}</h4>
-                            <p className="text-xs text-muted-foreground truncate">{candidate.position}</p>
-                          </div>
-                        </div>
-                        
-                        <div className="text-xs text-muted-foreground flex items-center space-x-1">
-                          <Mail className="h-3 w-3 flex-shrink-0" />
-                          <span className="truncate">{candidate.email}</span>
-                        </div>
-                        
-                        <div className="text-xs text-muted-foreground flex items-center space-x-1">
-                          <Calendar className="h-3 w-3 flex-shrink-0" />
-                          <span>Applied {new Date(candidate.applied_date).toLocaleDateString()}</span>
-                        </div>
-
-                        <div className="flex flex-wrap gap-1">
-                          {candidate.skills.slice(0, 2).map((skill) => (
-                            <Badge key={skill} variant="secondary" className="text-xs bg-secondary/50 text-foreground border-border px-1 py-0">
-                              {skill}
-                            </Badge>
-                          ))}
-                          {candidate.skills.length > 2 && (
-                            <Badge variant="secondary" className="text-xs bg-secondary/50 text-foreground border-border px-1 py-0">
-                              +{candidate.skills.length - 2}
-                            </Badge>
-                          )}
-                        </div>
-
-                        <div className="flex space-x-1 pt-1">
-                          {column.id === "technical" && (
-                            <Button size="sm" variant="outline" className="text-xs bg-accent/10 border-accent/30 text-accent hover:bg-accent/20 h-6 px-2">
-                              <Zap className="h-2 w-2 mr-1" />
-                              Questions
-                            </Button>
-                          )}
-                          <Button 
-                            size="sm" 
-                            className="text-xs h-6 px-2"
-                            onClick={() => handleViewCandidate(candidate)}
-                          >
-                            <Eye className="h-2 w-2 mr-1" />
-                            View
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
+              return (
+                <div key={column.id} className="flex-shrink-0 w-72 space-y-3">
+                  <Card className={`${column.color} border-2`}>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="flex items-center justify-between text-sm">
+                        <span className="text-foreground truncate">{column.title}</span>
+                        <Badge variant="secondary" className="text-xs">
+                          {columnCandidates.length}
+                        </Badge>
+                      </CardTitle>
+                    </CardHeader>
                   </Card>
-                ))}
-                
-                <Card className="bg-muted/20 border-dashed border-2 border-muted-foreground/30 hover:border-primary/50 transition-colors cursor-pointer">
-                  <CardContent className="p-4">
-                    <div className="text-center">
-                      <Plus className="h-4 w-4 text-muted-foreground mx-auto mb-1" />
-                      <p className="text-xs text-muted-foreground">Add candidate</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          ))}
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+                  
+                  <Droppable droppableId={column.id}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={`space-y-3 min-h-[400px] p-2 rounded-lg transition-colors ${
+                          snapshot.isDraggingOver ? 'bg-muted/20' : ''
+                        }`}
+                      >
+                        {columnCandidates.map((candidate, index) => (
+                          <Draggable key={candidate.id} draggableId={candidate.id} index={index}>
+                            {(provided, snapshot) => (
+                              <Card
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className={`bg-card border-border hover:border-primary/30 transition-all duration-200 cursor-pointer ${
+                                  snapshot.isDragging ? 'shadow-lg rotate-2' : ''
+                                }`}
+                              >
+                                <CardContent className="p-3">
+                                  <div className="space-y-2">
+                                    <div className="flex items-center space-x-2">
+                                      <div className="h-6 w-6 bg-primary/10 rounded-full border border-primary/20 flex items-center justify-center flex-shrink-0">
+                                        <User className="h-3 w-3 text-primary" />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <h4 className="font-semibold text-foreground text-xs truncate">{candidate.name}</h4>
+                                        <p className="text-xs text-muted-foreground truncate">{candidate.position}</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="text-xs text-muted-foreground flex items-center space-x-1">
+                                      <Mail className="h-3 w-3 flex-shrink-0" />
+                                      <span className="truncate">{candidate.email}</span>
+                                    </div>
+                                    
+                                    <div className="text-xs text-muted-foreground flex items-center space-x-1">
+                                      <Calendar className="h-3 w-3 flex-shrink-0" />
+                                      <span>Applied {new Date(candidate.applied_date).toLocaleDateString()}</span>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-1">
+                                      {candidate.skills?.slice(0, 2).map((skill: string) => (
+                                        <Badge key={skill} variant="secondary" className="text-xs bg-secondary/50 text-foreground border-border px-1 py-0">
+                                          {skill}
+                                        </Badge>
+                                      ))}
+                                      {candidate.skills?.length > 2 && (
+                                        <Badge variant="secondary" className="text-xs bg-secondary/50 text-foreground border-border px-1 py-0">
+                                          +{candidate.skills.length - 2}
+                                        </Badge>
+                                      )}
+                                    </div>
+
+                                    <div className="flex space-x-1 pt-1">
+                                      {column.id === "technical_interview" && (
+                                        <Button size="sm" variant="outline" className="text-xs bg-accent/10 border-accent/30 text-accent hover:bg-accent/20 h-6 px-2">
+                                          <Zap className="h-2 w-2 mr-1" />
+                                          Questions
+                                        </Button>
+                                      )}
+                                      <Button 
+                                        size="sm" 
+                                        className="text-xs h-6 px-2"
+                                        onClick={() => handleViewCandidate(candidate)}
+                                      >
+                                        <Eye className="h-2 w-2 mr-1" />
+                                        View
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                        
+                        <Card className="bg-muted/20 border-dashed border-2 border-muted-foreground/30 hover:border-primary/50 transition-colors cursor-pointer">
+                          <CardContent className="p-4">
+                            <div className="text-center">
+                              <Plus className="h-4 w-4 text-muted-foreground mx-auto mb-1" />
+                              <p className="text-xs text-muted-foreground">Add candidate</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    )}
+                  </Droppable>
+                </div>
+              );
+            })}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </DragDropContext>
 
       <CandidateProfileModal
         candidate={selectedCandidate}
