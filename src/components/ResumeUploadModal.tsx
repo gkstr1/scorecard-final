@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,15 +59,26 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
   const extractTextFromPDF = async (file: File): Promise<string> => {
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
       
-      // Use pdf-parse to extract text from PDF
-      const pdfParse = await import('pdf-parse/lib/pdf-parse.js');
-      const pdfData = await pdfParse.default(uint8Array);
-      return pdfData.text;
+      // Use a simpler approach with FileReader and FormData to send to backend
+      // Since browser-based PDF parsing is complex, we'll use the edge function instead
+      const { data, error } = await supabase.functions.invoke('extract-pdf-text', {
+        body: {
+          fileData: Array.from(new Uint8Array(arrayBuffer))
+        }
+      });
+
+      if (error) throw error;
+      return data.text || '';
     } catch (error) {
       console.error("Error parsing PDF:", error);
-      throw new Error("Failed to extract text from PDF file");
+      // Fallback: ask user to copy/paste text
+      toast({
+        title: "PDF parsing not available",
+        description: "Please copy and paste the text from your PDF into the text area below",
+        variant: "destructive"
+      });
+      throw new Error("PDF parsing is currently not available in the browser. Please copy and paste the text manually.");
     }
   };
 
@@ -82,7 +92,12 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
       return result.value;
     } catch (error) {
       console.error("Error parsing DOCX:", error);
-      throw new Error("Failed to extract text from DOCX file");
+      toast({
+        title: "DOCX parsing failed",
+        description: "Please copy and paste the text from your document into the text area below",
+        variant: "destructive"
+      });
+      throw new Error("Failed to extract text from DOCX file. Please copy and paste the text manually.");
     }
   };
 
@@ -119,11 +134,7 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
 
     } catch (error) {
       console.error("Error reading file:", error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to read the file",
-        variant: "destructive"
-      });
+      // Don't show error toast here since we already show specific ones above
     } finally {
       setIsUploading(false);
     }
@@ -268,13 +279,13 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
             <Input
               id="resume-file"
               type="file"
-              accept=".txt,.pdf,.docx"
+              accept=".txt,.docx"
               onChange={handleFileUpload}
               disabled={isUploading}
               className="mt-1"
             />
             <p className="text-xs text-muted-foreground mt-1">
-              Supports .txt, .pdf, and .docx files
+              Supports .txt and .docx files. For PDF files, please copy and paste the text below.
             </p>
           </div>
 
