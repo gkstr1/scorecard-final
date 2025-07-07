@@ -235,25 +235,24 @@ const Index = () => {
         {activeTab === "jobs" && (
           <div className="space-y-6">
             {!hasJobs ? (
-              <EmptyStateGuide 
-                type="jobs"
-                onCreateJob={() => {/* JobCreator will handle this */}}
-              />
+              <>
+                <EmptyStateGuide 
+                  type="jobs"
+                  onCreateJob={() => {/* JobCreator will handle this */}}
+                />
+                <JobCreator onJobCreated={handleJobCreated} />
+              </>
             ) : (
-              <div>
-                <div className="mb-6">
-                  <h2 className="text-xl font-bold text-foreground mb-1">
-                    Job Management
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    Manage your job postings and client relationships
-                  </p>
-                </div>
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-foreground mb-1">
+                  Job Management
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Manage your job postings and client relationships
+                </p>
                 {/* Jobs list and clients will be displayed here after first job is created */}
               </div>
             )}
-            
-            {!hasJobs && <JobCreator onJobCreated={handleJobCreated} />}
           </div>
         )}
 
