@@ -1,74 +1,115 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, X, Save, Briefcase, MapPin, DollarSign, Building2, Users } from "lucide-react";
+import { Plus, X, Save, Briefcase, MapPin, DollarSign, Building2, Users, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Client {
+  id: string;
+  name: string;
+  contact_person: string | null;
+  email: string | null;
+  jobsCount?: number;
+}
+
+interface Job {
+  id: string;
+  title: string;
+  department: string | null;
+  description: string;
+  salary_range_min: number | null;
+  salary_range_max: number | null;
+  is_active: boolean | null;
+  client_id: string | null;
+  clientName?: string;
+  stages: string[];
+  candidates?: number;
+}
 
 const JobCreator = () => {
-  const [clients, setClients] = useState([
-    {
-      id: 1,
-      name: "TechCorp Inc.",
-      contact: "Sarah Johnson",
-      email: "sarah@techcorp.com",
-      jobsCount: 3
-    },
-    {
-      id: 2,
-      name: "StartupXYZ",
-      contact: "Mike Chen",
-      email: "mike@startupxyz.com",
-      jobsCount: 1
-    }
-  ]);
-
-  const [jobs, setJobs] = useState([
-    {
-      id: 1,
-      title: "Senior React Developer",
-      department: "Engineering",
-      location: "Remote",
-      salary: "$120k - $150k",
-      status: "Active",
-      candidates: 12,
-      clientId: 1,
-      clientName: "TechCorp Inc.",
-      stages: ["Sourced", "Applied", "Phone Screening", "Technical Interview", "Final Round", "Offer"]
-    },
-    {
-      id: 2,
-      title: "Product Designer",
-      department: "Design",
-      location: "San Francisco, CA",
-      salary: "$90k - $120k",
-      status: "Draft",
-      candidates: 5,
-      clientId: 2,
-      clientName: "StartupXYZ",
-      stages: ["Sourced", "Applied", "Portfolio Review", "Design Challenge", "Final Interview", "Offer"]
-    }
-  ]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreatingClient, setIsCreatingClient] = useState(false);
+  const [isCreatingJob, setIsCreatingJob] = useState(false);
+  const { toast } = useToast();
 
   const [newClient, setNewClient] = useState({
     name: "",
-    contact: "",
+    contact_person: "",
     email: ""
   });
 
   const [newJob, setNewJob] = useState({
     title: "",
     department: "",
-    location: "",
-    salary: "",
-    clientId: "",
+    description: "",
+    salary_range_min: "",
+    salary_range_max: "",
+    client_id: "",
     stages: ["Sourced", "Applied", "Technical Interview"]
   });
 
   const [newStage, setNewStage] = useState("");
   const [showClientForm, setShowClientForm] = useState(false);
+
+  useEffect(() => {
+    fetchClientsAndJobs();
+  }, []);
+
+  const fetchClientsAndJobs = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch clients
+      const { data: clientsData, error: clientsError } = await supabase
+        .from("clients")
+        .select("*")
+        .order("name");
+
+      if (clientsError) throw clientsError;
+
+      // Fetch jobs with client information
+      const { data: jobsData, error: jobsError } = await supabase
+        .from("job_descriptions")
+        .select(`
+          *,
+          clients(name)
+        `)
+        .order("title");
+
+      if (jobsError) throw jobsError;
+
+      // Count jobs per client
+      const clientsWithJobCount = (clientsData || []).map(client => ({
+        ...client,
+        jobsCount: (jobsData || []).filter(job => job.client_id === client.id).length
+      }));
+
+      // Transform jobs data
+      const transformedJobs = (jobsData || []).map(job => ({
+        ...job,
+        clientName: job.clients?.name || "No Client",
+        stages: ["Sourced", "Applied", "Technical Interview"], // Default stages
+        candidates: 0 // TODO: Count actual candidates when candidate-job relationship is established
+      }));
+
+      setClients(clientsWithJobCount);
+      setJobs(transformedJobs);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load clients and jobs",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const addStage = () => {
     if (newStage.trim() && !newJob.stages.includes(newStage)) {
@@ -89,51 +130,146 @@ const JobCreator = () => {
     }
   };
 
-  const createClient = () => {
-    if (newClient.name && newClient.contact) {
-      const client = {
-        id: clients.length + 1,
-        ...newClient,
-        jobsCount: 0
-      };
-      setClients([...clients, client]);
-      setNewClient({ name: "", contact: "", email: "" });
+  const createClient = async () => {
+    if (!newClient.name || !newClient.contact_person) {
+      toast({
+        title: "Error",
+        description: "Please fill in the company name and contact person",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsCreatingClient(true);
+    try {
+      const { data, error } = await supabase
+        .from("clients")
+        .insert({
+          name: newClient.name,
+          contact_person: newClient.contact_person,
+          email: newClient.email || null
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const newClientWithJobCount = { ...data, jobsCount: 0 };
+      setClients([...clients, newClientWithJobCount]);
+      setNewClient({ name: "", contact_person: "", email: "" });
       setShowClientForm(false);
+      
       // Auto-select the newly created client
-      setNewJob({ ...newJob, clientId: client.id.toString() });
+      setNewJob({ ...newJob, client_id: data.id });
+
+      toast({
+        title: "Success",
+        description: "Client created successfully"
+      });
+    } catch (error) {
+      console.error("Error creating client:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create client",
+        variant: "destructive"
+      });
+    } finally {
+      setIsCreatingClient(false);
     }
   };
 
-  const createJob = () => {
-    if (newJob.title && newJob.department && newJob.clientId) {
-      const client = clients.find(c => c.id.toString() === newJob.clientId);
-      const job = {
-        id: jobs.length + 1,
-        ...newJob,
-        clientId: parseInt(newJob.clientId),
-        clientName: client?.name || "",
-        status: "Draft",
+  const createJob = async () => {
+    if (!newJob.title || !newJob.department || !newJob.client_id) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields (Client, Job Title, Department)",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsCreatingJob(true);
+    try {
+      const jobData = {
+        title: newJob.title,
+        department: newJob.department,
+        description: newJob.description || `${newJob.title} position in ${newJob.department}`,
+        client_id: newJob.client_id,
+        salary_range_min: newJob.salary_range_min ? parseInt(newJob.salary_range_min) : null,
+        salary_range_max: newJob.salary_range_max ? parseInt(newJob.salary_range_max) : null,
+        is_active: true
+      };
+
+      const { data, error } = await supabase
+        .from("job_descriptions")
+        .insert(jobData)
+        .select(`
+          *,
+          clients(name)
+        `)
+        .single();
+
+      if (error) throw error;
+
+      const client = clients.find(c => c.id === newJob.client_id);
+      const newJobWithClient = {
+        ...data,
+        clientName: client?.name || "No Client",
+        stages: newJob.stages,
         candidates: 0
       };
-      setJobs([...jobs, job]);
+
+      setJobs([...jobs, newJobWithClient]);
       
       // Update client job count
       setClients(clients.map(c => 
-        c.id.toString() === newJob.clientId 
-          ? { ...c, jobsCount: c.jobsCount + 1 }
+        c.id === newJob.client_id 
+          ? { ...c, jobsCount: (c.jobsCount || 0) + 1 }
           : c
       ));
       
       setNewJob({
         title: "",
         department: "",
-        location: "",
-        salary: "",
-        clientId: "",
+        description: "",
+        salary_range_min: "",
+        salary_range_max: "",
+        client_id: "",
         stages: ["Sourced", "Applied", "Technical Interview"]
       });
+
+      toast({
+        title: "Success",
+        description: "Job posting created successfully"
+      });
+    } catch (error) {
+      console.error("Error creating job:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create job posting",
+        variant: "destructive"
+      });
+    } finally {
+      setIsCreatingJob(false);
     }
   };
+
+  const formatSalaryRange = (min: number | null, max: number | null) => {
+    if (!min && !max) return null;
+    if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
+    if (min) return `$${min.toLocaleString()}+`;
+    if (max) return `Up to $${max.toLocaleString()}`;
+    return null;
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <span className="ml-2">Loading clients and jobs...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -149,6 +285,7 @@ const JobCreator = () => {
               size="sm" 
               variant="outline"
               onClick={() => setShowClientForm(!showClientForm)}
+              disabled={isCreatingClient}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Client
@@ -161,15 +298,15 @@ const JobCreator = () => {
               <h4 className="font-medium text-foreground mb-3">New Client</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <Input
-                  placeholder="Company name"
+                  placeholder="Company name *"
                   value={newClient.name}
                   onChange={(e) => setNewClient({...newClient, name: e.target.value})}
                   className="text-sm"
                 />
                 <Input
-                  placeholder="Contact person"
-                  value={newClient.contact}
-                  onChange={(e) => setNewClient({...newClient, contact: e.target.value})}
+                  placeholder="Contact person *"
+                  value={newClient.contact_person}
+                  onChange={(e) => setNewClient({...newClient, contact_person: e.target.value})}
                   className="text-sm"
                 />
                 <Input
@@ -180,8 +317,16 @@ const JobCreator = () => {
                 />
               </div>
               <div className="flex space-x-2 mt-3">
-                <Button size="sm" onClick={createClient}>
-                  <Save className="h-4 w-4 mr-2" />
+                <Button 
+                  size="sm" 
+                  onClick={createClient}
+                  disabled={isCreatingClient}
+                >
+                  {isCreatingClient ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
                   Save Client
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => setShowClientForm(false)}>
@@ -197,13 +342,13 @@ const JobCreator = () => {
                 <div className="flex justify-between items-start mb-2">
                   <h4 className="font-semibold text-foreground">{client.name}</h4>
                   <Badge variant="outline" className="text-xs">
-                    {client.jobsCount} jobs
+                    {client.jobsCount || 0} jobs
                   </Badge>
                 </div>
                 <div className="text-sm text-muted-foreground space-y-1">
                   <div className="flex items-center space-x-1">
                     <Users className="h-3 w-3" />
-                    <span>{client.contact}</span>
+                    <span>{client.contact_person}</span>
                   </div>
                   {client.email && (
                     <div className="text-xs">{client.email}</div>
@@ -227,13 +372,13 @@ const JobCreator = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Client *</label>
-              <Select value={newJob.clientId} onValueChange={(value) => setNewJob({...newJob, clientId: value})}>
+              <Select value={newJob.client_id} onValueChange={(value) => setNewJob({...newJob, client_id: value})}>
                 <SelectTrigger className="text-sm">
                   <SelectValue placeholder="Select client" />
                 </SelectTrigger>
                 <SelectContent>
                   {clients.map((client) => (
-                    <SelectItem key={client.id} value={client.id.toString()}>
+                    <SelectItem key={client.id} value={client.id}>
                       {client.name}
                     </SelectItem>
                   ))}
@@ -264,20 +409,31 @@ const JobCreator = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-foreground mb-2 block">Location</label>
+              <label className="text-sm font-medium text-foreground mb-2 block">Job Description</label>
               <Input
-                placeholder="e.g. Remote / San Francisco, CA"
-                value={newJob.location}
-                onChange={(e) => setNewJob({...newJob, location: e.target.value})}
+                placeholder="Brief description of the role"
+                value={newJob.description}
+                onChange={(e) => setNewJob({...newJob, description: e.target.value})}
                 className="text-sm"
               />
             </div>
-            <div className="md:col-span-2">
-              <label className="text-sm font-medium text-foreground mb-2 block">Salary Range</label>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Min Salary</label>
               <Input
-                placeholder="e.g. $100k - $130k"
-                value={newJob.salary}
-                onChange={(e) => setNewJob({...newJob, salary: e.target.value})}
+                type="number"
+                placeholder="e.g. 100000"
+                value={newJob.salary_range_min}
+                onChange={(e) => setNewJob({...newJob, salary_range_min: e.target.value})}
+                className="text-sm"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Max Salary</label>
+              <Input
+                type="number"
+                placeholder="e.g. 130000"
+                value={newJob.salary_range_max}
+                onChange={(e) => setNewJob({...newJob, salary_range_max: e.target.value})}
                 className="text-sm"
               />
             </div>
@@ -326,9 +482,13 @@ const JobCreator = () => {
           <Button 
             onClick={createJob} 
             className="bg-primary hover:bg-primary/90"
-            disabled={!newJob.clientId || !newJob.title || !newJob.department}
+            disabled={!newJob.client_id || !newJob.title || !newJob.department || isCreatingJob}
           >
-            <Save className="h-4 w-4 mr-2" />
+            {isCreatingJob ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4 mr-2" />
+            )}
             Create Job Posting
           </Button>
         </CardContent>
@@ -341,7 +501,7 @@ const JobCreator = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {jobs.map((job) => (
+            {jobs.filter(job => job.is_active).map((job) => (
               <div key={job.id} className="border border-border rounded-lg p-4 bg-muted/10">
                 <div className="flex justify-between items-start mb-3">
                   <div>
@@ -355,26 +515,20 @@ const JobCreator = () => {
                         <Briefcase className="h-3 w-3" />
                         <span>{job.department}</span>
                       </div>
-                      {job.location && (
-                        <div className="flex items-center space-x-1">
-                          <MapPin className="h-3 w-3" />
-                          <span>{job.location}</span>
-                        </div>
-                      )}
-                      {job.salary && (
+                      {formatSalaryRange(job.salary_range_min, job.salary_range_max) && (
                         <div className="flex items-center space-x-1">
                           <DollarSign className="h-3 w-3" />
-                          <span>{job.salary}</span>
+                          <span>{formatSalaryRange(job.salary_range_min, job.salary_range_max)}</span>
                         </div>
                       )}
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Badge variant={job.status === "Active" ? "default" : "secondary"} className="text-xs">
-                      {job.status}
+                    <Badge variant="default" className="text-xs">
+                      {job.is_active ? "Active" : "Draft"}
                     </Badge>
                     <Badge variant="outline" className="text-xs">
-                      {job.candidates} candidates
+                      {job.candidates || 0} candidates
                     </Badge>
                   </div>
                 </div>
@@ -391,6 +545,13 @@ const JobCreator = () => {
                 </div>
               </div>
             ))}
+            {jobs.filter(job => job.is_active).length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                <Briefcase className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>No active job postings yet.</p>
+                <p className="text-sm">Create your first job posting above to get started.</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
