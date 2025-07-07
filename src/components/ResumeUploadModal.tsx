@@ -1,12 +1,14 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Upload, FileText, Loader2, Briefcase } from "lucide-react";
+import { Upload, FileText, Loader2, Briefcase, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Job {
   id: string;
@@ -56,32 +58,6 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
     }
   };
 
-  const extractTextFromPDF = async (file: File): Promise<string> => {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      
-      // Use a simpler approach with FileReader and FormData to send to backend
-      // Since browser-based PDF parsing is complex, we'll use the edge function instead
-      const { data, error } = await supabase.functions.invoke('extract-pdf-text', {
-        body: {
-          fileData: Array.from(new Uint8Array(arrayBuffer))
-        }
-      });
-
-      if (error) throw error;
-      return data.text || '';
-    } catch (error) {
-      console.error("Error parsing PDF:", error);
-      // Fallback: ask user to copy/paste text
-      toast({
-        title: "PDF parsing not available",
-        description: "Please copy and paste the text from your PDF into the text area below",
-        variant: "destructive"
-      });
-      throw new Error("PDF parsing is currently not available in the browser. Please copy and paste the text manually.");
-    }
-  };
-
   const extractTextFromDOCX = async (file: File): Promise<string> => {
     try {
       const arrayBuffer = await file.arrayBuffer();
@@ -112,14 +88,12 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
 
       if (file.type === "text/plain") {
         extractedText = await file.text();
-      } else if (file.type === "application/pdf") {
-        extractedText = await extractTextFromPDF(file);
       } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
         extractedText = await extractTextFromDOCX(file);
       } else {
         toast({
           title: "Unsupported file type",
-          description: "Please upload a text file (.txt), PDF (.pdf), or Word document (.docx)",
+          description: "Please upload a text file (.txt) or Word document (.docx)",
           variant: "destructive"
         });
         return;
@@ -240,58 +214,105 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <FileText className="h-6 w-6 text-primary" />
             Upload Resume & Create Candidate
           </DialogTitle>
         </DialogHeader>
         
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column - Job Selection */}
+          <div className="space-y-4">
+            <Card className="border-primary/20">
+              <CardContent className="p-4">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Briefcase className="h-5 w-5 text-primary" />
+                    <h3 className="font-semibold text-foreground">Select Job Position</h3>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="job-selection" className="text-sm font-medium">
+                      Available Positions *
+                    </Label>
+                    <Select value={selectedJobId} onValueChange={setSelectedJobId} disabled={isLoadingJobs}>
+                      <SelectTrigger className="mt-2 h-12">
+                        <SelectValue placeholder={isLoadingJobs ? "Loading positions..." : "Choose a job position"} />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-60">
+                        {jobs.length === 0 && !isLoadingJobs ? (
+                          <div className="p-4 text-center text-muted-foreground">
+                            <AlertCircle className="h-4 w-4 mx-auto mb-2" />
+                            <p className="text-sm">No active job positions found</p>
+                          </div>
+                        ) : (
+                          jobs.map((job) => (
+                            <SelectItem key={job.id} value={job.id} className="p-3">
+                              <div className="flex flex-col items-start">
+                                <div className="flex items-center gap-2">
+                                  <Briefcase className="h-4 w-4 text-primary" />
+                                  <span className="font-medium">{job.title}</span>
+                                </div>
+                                {job.department && (
+                                  <span className="text-xs text-muted-foreground mt-1">
+                                    Department: {job.department}
+                                  </span>
+                                )}
+                              </div>
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      The candidate will be assigned to this position
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - File Upload */}
+          <div className="space-y-4">
+            <Card className="border-accent/20">
+              <CardContent className="p-4">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Upload className="h-5 w-5 text-accent" />
+                    <h3 className="font-semibold text-foreground">Upload Resume File</h3>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="resume-file" className="text-sm font-medium">
+                      Choose File
+                    </Label>
+                    <Input
+                      id="resume-file"
+                      type="file"
+                      accept=".txt,.docx"
+                      onChange={handleFileUpload}
+                      disabled={isUploading}
+                      className="mt-2 h-12"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Supports .txt and .docx files. For PDF files, copy and paste text below.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Resume Text Area - Full Width */}
         <div className="space-y-4">
-          <div>
-            <Label htmlFor="job-selection">Select Job Position *</Label>
-            <Select value={selectedJobId} onValueChange={setSelectedJobId} disabled={isLoadingJobs}>
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder={isLoadingJobs ? "Loading jobs..." : "Select a job position"} />
-              </SelectTrigger>
-              <SelectContent>
-                {jobs.map((job) => (
-                  <SelectItem key={job.id} value={job.id}>
-                    <div className="flex items-center gap-2">
-                      <Briefcase className="h-4 w-4" />
-                      <span>{job.title}</span>
-                      {job.department && (
-                        <span className="text-muted-foreground">({job.department})</span>
-                      )}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground mt-1">
-              This candidate will be assigned to the selected job position
-            </p>
-          </div>
-
-          <div>
-            <Label htmlFor="resume-file">Upload Resume File</Label>
-            <Input
-              id="resume-file"
-              type="file"
-              accept=".txt,.docx"
-              onChange={handleFileUpload}
-              disabled={isUploading}
-              className="mt-1"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Supports .txt and .docx files. For PDF files, please copy and paste the text below.
-            </p>
-          </div>
-
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">Or paste resume text</span>
@@ -299,30 +320,36 @@ const ResumeUploadModal = ({ isOpen, onClose, onCandidateCreated }: ResumeUpload
           </div>
 
           <div>
-            <Label htmlFor="resume-text">Resume Text</Label>
+            <Label htmlFor="resume-text" className="text-sm font-medium">
+              Resume Content
+            </Label>
             <textarea
               id="resume-text"
-              className="w-full min-h-[200px] p-3 border border-input rounded-md resize-none"
+              className="w-full min-h-[200px] mt-2 p-4 border border-input rounded-lg resize-none text-sm"
               placeholder="Paste resume content here or upload a file above..."
               value={resumeText}
               onChange={(e) => setResumeText(e.target.value)}
               disabled={isUploading}
             />
           </div>
+        </div>
 
+        {/* Action Button */}
+        <div className="flex justify-end pt-4 border-t border-border">
           <Button 
             onClick={parseAndCreateCandidate} 
             disabled={isUploading || !resumeText.trim() || !selectedJobId}
-            className="w-full"
+            className="min-w-[200px] h-12"
+            size="lg"
           >
             {isUploading ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                 Processing Resume...
               </>
             ) : (
               <>
-                <Upload className="h-4 w-4 mr-2" />
+                <Upload className="h-5 w-5 mr-2" />
                 Parse Resume & Create Candidate
               </>
             )}
