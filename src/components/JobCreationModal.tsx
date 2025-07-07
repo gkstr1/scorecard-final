@@ -3,18 +3,9 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, X, Save, Loader2 } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Client {
-  id: string;
-  name: string;
-  contact_person: string | null;
-  email: string | null;
-}
 
 interface JobCreationModalProps {
   isOpen: boolean;
@@ -23,8 +14,6 @@ interface JobCreationModalProps {
 }
 
 const JobCreationModal = ({ isOpen, onClose, onJobCreated }: JobCreationModalProps) => {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isCreatingJob, setIsCreatingJob] = useState(false);
   const { toast } = useToast();
 
@@ -34,61 +23,11 @@ const JobCreationModal = ({ isOpen, onClose, onJobCreated }: JobCreationModalPro
     description: "",
     salary_range_min: "",
     salary_range_max: "",
-    client_id: "",
-    stages: ["Sourced", "Applied", "Technical Interview"]
+    client_name: ""
   });
 
-  const [newStage, setNewStage] = useState("");
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchClients();
-    }
-  }, [isOpen]);
-
-  const fetchClients = async () => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("clients")
-        .select("*")
-        .order("name");
-
-      if (error) throw error;
-      setClients(data || []);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load clients",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const addStage = () => {
-    if (newStage.trim() && !newJob.stages.includes(newStage)) {
-      setNewJob({
-        ...newJob,
-        stages: [...newJob.stages, newStage.trim()]
-      });
-      setNewStage("");
-    }
-  };
-
-  const removeStage = (stage: string) => {
-    if (!["Sourced", "Applied", "Technical Interview"].includes(stage)) {
-      setNewJob({
-        ...newJob,
-        stages: newJob.stages.filter(s => s !== stage)
-      });
-    }
-  };
-
   const createJob = async () => {
-    if (!newJob.title || !newJob.department || !newJob.client_id) {
+    if (!newJob.title || !newJob.department || !newJob.client_name) {
       toast({
         title: "Error",
         description: "Please fill in all required fields (Client, Job Title, Department)",
@@ -99,11 +38,35 @@ const JobCreationModal = ({ isOpen, onClose, onJobCreated }: JobCreationModalPro
 
     setIsCreatingJob(true);
     try {
+      // First, create or find the client
+      let clientId = null;
+      
+      // Check if client already exists
+      const { data: existingClient } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("name", newJob.client_name.trim())
+        .single();
+
+      if (existingClient) {
+        clientId = existingClient.id;
+      } else {
+        // Create new client
+        const { data: newClient, error: clientError } = await supabase
+          .from("clients")
+          .insert({ name: newJob.client_name.trim() })
+          .select("id")
+          .single();
+
+        if (clientError) throw clientError;
+        clientId = newClient.id;
+      }
+
       const jobData = {
         title: newJob.title,
         department: newJob.department,
         description: newJob.description || `${newJob.title} position in ${newJob.department}`,
-        client_id: newJob.client_id,
+        client_id: clientId,
         salary_range_min: newJob.salary_range_min ? parseInt(newJob.salary_range_min) : null,
         salary_range_max: newJob.salary_range_max ? parseInt(newJob.salary_range_max) : null,
         is_active: true
@@ -127,8 +90,7 @@ const JobCreationModal = ({ isOpen, onClose, onJobCreated }: JobCreationModalPro
         description: "",
         salary_range_min: "",
         salary_range_max: "",
-        client_id: "",
-        stages: ["Sourced", "Applied", "Technical Interview"]
+        client_name: ""
       });
 
       onClose();
@@ -158,23 +120,12 @@ const JobCreationModal = ({ isOpen, onClose, onJobCreated }: JobCreationModalPro
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Client *</label>
-              <Select value={newJob.client_id} onValueChange={(value) => setNewJob({...newJob, client_id: value})}>
-                <SelectTrigger className="text-sm">
-                  <SelectValue placeholder="Select client" />
-                </SelectTrigger>
-                <SelectContent>
-                  {clients.map((client) => (
-                    <SelectItem key={client.id} value={client.id}>
-                      {client.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {clients.length === 0 && !isLoading && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  No clients available. Please create a client first.
-                </p>
-              )}
+              <Input
+                placeholder="e.g. Acme Corporation"
+                value={newJob.client_name}
+                onChange={(e) => setNewJob({...newJob, client_name: e.target.value})}
+                className="text-sm"
+              />
             </div>
             
             <div>
@@ -230,53 +181,13 @@ const JobCreationModal = ({ isOpen, onClose, onJobCreated }: JobCreationModalPro
             </div>
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-foreground mb-3 block">Pipeline Stages</label>
-            <div className="space-y-3">
-              <div className="flex flex-wrap gap-2">
-                {newJob.stages.map((stage, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className="bg-secondary/50 text-foreground border-border px-3 py-1 flex items-center space-x-2"
-                  >
-                    <span className="text-sm">{stage}</span>
-                    {!["Sourced", "Applied", "Technical Interview"].includes(stage) && (
-                      <button
-                        onClick={() => removeStage(stage)}
-                        className="ml-1 text-muted-foreground hover:text-foreground"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    )}
-                  </Badge>
-                ))}
-              </div>
-              <div className="flex space-x-2">
-                <Input
-                  placeholder="Add custom stage"
-                  value={newStage}
-                  onChange={(e) => setNewStage(e.target.value)}
-                  className="text-sm max-w-48"
-                  onKeyPress={(e) => e.key === 'Enter' && addStage()}
-                />
-                <Button size="sm" onClick={addStage} variant="outline">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Note: Sourced, Applied, and Technical Interview stages are required and cannot be removed.
-              </p>
-            </div>
-          </div>
-
           <div className="flex justify-end space-x-2 pt-4">
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
             <Button 
               onClick={createJob} 
-              disabled={!newJob.client_id || !newJob.title || !newJob.department || isCreatingJob}
+              disabled={!newJob.client_name || !newJob.title || !newJob.department || isCreatingJob}
             >
               {isCreatingJob ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
