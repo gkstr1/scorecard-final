@@ -258,7 +258,7 @@ const Index = () => {
               </div>
             )}
             
-            <JobCreator onJobCreated={handleJobCreated} />
+            {!hasJobs && <JobCreator onJobCreated={handleJobCreated} />}
           </div>
         )}
 
