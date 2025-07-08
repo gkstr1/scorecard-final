@@ -193,6 +193,64 @@ const JobManagement = () => {
         </CardContent>
       </Card>
 
+      {/* Clients Grid */}
+      <Card className="bg-card border-border">
+        <CardHeader>
+          <CardTitle className="text-foreground flex items-center space-x-2">
+            <Building2 className="h-5 w-5" />
+            <span>Clients</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {clients.length === 0 ? (
+            <div className="text-center py-8">
+              <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground mb-4">No clients added yet</p>
+              <Button 
+                onClick={() => setShowJobModal(true)}
+                variant="outline"
+                size="sm"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add First Client
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {clients.map((client) => {
+                const clientJobCount = jobs.filter(job => job.client_id === client.id).length;
+                return (
+                  <Card key={client.id} className="bg-muted/30 border-border hover:bg-muted/50 transition-colors">
+                    <CardContent className="p-4">
+                      <div className="space-y-2">
+                        <div className="flex items-start justify-between">
+                          <h4 className="font-medium text-foreground text-sm truncate">
+                            {client.name}
+                          </h4>
+                          <Badge variant="secondary" className="text-xs">
+                            {clientJobCount} jobs
+                          </Badge>
+                        </div>
+                        {client.contact_person && (
+                          <p className="text-xs text-muted-foreground truncate">
+                            {client.contact_person}
+                          </p>
+                        )}
+                        {client.email && (
+                          <p className="text-xs text-muted-foreground truncate">
+                            {client.email}
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       <JobCreationModal
         isOpen={showJobModal}
         onClose={() => setShowJobModal(false)}
