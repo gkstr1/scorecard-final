@@ -107,30 +107,80 @@ export type Database = {
         }
         Relationships: []
       }
-      clients: {
+      client_notes: {
         Row: {
-          contact_person: string | null
+          client_id: string
           created_at: string
-          email: string | null
+          created_by: string | null
           id: string
-          name: string
+          note_text: string
           updated_at: string
         }
         Insert: {
-          contact_person?: string | null
+          client_id: string
           created_at?: string
-          email?: string | null
+          created_by?: string | null
           id?: string
-          name: string
+          note_text: string
           updated_at?: string
         }
         Update: {
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note_text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          company_size: string | null
+          contact_person: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          industry: string | null
+          location: string | null
+          name: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          company_size?: string | null
           contact_person?: string | null
           created_at?: string
+          description?: string | null
           email?: string | null
           id?: string
+          industry?: string | null
+          location?: string | null
+          name: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          company_size?: string | null
+          contact_person?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          industry?: string | null
+          location?: string | null
           name?: string
           updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
