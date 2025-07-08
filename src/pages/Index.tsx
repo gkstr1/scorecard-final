@@ -231,7 +231,7 @@ const Index = () => {
             <div className="flex items-center space-x-2 bg-primary/10 border-2 border-primary/30 rounded-lg p-2 w-fit">
               <span className="text-sm font-medium text-primary">Job:</span>
               <Select value={selectedRole} onValueChange={setSelectedRole}>
-                <SelectTrigger className="w-56 h-10 text-sm bg-background border-primary/50 hover:border-primary focus:border-primary shadow-sm">
+                <SelectTrigger className="w-80 h-10 text-sm bg-background border-primary/50 hover:border-primary focus:border-primary shadow-sm">
                   <SelectValue placeholder="Select client and job to filter" />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border shadow-lg">
