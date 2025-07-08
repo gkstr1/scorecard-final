@@ -77,6 +77,7 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
       }
       
       setCandidates(data || []);
+      console.log("Fetched candidates:", data?.length || 0);
     } catch (error) {
       console.error("Error fetching candidates:", error);
       toast({
