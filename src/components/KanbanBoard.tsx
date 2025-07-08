@@ -96,7 +96,7 @@ const KanbanBoard = ({ selectedRole, onAddCandidate }: KanbanBoardProps) => {
 
   const filteredCandidates = selectedRole === "all" 
     ? candidates 
-    : candidates.filter(candidate => candidate.role_category === selectedRole);
+    : candidates.filter(candidate => candidate.job_id === selectedRole);
 
   const getCandidatesByStatus = (status: string) => {
     return filteredCandidates.filter(candidate => candidate.status === status);

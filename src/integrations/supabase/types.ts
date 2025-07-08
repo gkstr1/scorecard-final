@@ -29,6 +29,7 @@ export type Database = {
           experience_years: number | null
           github_url: string | null
           id: string
+          job_id: string | null
           key_achievements: string[] | null
           linkedin_url: string | null
           location: string | null
@@ -59,6 +60,7 @@ export type Database = {
           experience_years?: number | null
           github_url?: string | null
           id?: string
+          job_id?: string | null
           key_achievements?: string[] | null
           linkedin_url?: string | null
           location?: string | null
@@ -89,6 +91,7 @@ export type Database = {
           experience_years?: number | null
           github_url?: string | null
           id?: string
+          job_id?: string | null
           key_achievements?: string[] | null
           linkedin_url?: string | null
           location?: string | null
@@ -105,7 +108,15 @@ export type Database = {
           updated_at?: string
           work_experience?: Json[] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "candidates_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_descriptions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       client_notes: {
         Row: {
