@@ -17,6 +17,7 @@ import PipelineSettings from "@/components/PipelineSettings";
 import ResumeUpload from "@/components/ResumeUpload";
 import EmptyStateGuide from "@/components/EmptyStateGuide";
 import AddCandidateForm from "@/components/AddCandidateForm";
+import CandidateImportModal from "@/components/CandidateImportModal";
 import JobManagement from "@/components/JobManagement";
 
 const Index = () => {
@@ -27,6 +28,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [availableRoles, setAvailableRoles] = useState([{ value: "all", label: "All Roles" }]);
   const [isAddCandidateModalOpen, setIsAddCandidateModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   useEffect(() => {
     checkDataExists();
@@ -206,7 +208,12 @@ const Index = () => {
                 </p>
               </div>
               <div className="flex items-center">
-                <Button variant="outline" size="sm" className="text-sm">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-sm"
+                  onClick={() => setIsImportModalOpen(true)}
+                >
                   <Mail className="h-4 w-4 mr-2" />
                   Import from Email
                 </Button>
@@ -442,6 +449,13 @@ const Index = () => {
         isOpen={isAddCandidateModalOpen}
         onOpenChange={setIsAddCandidateModalOpen}
         onCandidateAdded={handleCandidateCreated}
+      />
+      
+      {/* Import Candidates Modal */}
+      <CandidateImportModal
+        isOpen={isImportModalOpen}
+        onOpenChange={setIsImportModalOpen}
+        onCandidatesImported={handleCandidateCreated}
       />
     </div>;
 };

@@ -88,6 +88,10 @@ The recruitment system has the following core features implemented:
 - [ ] Video interview integration
 - [ ] Automated candidate screening workflows
 
+### ✅ Recent Completed Items
+- [x] Candidate import modal with email list, CSV, and manual entry options
+- [x] Connected import modal to "Import from Email" button in candidate pipeline
+
 ---
 
 **Last Updated:** January 8, 2025
