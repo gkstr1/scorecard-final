@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Mail, Calendar, FileText, Plus, Search, Zap, Brain, BarChart3, Settings, ChevronDown, ArrowLeft, Building2 } from "lucide-react";
+import { Users, Mail, Calendar, FileText, Plus, Search, Zap, Brain, BarChart3, Settings, ChevronDown, ArrowLeft, Building2, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
@@ -214,8 +214,8 @@ const Index = () => {
                   className="text-sm"
                   onClick={() => setIsImportModalOpen(true)}
                 >
-                  <Mail className="h-4 w-4 mr-2" />
-                  Import from Email
+                  <Upload className="h-4 w-4 mr-2" />
+                  Import Candidates
                 </Button>
               </div>
             </div>
