@@ -22,11 +22,11 @@ import JobManagement from "@/components/JobManagement";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("candidates");
-  const [selectedRole, setSelectedRole] = useState("all");
+  const [selectedRole, setSelectedRole] = useState("");
   const [hasJobs, setHasJobs] = useState(false);
   const [hasCandidates, setHasCandidates] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [availableRoles, setAvailableRoles] = useState([{ value: "all", label: "All Jobs" }]);
+  const [availableRoles, setAvailableRoles] = useState<{value: string, label: string}[]>([]);
   const [isAddCandidateModalOpen, setIsAddCandidateModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
@@ -56,7 +56,7 @@ const Index = () => {
         setAvailableRoles(roles);
         
         // Set the first job as default if no role is selected
-        if (selectedRole === "all" && roles.length > 0) {
+        if (!selectedRole && roles.length > 0) {
           setSelectedRole(roles[0].value);
         }
       }
