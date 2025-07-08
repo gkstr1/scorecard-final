@@ -205,10 +205,7 @@ const Index = () => {
                   Manage your hiring process from application to offer
                 </p>
               </div>
-              <div className="flex items-center space-x-3">
-                <Badge variant="outline" className="text-sm px-3 py-1">
-                  Active Candidates
-                </Badge>
+              <div className="flex items-center">
                 <Button variant="outline" size="sm" className="text-sm">
                   <Mail className="h-4 w-4 mr-2" />
                   Import from Email
