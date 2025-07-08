@@ -11,10 +11,11 @@ import { useToast } from "@/hooks/use-toast";
 
 interface AddCandidateFormProps {
   onCandidateAdded: () => void;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const AddCandidateForm = ({ onCandidateAdded }: AddCandidateFormProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+const AddCandidateForm = ({ onCandidateAdded, isOpen, onOpenChange }: AddCandidateFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   
@@ -89,7 +90,7 @@ const AddCandidateForm = ({ onCandidateAdded }: AddCandidateFormProps) => {
         role_category: "frontend"
       });
       
-      setIsOpen(false);
+      onOpenChange(false);
       onCandidateAdded();
     } catch (error) {
       console.error("Error adding candidate:", error);
@@ -104,13 +105,7 @@ const AddCandidateForm = ({ onCandidateAdded }: AddCandidateFormProps) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button className="mb-4">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Candidate
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Candidate (Manual Entry)</DialogTitle>
@@ -273,7 +268,7 @@ const AddCandidateForm = ({ onCandidateAdded }: AddCandidateFormProps) => {
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>

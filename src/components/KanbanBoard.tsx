@@ -7,15 +7,15 @@ import { User, Mail, Calendar, Zap, Eye, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import CandidateProfileModal from "./CandidateProfileModal";
-import AddCandidateForm from "./AddCandidateForm";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface KanbanBoardProps {
   selectedRole: string;
+  onAddCandidate: () => void;
 }
 
-const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
+const KanbanBoard = ({ selectedRole, onAddCandidate }: KanbanBoardProps) => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [candidates, setCandidates] = useState<any[]>([]);
@@ -152,7 +152,6 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
       <div className="p-4 flex items-center justify-center">
         <div className="space-y-4 w-full max-w-md">
           <div className="text-center">Loading candidates...</div>
-          <AddCandidateForm onCandidateAdded={fetchCandidates} />
         </div>
       </div>
     );
@@ -162,7 +161,10 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
     <div className="space-y-4">
       <div className="flex gap-2 items-center justify-between">
         <h2 className="text-lg font-semibold">Candidates Pipeline</h2>
-        <AddCandidateForm onCandidateAdded={fetchCandidates} />
+        <Button onClick={onAddCandidate} className="mb-4">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Candidate
+        </Button>
       </div>
       
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -263,7 +265,7 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
                         ))}
                         {provided.placeholder}
                         
-                        <Card className="bg-muted/20 border-dashed border-2 border-muted-foreground/30 hover:border-primary/50 transition-colors cursor-pointer">
+                        <Card className="bg-muted/20 border-dashed border-2 border-muted-foreground/30 hover:border-primary/50 transition-colors cursor-pointer" onClick={onAddCandidate}>
                           <CardContent className="p-4">
                             <div className="text-center">
                               <Plus className="h-4 w-4 text-muted-foreground mx-auto mb-1" />

@@ -26,6 +26,7 @@ const Index = () => {
   const [hasCandidates, setHasCandidates] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [availableRoles, setAvailableRoles] = useState([{ value: "all", label: "All Roles" }]);
+  const [isAddCandidateModalOpen, setIsAddCandidateModalOpen] = useState(false);
 
   useEffect(() => {
     checkDataExists();
@@ -231,7 +232,7 @@ const Index = () => {
             
             <StatsOverview />
             
-            <KanbanBoard selectedRole={selectedRole} />
+            <KanbanBoard selectedRole={selectedRole} onAddCandidate={() => setIsAddCandidateModalOpen(true)} />
           </div>
         )}
 
@@ -438,6 +439,13 @@ const Index = () => {
           </div>
         )}
       </main>
+      
+      {/* Add Candidate Modal */}
+      <AddCandidateForm 
+        isOpen={isAddCandidateModalOpen}
+        onOpenChange={setIsAddCandidateModalOpen}
+        onCandidateAdded={handleCandidateCreated}
+      />
     </div>;
 };
 
