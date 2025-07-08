@@ -49,14 +49,16 @@ const Index = () => {
         .eq("is_active", true);
 
       if (jobsData && jobsData.length > 0) {
-        const roles = [
-          { value: "all", label: "All Jobs" },
-          ...jobsData.map(job => ({
-            value: job.id,
-            label: job.clients?.name ? `${job.clients.name} - ${job.title}` : job.title
-          }))
-        ];
+        const roles = jobsData.map(job => ({
+          value: job.id,
+          label: job.clients?.name ? `${job.clients.name} - ${job.title}` : job.title
+        }));
         setAvailableRoles(roles);
+        
+        // Set the first job as default if no role is selected
+        if (selectedRole === "all" && roles.length > 0) {
+          setSelectedRole(roles[0].value);
+        }
       }
     } catch (error) {
       console.error("Error fetching available roles:", error);
