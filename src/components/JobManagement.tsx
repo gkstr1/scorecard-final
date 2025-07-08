@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Plus, Building2, FileText, Search } from "lucide-react";
+import { Plus, Building2, FileText, Search, Eye, Briefcase, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import JobCreationModal from "./JobCreationModal";
+import ClientDetailModal from "./ClientDetailModal";
 import {
   Table,
   TableBody,
@@ -32,8 +33,15 @@ interface Job {
 interface Client {
   id: string;
   name: string;
-  contact_person: string;
-  email: string;
+  contact_person: string | null;
+  email: string | null;
+  industry: string | null;
+  company_size: string | null;
+  website: string | null;
+  description: string | null;
+  location: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 const JobManagement = () => {
@@ -42,6 +50,8 @@ const JobManagement = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showJobModal, setShowJobModal] = useState(false);
   const [clientSearch, setClientSearch] = useState("");
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [showClientModal, setShowClientModal] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -257,7 +267,7 @@ const JobManagement = () => {
               {filteredClients.map((client) => {
                 const clientJobCount = jobs.filter(job => job.client_id === client.id).length;
                 return (
-                  <Card key={client.id} className="bg-muted/30 border-border hover:bg-muted/50 transition-colors">
+                  <Card key={client.id} className="bg-muted/30 border-border hover:bg-muted/50 transition-colors cursor-pointer group">
                     <CardContent className="p-4">
                       <div className="space-y-2">
                         <div className="flex items-start justify-between">
@@ -278,6 +288,28 @@ const JobManagement = () => {
                             {client.email}
                           </p>
                         )}
+                        <div className="flex items-center space-x-1 pt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedClient(client);
+                              setShowClientModal(true);
+                            }}
+                            className="h-7 text-xs"
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            View
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-xs"
+                          >
+                            <Briefcase className="h-3 w-3 mr-1" />
+                            Jobs
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -292,6 +324,13 @@ const JobManagement = () => {
         isOpen={showJobModal}
         onClose={() => setShowJobModal(false)}
         onJobCreated={handleJobCreated}
+      />
+
+      <ClientDetailModal
+        isOpen={showClientModal}
+        onClose={() => setShowClientModal(false)}
+        client={selectedClient}
+        onClientUpdated={fetchJobsAndClients}
       />
     </div>
   );
