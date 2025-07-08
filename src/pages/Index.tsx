@@ -26,7 +26,7 @@ const Index = () => {
   const [hasJobs, setHasJobs] = useState(false);
   const [hasCandidates, setHasCandidates] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [availableRoles, setAvailableRoles] = useState([{ value: "all", label: "All Roles" }]);
+  const [availableRoles, setAvailableRoles] = useState([{ value: "all", label: "All Jobs" }]);
   const [isAddCandidateModalOpen, setIsAddCandidateModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
@@ -39,15 +39,21 @@ const Index = () => {
     try {
       const { data: jobsData } = await supabase
         .from("job_descriptions")
-        .select("title")
+        .select(`
+          id,
+          title,
+          clients (
+            name
+          )
+        `)
         .eq("is_active", true);
 
       if (jobsData && jobsData.length > 0) {
         const roles = [
-          { value: "all", label: "All Roles" },
+          { value: "all", label: "All Jobs" },
           ...jobsData.map(job => ({
-            value: job.title.toLowerCase().replace(/\s+/g, '_'),
-            label: job.title
+            value: job.id,
+            label: job.clients?.name ? `${job.clients.name} - ${job.title}` : job.title
           }))
         ];
         setAvailableRoles(roles);
@@ -224,7 +230,7 @@ const Index = () => {
               <span className="text-sm font-medium text-primary">Client and Job:</span>
               <Select value={selectedRole} onValueChange={setSelectedRole}>
                 <SelectTrigger className="w-56 h-10 text-sm bg-background border-primary/50 hover:border-primary focus:border-primary shadow-sm">
-                  <SelectValue placeholder="Select role to filter" />
+                  <SelectValue placeholder="Select client and job to filter" />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border shadow-lg">
                   {availableRoles.map(role => <SelectItem key={role.value} value={role.value} className="hover:bg-primary/10">
