@@ -148,12 +148,20 @@ const KanbanBoard = ({ selectedRole }: KanbanBoardProps) => {
   };
 
   if (isLoading) {
-    return <div className="p-4">Loading candidates...</div>;
+    return (
+      <div className="p-4 flex items-center justify-center">
+        <div className="space-y-4 w-full max-w-md">
+          <div className="text-center">Loading candidates...</div>
+          <AddCandidateForm onCandidateAdded={fetchCandidates} />
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center justify-between">
+        <h2 className="text-lg font-semibold">Candidates Pipeline</h2>
         <AddCandidateForm onCandidateAdded={fetchCandidates} />
       </div>
       
