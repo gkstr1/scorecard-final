@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Building2, FileText } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Plus, Building2, FileText, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import JobCreationModal from "./JobCreationModal";
@@ -40,6 +41,7 @@ const JobManagement = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showJobModal, setShowJobModal] = useState(false);
+  const [clientSearch, setClientSearch] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -94,6 +96,13 @@ const JobManagement = () => {
     fetchJobsAndClients();
     setShowJobModal(false);
   };
+
+  // Filter clients based on search term
+  const filteredClients = clients.filter(client =>
+    client.name.toLowerCase().includes(clientSearch.toLowerCase()) ||
+    (client.contact_person && client.contact_person.toLowerCase().includes(clientSearch.toLowerCase())) ||
+    (client.email && client.email.toLowerCase().includes(clientSearch.toLowerCase()))
+  );
 
   if (isLoading) {
     return (
@@ -196,10 +205,26 @@ const JobManagement = () => {
       {/* Clients Grid */}
       <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="text-foreground flex items-center space-x-2">
-            <Building2 className="h-5 w-5" />
-            <span>Clients</span>
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-foreground flex items-center space-x-2">
+              <Building2 className="h-5 w-5" />
+              <span>Clients</span>
+              <Badge variant="outline" className="text-xs">
+                {filteredClients.length} of {clients.length}
+              </Badge>
+            </CardTitle>
+            {clients.length > 0 && (
+              <div className="relative w-64">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  placeholder="Search clients..."
+                  value={clientSearch}
+                  onChange={(e) => setClientSearch(e.target.value)}
+                  className="pl-10 h-9 text-sm"
+                />
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           {clients.length === 0 ? (
@@ -215,9 +240,21 @@ const JobManagement = () => {
                 Add First Client
               </Button>
             </div>
+          ) : filteredClients.length === 0 ? (
+            <div className="text-center py-8">
+              <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground mb-4">No clients match your search</p>
+              <Button 
+                onClick={() => setClientSearch("")}
+                variant="outline"
+                size="sm"
+              >
+                Clear Search
+              </Button>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {clients.map((client) => {
+              {filteredClients.map((client) => {
                 const clientJobCount = jobs.filter(job => job.client_id === client.id).length;
                 return (
                   <Card key={client.id} className="bg-muted/30 border-border hover:bg-muted/50 transition-colors">
