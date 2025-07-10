@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, Calendar, UserPlus } from "lucide-react";
+import { Briefcase, Calendar, UserPlus, ClipboardCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const StatsOverview = () => {
@@ -25,6 +25,13 @@ const StatsOverview = () => {
       value: "0",
       icon: UserPlus,
       description: "Today's applications",
+      loading: true
+    },
+    {
+      title: "Missing Scorecards",
+      value: "0",
+      icon: ClipboardCheck,
+      description: "Completed interviews",
       loading: true
     },
   ]);
@@ -68,6 +75,21 @@ const StatsOverview = () => {
         .gte('applied_date', today.toISOString())
         .lt('applied_date', tomorrow.toISOString());
 
+      // Get completed interviews missing scorecards
+      const { data: completedInterviews } = await supabase
+        .from('interviews')
+        .select('id')
+        .eq('status', 'completed');
+
+      const { data: existingScorecards } = await supabase
+        .from('interview_scorecards')
+        .select('interview_id');
+
+      const scorecardsSet = new Set(existingScorecards?.map(s => s.interview_id));
+      const missingScorecardsCount = completedInterviews?.filter(
+        interview => !scorecardsSet.has(interview.id)
+      ).length || 0;
+
       setStats([
         {
           title: "This Week's Interviews",
@@ -90,6 +112,13 @@ const StatsOverview = () => {
           description: "Today's applications",
           loading: false
         },
+        {
+          title: "Missing Scorecards",
+          value: missingScorecardsCount.toString(),
+          icon: ClipboardCheck,
+          description: "Completed interviews",
+          loading: false
+        },
       ]);
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -98,7 +127,7 @@ const StatsOverview = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat, index) => (
         <Card key={index} className="bg-card border-border hover:border-primary/30 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
