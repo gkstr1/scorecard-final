@@ -131,8 +131,8 @@ const Index = () => {
                 
               </Link>
               <div className="flex items-center space-x-3">
-                <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center">
-                  <ClipboardCheck className="h-8 w-8 text-primary-foreground" />
+                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                  <ClipboardCheck className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-foreground">Scorecard</h1>
