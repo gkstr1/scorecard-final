@@ -329,7 +329,7 @@ const InterviewManagementModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full overflow-y-auto animate-scale-in">
         <DialogHeader>
           <DialogTitle>
             Interview Management - {candidate?.name}
