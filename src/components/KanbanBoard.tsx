@@ -7,6 +7,7 @@ import { User, Mail, Calendar, Zap, Eye, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import CandidateProfileModal from "./CandidateProfileModal";
+import InterviewSchedulingModal from "./InterviewSchedulingModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,6 +19,8 @@ interface KanbanBoardProps {
 const KanbanBoard = ({ selectedRole, onAddCandidate }: KanbanBoardProps) => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSchedulingModalOpen, setIsSchedulingModalOpen] = useState(false);
+  const [candidateToSchedule, setCandidateToSchedule] = useState(null);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -115,8 +118,22 @@ const KanbanBoard = ({ selectedRole, onAddCandidate }: KanbanBoardProps) => {
 
     const candidateId = draggableId;
     const newStatus = destination.droppableId === "technical_interview" ? "technical_interview" : destination.droppableId;
+    const candidate = candidates.find(c => c.id === candidateId);
 
     try {
+      // Handle moving away from technical_interview - cancel scheduled interviews
+      if (source.droppableId === "technical_interview" && newStatus !== "technical_interview") {
+        const { error: cancelError } = await supabase
+          .from("interviews")
+          .update({ status: "cancelled" })
+          .eq("candidate_id", candidateId)
+          .eq("status", "scheduled");
+
+        if (cancelError) {
+          console.error("Error cancelling interviews:", cancelError);
+        }
+      }
+
       const { error } = await supabase
         .from("candidates")
         .update({ status: newStatus })
@@ -133,6 +150,12 @@ const KanbanBoard = ({ selectedRole, onAddCandidate }: KanbanBoardProps) => {
         )
       );
 
+      // If moving TO technical_interview, trigger scheduling modal
+      if (newStatus === "technical_interview" && source.droppableId !== "technical_interview") {
+        setCandidateToSchedule(candidate);
+        setIsSchedulingModalOpen(true);
+      }
+
       toast({
         title: "Success",
         description: `Candidate moved to ${destination.droppableId.replace("_", " ")}`,
@@ -145,6 +168,15 @@ const KanbanBoard = ({ selectedRole, onAddCandidate }: KanbanBoardProps) => {
         variant: "destructive"
       });
     }
+  };
+
+  const handleInterviewScheduled = () => {
+    setIsSchedulingModalOpen(false);
+    setCandidateToSchedule(null);
+    toast({
+      title: "Interview Scheduled",
+      description: "Interview has been scheduled and will appear in the Interview Center",
+    });
   };
 
   if (isLoading) {
@@ -289,6 +321,13 @@ const KanbanBoard = ({ selectedRole, onAddCandidate }: KanbanBoardProps) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         jobDescription={sampleJobDescription}
+      />
+      
+      <InterviewSchedulingModal
+        isOpen={isSchedulingModalOpen}
+        onClose={() => setIsSchedulingModalOpen(false)}
+        candidate={candidateToSchedule}
+        onInterviewScheduled={handleInterviewScheduled}
       />
     </div>
   );

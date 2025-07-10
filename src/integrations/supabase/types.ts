@@ -195,6 +195,203 @@ export type Database = {
         }
         Relationships: []
       }
+      interview_notes: {
+        Row: {
+          created_at: string
+          id: string
+          interview_id: string
+          note_text: string
+          note_type: string | null
+          timestamp_in_interview: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interview_id: string
+          note_text: string
+          note_type?: string | null
+          timestamp_in_interview?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interview_id?: string
+          note_text?: string
+          note_type?: string | null
+          timestamp_in_interview?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_notes_interview"
+            columns: ["interview_id"]
+            isOneToOne: false
+            referencedRelation: "interviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      interview_questions: {
+        Row: {
+          candidate_answer: string | null
+          created_at: string
+          difficulty_level: string | null
+          expected_answer: string | null
+          id: string
+          interview_id: string
+          interviewer_notes: string | null
+          order_index: number | null
+          question_text: string
+          question_type: string | null
+          rating: number | null
+        }
+        Insert: {
+          candidate_answer?: string | null
+          created_at?: string
+          difficulty_level?: string | null
+          expected_answer?: string | null
+          id?: string
+          interview_id: string
+          interviewer_notes?: string | null
+          order_index?: number | null
+          question_text: string
+          question_type?: string | null
+          rating?: number | null
+        }
+        Update: {
+          candidate_answer?: string | null
+          created_at?: string
+          difficulty_level?: string | null
+          expected_answer?: string | null
+          id?: string
+          interview_id?: string
+          interviewer_notes?: string | null
+          order_index?: number | null
+          question_text?: string
+          question_type?: string | null
+          rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_questions_interview"
+            columns: ["interview_id"]
+            isOneToOne: false
+            referencedRelation: "interviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      interview_scorecards: {
+        Row: {
+          areas_for_improvement: string[] | null
+          communication_score: number | null
+          created_at: string
+          cultural_fit_score: number | null
+          final_notes: string | null
+          id: string
+          interview_id: string
+          leadership_score: number | null
+          overall_recommendation: string | null
+          problem_solving_score: number | null
+          strengths: string[] | null
+          technical_skills_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          areas_for_improvement?: string[] | null
+          communication_score?: number | null
+          created_at?: string
+          cultural_fit_score?: number | null
+          final_notes?: string | null
+          id?: string
+          interview_id: string
+          leadership_score?: number | null
+          overall_recommendation?: string | null
+          problem_solving_score?: number | null
+          strengths?: string[] | null
+          technical_skills_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          areas_for_improvement?: string[] | null
+          communication_score?: number | null
+          created_at?: string
+          cultural_fit_score?: number | null
+          final_notes?: string | null
+          id?: string
+          interview_id?: string
+          leadership_score?: number | null
+          overall_recommendation?: string | null
+          problem_solving_score?: number | null
+          strengths?: string[] | null
+          technical_skills_score?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_scorecards_interview"
+            columns: ["interview_id"]
+            isOneToOne: false
+            referencedRelation: "interviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      interviews: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          duration_minutes: number | null
+          id: string
+          interviewer_email: string | null
+          interviewer_name: string | null
+          meeting_link: string | null
+          meeting_type: string | null
+          notes: string | null
+          scheduled_date: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          interviewer_email?: string | null
+          interviewer_name?: string | null
+          meeting_link?: string | null
+          meeting_type?: string | null
+          notes?: string | null
+          scheduled_date: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          interviewer_email?: string | null
+          interviewer_name?: string | null
+          meeting_link?: string | null
+          meeting_type?: string | null
+          notes?: string | null
+          scheduled_date?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_interviews_candidate"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_descriptions: {
         Row: {
           client_id: string | null
@@ -309,12 +506,16 @@ export type Database = {
           created_at: string
           culture_fit_score: number | null
           id: string
+          interview_duration_minutes: number | null
           interview_feedback: string | null
+          interview_recording_url: string | null
           overall_rating: number | null
           recommended_next_step: string | null
           strengths: string[] | null
           system_design_score: number | null
           technical_notes: string | null
+          transcription_text: string | null
+          transcription_url: string | null
           updated_at: string
           weaknesses: string[] | null
         }
@@ -327,12 +528,16 @@ export type Database = {
           created_at?: string
           culture_fit_score?: number | null
           id?: string
+          interview_duration_minutes?: number | null
           interview_feedback?: string | null
+          interview_recording_url?: string | null
           overall_rating?: number | null
           recommended_next_step?: string | null
           strengths?: string[] | null
           system_design_score?: number | null
           technical_notes?: string | null
+          transcription_text?: string | null
+          transcription_url?: string | null
           updated_at?: string
           weaknesses?: string[] | null
         }
@@ -345,12 +550,16 @@ export type Database = {
           created_at?: string
           culture_fit_score?: number | null
           id?: string
+          interview_duration_minutes?: number | null
           interview_feedback?: string | null
+          interview_recording_url?: string | null
           overall_rating?: number | null
           recommended_next_step?: string | null
           strengths?: string[] | null
           system_design_score?: number | null
           technical_notes?: string | null
+          transcription_text?: string | null
+          transcription_url?: string | null
           updated_at?: string
           weaknesses?: string[] | null
         }

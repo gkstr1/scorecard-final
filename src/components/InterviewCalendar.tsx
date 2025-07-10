@@ -1,102 +1,90 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, ChevronLeft, ChevronRight, User, Clock } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, User, Clock, Play } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import InterviewManagementModal from "./InterviewManagementModal";
+import { format, isSameDay, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays } from "date-fns";
 
 type ViewMode = 'day' | 'week' | 'month';
 
 const InterviewCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>('month');
-  
-  // Sample interview data - in a real app, this would come from props or API
-  const interviews = [
-    {
-      id: 1,
-      candidateName: "Sarah Chen",
-      position: "Senior React Developer",
-      date: new Date(2025, 6, 6), // July 6, 2025
-      time: "2:00 PM",
-      type: "Technical",
-      duration: "60 min",
-    },
-    {
-      id: 2,
-      candidateName: "Michael Rodriguez",
-      position: "Full Stack Engineer",
-      date: new Date(2025, 6, 7), // July 7, 2025
-      time: "10:00 AM",
-      type: "Technical",
-      duration: "45 min",
-    },
-    {
-      id: 3,
-      candidateName: "Emily Johnson",
-      position: "Frontend Developer",
-      date: new Date(2025, 6, 8), // July 8, 2025
-      time: "3:00 PM",
-      type: "Final",
-      duration: "30 min",
-    },
-    {
-      id: 4,
-      candidateName: "David Park",
-      position: "UI/UX Designer",
-      date: new Date(2025, 6, 6), // July 6, 2025
-      time: "11:00 AM",
-      type: "Portfolio Review",
-      duration: "45 min",
-    },
-  ];
+  const [interviews, setInterviews] = useState<any[]>([]);
+  const [selectedInterview, setSelectedInterview] = useState<any>(null);
+  const [isManagementModalOpen, setIsManagementModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+  const fetchInterviews = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('interviews')
+        .select(`
+          *,
+          candidates (
+            id,
+            name,
+            position,
+            email,
+            skills
+          )
+        `)
+        .in('status', ['scheduled', 'in_progress'])
+        .order('scheduled_date');
 
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const dayNamesShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      if (error) throw error;
+      setInterviews(data || []);
+    } catch (error) {
+      console.error("Error fetching interviews:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch interviews",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInterviews();
+  }, []);
 
   const getDaysInMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay());
-    
+    const monthStart = startOfMonth(date);
+    const monthEnd = endOfMonth(date);
+    const calendarStart = startOfWeek(monthStart);
+    const calendarEnd = endOfWeek(monthEnd);
+
     const days = [];
-    const current = new Date(startDate);
+    let currentDate = calendarStart;
     
-    for (let i = 0; i < 42; i++) {
-      days.push(new Date(current));
-      current.setDate(current.getDate() + 1);
+    while (currentDate <= calendarEnd) {
+      days.push(new Date(currentDate));
+      currentDate = addDays(currentDate, 1);
     }
-    
     return days;
   };
 
   const getWeekDays = (date: Date) => {
-    const startOfWeek = new Date(date);
-    const day = startOfWeek.getDay();
-    const diff = startOfWeek.getDate() - day;
-    startOfWeek.setDate(diff);
-    
+    const weekStart = startOfWeek(date);
     const days = [];
+    
     for (let i = 0; i < 7; i++) {
-      const day = new Date(startOfWeek);
-      day.setDate(startOfWeek.getDate() + i);
-      days.push(day);
+      days.push(addDays(weekStart, i));
     }
     return days;
   };
 
   const getInterviewsForDate = (date: Date) => {
-    return interviews.filter(interview => 
-      interview.date.toDateString() === date.toDateString()
-    );
+    return interviews.filter(interview => {
+      const interviewDate = new Date(interview.scheduled_date);
+      return isSameDay(interviewDate, date);
+    });
   };
 
   const navigate = (direction: 'prev' | 'next') => {
@@ -112,118 +100,22 @@ const InterviewCalendar = () => {
   };
 
   const getDateRangeText = () => {
-    if (viewMode === 'day') {
-      return currentDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    } else if (viewMode === 'week') {
-      const weekDays = getWeekDays(currentDate);
-      const start = weekDays[0];
-      const end = weekDays[6];
-      if (start.getMonth() === end.getMonth()) {
-        return `${monthNames[start.getMonth()]} ${start.getDate()}-${end.getDate()}, ${start.getFullYear()}`;
-      } else {
-        return `${monthNames[start.getMonth()]} ${start.getDate()} - ${monthNames[end.getMonth()]} ${end.getDate()}, ${start.getFullYear()}`;
-      }
-    } else {
-      return `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    switch (viewMode) {
+      case 'day':
+        return format(currentDate, 'PPPP');
+      case 'week':
+        const weekDays = getWeekDays(currentDate);
+        return `${format(weekDays[0], 'MMM d')} - ${format(weekDays[6], 'MMM d, yyyy')}`;
+      case 'month':
+        return format(currentDate, 'MMMM yyyy');
+      default:
+        return '';
     }
   };
 
-  const renderDayView = () => {
-    const dayInterviews = getInterviewsForDate(currentDate);
-    const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 7 PM
-
-    return (
-      <div className="space-y-2">
-        <div className="grid grid-cols-1 gap-1">
-          {hours.map(hour => (
-            <div key={hour} className="flex border-b border-border py-2">
-              <div className="w-16 text-xs text-muted-foreground text-right pr-4">
-                {hour > 12 ? `${hour - 12}:00 PM` : `${hour}:00 AM`}
-              </div>
-              <div className="flex-1 min-h-[40px] relative">
-                {dayInterviews
-                  .filter(interview => {
-                    const interviewHour = parseInt(interview.time.split(':')[0]);
-                    const isPM = interview.time.includes('PM');
-                    const hour24 = isPM && interviewHour !== 12 ? interviewHour + 12 : interviewHour;
-                    return hour24 === hour;
-                  })
-                  .map(interview => (
-                    <div
-                      key={interview.id}
-                      className="bg-accent/20 border border-accent/30 rounded p-2 mb-1 hover:bg-accent/30 transition-colors cursor-pointer"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <User className="h-3 w-3 text-accent" />
-                          <span className="text-sm font-medium text-accent">{interview.candidateName}</span>
-                        </div>
-                        <Badge variant="secondary" className="text-xs">{interview.type}</Badge>
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">{interview.position}</div>
-                      <div className="flex items-center space-x-1 mt-1">
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">{interview.time} • {interview.duration}</span>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const renderWeekView = () => {
-    const weekDays = getWeekDays(currentDate);
-    const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 7 PM
-
-    return (
-      <div className="space-y-2">
-        <div className="grid grid-cols-8 gap-1 mb-2">
-          <div className="w-16"></div>
-          {weekDays.map((day, index) => (
-            <div key={index} className="text-center p-2">
-              <div className="text-xs font-medium text-muted-foreground">{dayNamesShort[day.getDay()]}</div>
-              <div className={`text-sm font-medium ${day.toDateString() === new Date().toDateString() ? 'text-primary' : 'text-foreground'}`}>
-                {day.getDate()}
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        {hours.map(hour => (
-          <div key={hour} className="grid grid-cols-8 gap-1 border-b border-border py-1">
-            <div className="w-16 text-xs text-muted-foreground text-right pr-4">
-              {hour > 12 ? `${hour - 12}:00 PM` : `${hour}:00 AM`}
-            </div>
-            {weekDays.map((day, dayIndex) => {
-              const dayInterviews = getInterviewsForDate(day).filter(interview => {
-                const interviewHour = parseInt(interview.time.split(':')[0]);
-                const isPM = interview.time.includes('PM');
-                const hour24 = isPM && interviewHour !== 12 ? interviewHour + 12 : interviewHour;
-                return hour24 === hour;
-              });
-              
-              return (
-                <div key={dayIndex} className="min-h-[30px] relative">
-                  {dayInterviews.map(interview => (
-                    <div
-                      key={interview.id}
-                      className="bg-accent/20 border border-accent/30 rounded p-1 text-xs hover:bg-accent/30 transition-colors cursor-pointer mb-1"
-                    >
-                      <div className="font-medium text-accent truncate">{interview.candidateName}</div>
-                      <div className="text-muted-foreground">{interview.time}</div>
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
-    );
+  const handleInterviewClick = (interview: any) => {
+    setSelectedInterview(interview);
+    setIsManagementModalOpen(true);
   };
 
   const renderMonthView = () => {
@@ -233,7 +125,7 @@ const InterviewCalendar = () => {
     return (
       <div className="space-y-2">
         <div className="grid grid-cols-7 gap-1 mb-2">
-          {dayNamesShort.map(day => (
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
             <div key={day} className="p-2 text-center text-xs font-medium text-muted-foreground">
               {day}
             </div>
@@ -244,7 +136,7 @@ const InterviewCalendar = () => {
           {days.map((day, index) => {
             const dayInterviews = getInterviewsForDate(day);
             const isCurrentMonth = day.getMonth() === currentMonth;
-            const isToday = day.toDateString() === new Date().toDateString();
+            const isToday = isSameDay(day, new Date());
             
             return (
               <div
@@ -264,22 +156,20 @@ const InterviewCalendar = () => {
                     <div
                       key={interview.id}
                       className="bg-accent/20 border border-accent/30 rounded p-1 text-xs hover:bg-accent/30 transition-colors cursor-pointer"
+                      onClick={() => handleInterviewClick(interview)}
                     >
                       <div className="flex items-center space-x-1 mb-1">
                         <User className="h-2 w-2 text-accent" />
                         <span className="text-accent font-medium truncate text-[10px]">
-                          {interview.candidateName}
+                          {interview.candidates?.name}
                         </span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <Clock className="h-2 w-2 text-muted-foreground" />
                         <span className="text-muted-foreground text-[10px]">
-                          {interview.time}
+                          {format(new Date(interview.scheduled_date), 'h:mm a')}
                         </span>
                       </div>
-                      <Badge variant="secondary" className="text-[9px] px-1 py-0 mt-1">
-                        {interview.type}
-                      </Badge>
                     </div>
                   ))}
                   
@@ -307,7 +197,6 @@ const InterviewCalendar = () => {
           </CardTitle>
           
           <div className="flex items-center space-x-4">
-            {/* View Mode Toggle */}
             <div className="flex items-center bg-muted rounded-lg p-1">
               {(['day', 'week', 'month'] as ViewMode[]).map((mode) => (
                 <Button
@@ -324,25 +213,14 @@ const InterviewCalendar = () => {
               ))}
             </div>
             
-            {/* Navigation */}
             <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('prev')}
-                className="h-8 w-8 p-0"
-              >
+              <Button variant="outline" size="sm" onClick={() => navigate('prev')} className="h-8 w-8 p-0">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <div className="text-sm font-medium text-foreground min-w-[200px] text-center">
                 {getDateRangeText()}
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('next')}
-                className="h-8 w-8 p-0"
-              >
+              <Button variant="outline" size="sm" onClick={() => navigate('next')} className="h-8 w-8 p-0">
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -351,9 +229,16 @@ const InterviewCalendar = () => {
       </CardHeader>
       
       <CardContent className="p-4">
-        {viewMode === 'day' && renderDayView()}
-        {viewMode === 'week' && renderWeekView()}
-        {viewMode === 'month' && renderMonthView()}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+              <p className="text-muted-foreground">Loading interviews...</p>
+            </div>
+          </div>
+        ) : (
+          renderMonthView()
+        )}
         
         <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center space-x-4">
@@ -361,14 +246,23 @@ const InterviewCalendar = () => {
               <div className="w-3 h-3 bg-accent/20 border border-accent/30 rounded"></div>
               <span>Scheduled Interview</span>
             </div>
-            <div className="flex items-center space-x-1">
-              <div className="w-3 h-3 bg-primary/10 border border-primary/30 rounded"></div>
-              <span>Today</span>
-            </div>
           </div>
-          <span>{interviews.length} interviews this {viewMode === 'day' ? 'day' : viewMode === 'week' ? 'week' : 'month'}</span>
+          <span>{interviews.length} interviews scheduled</span>
         </div>
       </CardContent>
+
+      {selectedInterview && (
+        <InterviewManagementModal
+          isOpen={isManagementModalOpen}
+          onClose={() => {
+            setIsManagementModalOpen(false);
+            setSelectedInterview(null);
+            fetchInterviews();
+          }}
+          interview={selectedInterview}
+          candidate={selectedInterview.candidates}
+        />
+      )}
     </Card>
   );
 };
