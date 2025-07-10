@@ -6,10 +6,14 @@ import { Calendar, User, Zap, Play } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { format, isToday, isTomorrow } from "date-fns";
+import InterviewManagementModal from "./InterviewManagementModal";
 
 const InterviewQueue = () => {
   const [upcomingInterviews, setUpcomingInterviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedInterview, setSelectedInterview] = useState<any>(null);
+  const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchUpcomingInterviews();
@@ -40,7 +44,9 @@ const InterviewQueue = () => {
         time: formatInterviewTime(interview.scheduled_date),
         type: interview.meeting_type === 'video_call' ? 'Technical' : interview.meeting_type || 'Technical',
         duration: `${interview.duration_minutes || 60} min`,
-        rawDate: interview.scheduled_date
+        rawDate: interview.scheduled_date,
+        fullInterview: interview,
+        candidate: interview.candidates
       })) || [];
 
       setUpcomingInterviews(formattedInterviews);
@@ -61,6 +67,12 @@ const InterviewQueue = () => {
     } else {
       return format(date, 'MMM d, h:mm a');
     }
+  };
+
+  const handleStartInterview = (interview: any) => {
+    setSelectedInterview(interview.fullInterview);
+    setSelectedCandidate(interview.candidate);
+    setIsModalOpen(true);
   };
 
   return (
@@ -104,11 +116,11 @@ const InterviewQueue = () => {
             </div>
             
             <div className="flex space-x-2">
-              <Button size="sm" variant="outline" className="bg-accent/10 border-accent/30 text-accent hover:bg-accent/20 text-xs h-7">
-                <Zap className="h-3 w-3 mr-1" />
-                Generate Questions
-              </Button>
-              <Button size="sm" className="bg-primary hover:bg-primary/90 text-xs h-7">
+              <Button 
+                size="sm" 
+                className="bg-primary hover:bg-primary/90 text-xs h-7"
+                onClick={() => handleStartInterview(interview)}
+              >
                 <Play className="h-3 w-3 mr-1" />
                 Start Interview
               </Button>
@@ -123,6 +135,19 @@ const InterviewQueue = () => {
           </div>
         )}
       </CardContent>
+      
+      {selectedInterview && selectedCandidate && (
+        <InterviewManagementModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedInterview(null);
+            setSelectedCandidate(null);
+          }}
+          interview={selectedInterview}
+          candidate={selectedCandidate}
+        />
+      )}
     </Card>
   );
 };
