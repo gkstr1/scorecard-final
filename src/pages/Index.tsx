@@ -287,19 +287,13 @@ const Index = () => {
               </Card>
             ) : (
               <>
-                <div className="flex justify-between items-center">
-                  <div>
+                 <div>
                     <h2 className="text-xl font-bold text-foreground mb-1">
                       Interview Center
                     </h2>
                     <p className="text-sm text-muted-foreground">
                       Schedule interviews and generate smart questions
                     </p>
-                  </div>
-                  <Button className="bg-primary hover:bg-primary/90" size="sm">
-                    <Zap className="h-4 w-4 mr-2" />
-                    Generate Questions
-                  </Button>
                 </div>
                 
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
