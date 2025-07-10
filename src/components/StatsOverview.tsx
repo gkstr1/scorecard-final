@@ -1,45 +1,104 @@
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, Mail, Zap } from "lucide-react";
+import { Briefcase, Calendar, UserPlus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const StatsOverview = () => {
-  const stats = [
-    {
-      title: "Total Candidates",
-      value: "24",
-      change: "+12%",
-      icon: Users,
-      trend: "up",
-      description: "Active in pipeline"
-    },
+  const [stats, setStats] = useState([
     {
       title: "This Week's Interviews",
-      value: "8",
-      change: "+25%",
+      value: "0",
       icon: Calendar,
-      trend: "up",
-      description: "Scheduled sessions"
+      description: "Scheduled sessions",
+      loading: true
     },
     {
-      title: "Resumes Processed",
-      value: "156",
-      change: "+8%",
-      icon: Mail,
-      trend: "up",
-      description: "This month"
+      title: "Active Jobs",
+      value: "0",
+      icon: Briefcase,
+      description: "Open positions",
+      loading: true
     },
     {
-      title: "Questions Generated",
-      value: "342",
-      change: "+15%",
-      icon: Zap,
-      trend: "up",
-      description: "AI powered"
+      title: "New Applications Today",
+      value: "0",
+      icon: UserPlus,
+      description: "Today's applications",
+      loading: true
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      // Get this week's interviews
+      const startOfWeek = new Date();
+      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+      startOfWeek.setHours(0, 0, 0, 0);
+      
+      const endOfWeek = new Date();
+      endOfWeek.setDate(endOfWeek.getDate() + (6 - endOfWeek.getDay()));
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      const { data: interviewsData } = await supabase
+        .from('interviews')
+        .select('id')
+        .gte('scheduled_date', startOfWeek.toISOString())
+        .lte('scheduled_date', endOfWeek.toISOString());
+
+      // Get active jobs
+      const { data: jobsData } = await supabase
+        .from('job_descriptions')
+        .select('id')
+        .eq('is_active', true);
+
+      // Get today's applications
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const { data: applicationsData } = await supabase
+        .from('candidates')
+        .select('id')
+        .gte('applied_date', today.toISOString())
+        .lt('applied_date', tomorrow.toISOString());
+
+      setStats([
+        {
+          title: "This Week's Interviews",
+          value: (interviewsData?.length || 0).toString(),
+          icon: Calendar,
+          description: "Scheduled sessions",
+          loading: false
+        },
+        {
+          title: "Active Jobs",
+          value: (jobsData?.length || 0).toString(),
+          icon: Briefcase,
+          description: "Open positions",
+          loading: false
+        },
+        {
+          title: "New Applications Today",
+          value: (applicationsData?.length || 0).toString(),
+          icon: UserPlus,
+          description: "Today's applications",
+          loading: false
+        },
+      ]);
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+      setStats(prev => prev.map(stat => ({ ...stat, loading: false })));
+    }
+  };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {stats.map((stat, index) => (
         <Card key={index} className="bg-card border-border hover:border-primary/30 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -52,9 +111,8 @@ const StatsOverview = () => {
             <stat.icon className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="flex items-baseline space-x-2">
-              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-              <div className="text-xs font-medium text-accent">{stat.change}</div>
+            <div className="text-2xl font-bold text-foreground">
+              {stat.loading ? "..." : stat.value}
             </div>
           </CardContent>
         </Card>
