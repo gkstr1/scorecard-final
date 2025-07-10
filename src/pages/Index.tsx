@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Mail, Calendar, FileText, Plus, Search, Zap, Brain, BarChart3, Settings, ChevronDown, ArrowLeft, Building2, Upload } from "lucide-react";
+import { Users, Mail, Calendar, FileText, Plus, Search, Zap, ClipboardCheck, BarChart3, Settings, ChevronDown, ArrowLeft, Building2, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
@@ -132,16 +132,13 @@ const Index = () => {
               </Link>
               <div className="flex items-center space-x-3">
                 <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center">
-                  <Brain className="h-8 w-8 text-primary-foreground" />
+                  <ClipboardCheck className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-foreground">Scorecard</h1>
                   <p className="text-sm text-muted-foreground">Smart Hiring Platform</p>
                 </div>
               </div>
-              <Badge variant="secondary" className="text-xs bg-accent/20 text-accent border-accent/30 px-2 py-1">
-                AI Powered
-              </Badge>
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
