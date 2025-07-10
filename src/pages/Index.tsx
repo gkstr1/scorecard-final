@@ -336,19 +336,13 @@ const Index = () => {
               </Card>
             ) : (
               <>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="text-xl font-bold text-foreground mb-1">
-                      Resume Upload & Candidate Creation
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      Upload resumes and automatically create candidate profiles
-                    </p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Connect Email
-                  </Button>
+                <div className="mb-4">
+                  <h2 className="text-xl font-bold text-foreground mb-1">
+                    Resume Upload & Candidate Creation
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Upload resumes and automatically create candidate profiles
+                  </p>
                 </div>
                 
                 <ResumeUpload onCandidateCreated={handleCandidateCreated} />
@@ -392,14 +386,41 @@ const Index = () => {
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">
-                Pipeline Settings
+                Settings
               </h2>
               <p className="text-sm text-muted-foreground">
-                Configure your hiring pipeline stages and workflow
+                Configure your system settings and integrations
               </p>
             </div>
             
-            <PipelineSettings />
+            {/* Email Integration */}
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Mail className="h-5 w-5 text-primary" />
+                    <span>Email Integration</span>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Connect Email
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Connect your email to automatically process resumes and candidate applications
+                </p>
+              </CardContent>
+            </Card>
+            
+            {/* Pipeline Settings */}
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-3">
+                Pipeline Configuration
+              </h3>
+              <PipelineSettings />
+            </div>
           </div>
         )}
       </main>
