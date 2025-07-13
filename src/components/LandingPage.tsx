@@ -24,7 +24,7 @@ const LandingPage = () => {
             {/* Floating elements around the text */}
             
             <div className="absolute -top-6 -right-8 text-xl">📊</div>
-            <div className="absolute -bottom-4 left-8 text-lg">🎯</div>
+            
           </div>
         </div>
         
