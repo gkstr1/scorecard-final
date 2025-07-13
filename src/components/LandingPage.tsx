@@ -56,14 +56,26 @@ const LandingPage = () => {
           </p>
           {/* Cool arrow pointing to Get Started */}
           <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 -translate-x-12">
-            <svg width="60" height="40" viewBox="0 0 60 40" className="text-white/70">
+            <svg width="80" height="50" viewBox="0 0 80 50" className="text-white drop-shadow-md">
+              {/* Arrow curve */}
               <path
-                d="M10 10 Q 20 5, 35 15 Q 40 18, 45 25 L 42 28 L 50 30 L 45 35 L 42 32 Q 35 25, 30 22"
+                d="M15 8 Q 25 3, 40 12 Q 55 20, 65 32"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="3"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="opacity-90"
+              />
+              {/* Arrow head */}
+              <path
+                d="M58 28 L 65 32 L 58 36 M 65 32 L 60 32"
+                stroke="currentColor"
+                strokeWidth="3"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="opacity-90"
               />
             </svg>
           </div>
