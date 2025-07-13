@@ -51,8 +51,8 @@ const LandingPage = () => {
         
         {/* Try free text */}
         <div className="mb-6">
-          <p className="text-2xl font-handwriting text-accent/80 text-center">
-            Try merlin free for 7 days
+          <p className="text-3xl font-handwriting text-accent/80 text-center -rotate-1">
+            Try Scorecard free for 7 days
           </p>
         </div>
         
