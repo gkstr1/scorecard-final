@@ -49,6 +49,13 @@ const LandingPage = () => {
           Generate detailed scorecards after every interview with AI analysis, structured feedback, and data-driven hiring decisions.
         </p>
         
+        {/* Try free text */}
+        <div className="mb-6">
+          <p className="text-2xl font-handwriting text-accent/80 text-center">
+            Try merlin free for 7 days
+          </p>
+        </div>
+        
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Button size="lg" className="px-6 py-3">
             Get started
