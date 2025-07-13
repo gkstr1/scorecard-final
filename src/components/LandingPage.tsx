@@ -22,7 +22,7 @@ const LandingPage = () => {
           <div className="text-6xl md:text-8xl font-bold text-primary mb-2 tracking-tight relative">
             Scorecard
             {/* Floating elements around the text */}
-            <div className="absolute -top-8 -left-4 text-2xl">⭐</div>
+            
             <div className="absolute -top-6 -right-8 text-xl">📊</div>
             <div className="absolute -bottom-4 left-8 text-lg">🎯</div>
           </div>
