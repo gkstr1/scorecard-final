@@ -68,7 +68,7 @@ export const AIChatPanel: React.FC<AIChatPanelProps> = ({ className }) => {
       </Button>
 
       {isOpen && (
-        <Card className="absolute top-full right-0 mt-1 w-80 bg-background border-2 border-primary shadow-xl z-50">
+        <Card className="absolute top-full right-0 mt-1 w-96 bg-background border-2 border-primary shadow-xl z-50">
           <CardHeader className="p-3 bg-primary/5 border-b border-primary/20">
             <div className="flex items-center space-x-2">
               <Bot className="h-5 w-5 text-primary" />
@@ -76,7 +76,7 @@ export const AIChatPanel: React.FC<AIChatPanelProps> = ({ className }) => {
             </div>
           </CardHeader>
 
-          <CardContent className="p-0 flex flex-col h-80">
+          <CardContent className="p-0 flex flex-col h-96">
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-3 space-y-3">
               {messages.map((message) => (
