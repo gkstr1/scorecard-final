@@ -21,9 +21,9 @@ const LandingPage = () => {
           {/* AI Brain Illustration */}
           <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 -translate-y-full">
             <div className="relative">
-              <Brain className="w-16 h-16 text-primary/30 animate-pulse" />
-              <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full animate-ping"></div>
-              <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-secondary rounded-full animate-ping delay-1000"></div>
+              <Brain className="w-16 h-16 text-primary/30" />
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full"></div>
+              <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-secondary rounded-full"></div>
             </div>
           </div>
           
@@ -82,10 +82,10 @@ const LandingPage = () => {
       <div className="container mx-auto px-4 mb-20">
         <div className="max-w-4xl mx-auto relative">
           {/* Floating AI Elements */}
-          <div className="absolute -top-8 -left-8 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center animate-bounce delay-300">
+          <div className="absolute -top-8 -left-8 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
             <Brain className="w-8 h-8 text-primary" />
           </div>
-          <div className="absolute -top-4 -right-12 w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center animate-pulse">
+          <div className="absolute -top-4 -right-12 w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
             <Star className="w-6 h-6 text-accent" />
           </div>
 
@@ -101,9 +101,9 @@ const LandingPage = () => {
 
             <div className="bg-background/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl relative z-10">
               <div className="flex items-center space-x-2 mb-6 pb-4 border-b border-border">
-                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse delay-200"></div>
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse delay-500"></div>
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 <div className="ml-4 text-sm text-muted-foreground font-mono">scorecard.app/interview-analysis</div>
               </div>
               
@@ -200,15 +200,15 @@ const LandingPage = () => {
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           <div className="relative">
             {/* Floating elements around the card */}
-            <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary/20 rounded-full animate-ping"></div>
-            <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-accent/20 rounded-full animate-ping delay-700"></div>
+            <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary/20 rounded-full"></div>
+            <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-accent/20 rounded-full"></div>
             
             <div className="bg-gradient-to-br from-primary/15 via-primary/10 to-accent/10 rounded-2xl p-8 border border-primary/30 relative overflow-hidden">
               {/* AI processing visualization */}
               <div className="absolute top-4 right-4 flex items-center space-x-2">
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-200"></div>
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-500"></div>
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
                 <span className="text-xs text-primary font-medium">AI Processing</span>
               </div>
 
