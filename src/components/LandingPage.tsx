@@ -54,36 +54,6 @@ const LandingPage = () => {
           <p className="text-3xl font-handwriting text-white text-center">
             Try Scorecard free for 7 days
           </p>
-          {/* Spiral arrow pointing to Get Started */}
-          <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 translate-x-8">
-            <svg width="100" height="80" viewBox="0 0 100 80" className="text-white drop-shadow-lg">
-              {/* Spiral path */}
-              <path
-                d="M50 10 
-                   C 30 10, 15 25, 15 45
-                   C 15 65, 35 75, 55 75
-                   C 70 75, 80 65, 80 50
-                   C 80 40, 75 35, 65 35
-                   C 60 35, 58 37, 58 40"
-                stroke="currentColor"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="opacity-90"
-              />
-              {/* Arrow head pointing to get started */}
-              <path
-                d="M54 37 L 58 40 L 54 43 M 58 40 L 52 40"
-                stroke="currentColor"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="opacity-90"
-              />
-            </svg>
-          </div>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
