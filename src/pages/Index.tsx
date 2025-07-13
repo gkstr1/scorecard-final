@@ -142,10 +142,7 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input placeholder="Search" className="pl-10 w-64 bg-input border-border h-9 text-sm" />
-              </div>
+              <AIChatPanel />
             </div>
           </div>
         </div>
@@ -436,9 +433,6 @@ const Index = () => {
         onOpenChange={setIsImportModalOpen}
         onCandidatesImported={handleCandidateCreated}
       />
-      
-      {/* AI Chat Panel */}
-      <AIChatPanel />
     </div>;
 };
 

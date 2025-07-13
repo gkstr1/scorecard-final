@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, Send, Minimize2, Maximize2, X } from 'lucide-react';
+import { Bot, Send, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -17,7 +17,6 @@ interface AIChatPanelProps {
 
 export const AIChatPanel: React.FC<AIChatPanelProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -56,52 +55,27 @@ export const AIChatPanel: React.FC<AIChatPanelProps> = ({ className }) => {
     "Schedule interview"
   ];
 
-  if (!isOpen) {
-    return (
-      <div className={cn("fixed bottom-4 right-4 z-50", className)}>
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="h-12 w-12 rounded-full bg-primary hover:bg-primary/90 shadow-lg"
-          size="icon"
-        >
-          <Bot className="h-6 w-6" />
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <div className={cn("fixed bottom-4 right-4 z-50", className)}>
-      <Card className={cn(
-        "w-80 bg-background border-2 border-primary shadow-xl",
-        isMinimized ? "h-12" : "h-96"
-      )}>
-        <CardHeader className="flex flex-row items-center justify-between p-3 bg-primary/5 border-b border-primary/20">
-          <div className="flex items-center space-x-2">
-            <Bot className="h-5 w-5 text-primary" />
-            <span className="font-medium text-sm">AI Assistant</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6"
-              onClick={() => setIsMinimized(!isMinimized)}
-            >
-              {isMinimized ? <Maximize2 className="h-3 w-3" /> : <Minimize2 className="h-3 w-3" />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6"
-              onClick={() => setIsOpen(false)}
-            >
-              <X className="h-3 w-3" />
-            </Button>
-          </div>
-        </CardHeader>
+    <div className={cn("relative", className)}>
+      <Button
+        onClick={() => setIsOpen(!isOpen)}
+        variant="outline"
+        className="flex items-center space-x-2 h-9 px-3"
+      >
+        <Bot className="h-4 w-4 text-primary" />
+        <span className="text-sm">AI Assistant</span>
+        <ChevronDown className={cn("h-3 w-3 transition-transform", isOpen && "rotate-180")} />
+      </Button>
 
-        {!isMinimized && (
+      {isOpen && (
+        <Card className="absolute top-full right-0 mt-1 w-80 bg-background border-2 border-primary shadow-xl z-50">
+          <CardHeader className="p-3 bg-primary/5 border-b border-primary/20">
+            <div className="flex items-center space-x-2">
+              <Bot className="h-5 w-5 text-primary" />
+              <span className="font-medium text-sm">AI Assistant</span>
+            </div>
+          </CardHeader>
+
           <CardContent className="p-0 flex flex-col h-80">
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-3 space-y-3">
@@ -162,8 +136,8 @@ export const AIChatPanel: React.FC<AIChatPanelProps> = ({ className }) => {
               </form>
             </div>
           </CardContent>
-        )}
-      </Card>
+        </Card>
+      )}
     </div>
   );
 };
