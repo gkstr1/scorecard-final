@@ -55,28 +55,35 @@ const LandingPage = () => {
             Try Scorecard free for 7 days
           </p>
           {/* Cool arrow pointing to Get Started */}
-          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 -translate-x-12">
-            <svg width="80" height="50" viewBox="0 0 80 50" className="text-white drop-shadow-md">
-              {/* Arrow curve */}
+          <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 -translate-x-16">
+            <svg width="120" height="60" viewBox="0 0 120 60" className="text-white drop-shadow-md">
+              {/* Animated arrow curve wrapping from left */}
               <path
-                d="M15 8 Q 25 3, 40 12 Q 55 20, 65 32"
+                d="M10 15 Q 5 25, 10 35 Q 20 45, 40 40 Q 60 35, 80 25 Q 90 20, 95 25"
                 stroke="currentColor"
                 strokeWidth="3"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="opacity-90"
+                className="opacity-90 animate-pulse"
+                strokeDasharray="5,3"
               />
-              {/* Arrow head */}
-              <path
-                d="M58 28 L 65 32 L 58 36 M 65 32 L 60 32"
-                stroke="currentColor"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="opacity-90"
-              />
+              {/* Animated arrow head */}
+              <g className="animate-bounce">
+                <path
+                  d="M88 21 L 95 25 L 88 29 M 95 25 L 90 25"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="opacity-90"
+                />
+              </g>
+              {/* Small decorative dots along the path */}
+              <circle cx="25" cy="32" r="1.5" fill="currentColor" className="opacity-60 animate-ping" />
+              <circle cx="50" cy="38" r="1.5" fill="currentColor" className="opacity-60 animate-ping" style={{ animationDelay: '0.5s' }} />
+              <circle cx="75" cy="27" r="1.5" fill="currentColor" className="opacity-60 animate-ping" style={{ animationDelay: '1s' }} />
             </svg>
           </div>
         </div>
