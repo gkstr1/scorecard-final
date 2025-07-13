@@ -2,22 +2,47 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Brain, ArrowRight, CheckCircle, Calendar, Mail, Target, Users, Clock, Zap, BarChart } from "lucide-react";
+import { Brain, ArrowRight, CheckCircle, Calendar, Mail, Target, Users, Clock, Zap, BarChart, FileText, Star, TrendingUp, Lightbulb, MessageSquare, Award } from "lucide-react";
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16 text-center">
-        <div className="mb-6">
-          <div className="text-6xl md:text-8xl font-bold text-primary mb-2 tracking-tight">
+      <div className="container mx-auto px-4 py-16 text-center relative overflow-hidden">
+        {/* Artistic Background Elements */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-xl"></div>
+          <div className="absolute top-40 right-20 w-24 h-24 bg-accent/20 rounded-full blur-lg"></div>
+          <div className="absolute bottom-20 left-1/4 w-20 h-20 bg-secondary/20 rounded-full blur-md"></div>
+          <div className="absolute top-1/3 right-1/3 w-16 h-16 bg-primary/5 rounded-full blur-sm"></div>
+        </div>
+
+        <div className="mb-6 relative">
+          {/* AI Brain Illustration */}
+          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 -translate-y-full">
+            <div className="relative">
+              <Brain className="w-16 h-16 text-primary/30 animate-pulse" />
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full animate-ping"></div>
+              <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-secondary rounded-full animate-ping delay-1000"></div>
+            </div>
+          </div>
+          
+          <div className="text-6xl md:text-8xl font-bold text-primary mb-2 tracking-tight relative">
             Scorecard
+            {/* Floating elements around the text */}
+            <div className="absolute -top-8 -left-4 text-2xl">⭐</div>
+            <div className="absolute -top-6 -right-8 text-xl">📊</div>
+            <div className="absolute -bottom-4 left-8 text-lg">🎯</div>
           </div>
         </div>
         
         <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4 leading-tight max-w-4xl mx-auto">
           AI-Powered Interview
-          <span className="block text-primary"> Scorecards</span>
+          <span className="block text-primary relative">
+            Scorecards
+            {/* Underline effect */}
+            <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary/0 via-primary/50 to-primary/0"></div>
+          </span>
         </h1>
         
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -46,63 +71,116 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* Dashboard Preview */}
+      {/* Artistic Scorecard Preview */}
       <div className="container mx-auto px-4 mb-20">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-8 border border-primary/20">
-            <div className="bg-background rounded-xl p-6 shadow-2xl">
+        <div className="max-w-4xl mx-auto relative">
+          {/* Floating AI Elements */}
+          <div className="absolute -top-8 -left-8 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center animate-bounce delay-300">
+            <Brain className="w-8 h-8 text-primary" />
+          </div>
+          <div className="absolute -top-4 -right-12 w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center animate-pulse">
+            <Star className="w-6 h-6 text-accent" />
+          </div>
+
+          <div className="bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 rounded-3xl p-8 border border-primary/20 relative overflow-hidden">
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="grid grid-cols-8 grid-rows-8 h-full w-full">
+                {[...Array(64)].map((_, i) => (
+                  <div key={i} className="border border-primary/20"></div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-background/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl relative z-10">
               <div className="flex items-center space-x-2 mb-6 pb-4 border-b border-border">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <div className="ml-4 text-sm text-muted-foreground">scorecard.app</div>
+                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse delay-200"></div>
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse delay-500"></div>
+                <div className="ml-4 text-sm text-muted-foreground font-mono">scorecard.app/interview-analysis</div>
+              </div>
+              
+              {/* AI Scorecard Header */}
+              <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                    <Brain className="w-5 h-5 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm">AI Interview Scorecard</div>
+                    <div className="text-xs text-muted-foreground">Generated in 2.3 seconds</div>
+                  </div>
+                  <div className="ml-auto">
+                    <div className="flex items-center space-x-1 text-xs text-accent">
+                      <TrendingUp className="w-3 h-3" />
+                      <span>94% Match</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-xs text-muted-foreground">Based on resume analysis and interview responses</div>
               </div>
               
               <div className="grid grid-cols-4 gap-4 mb-6">
-                <div className="bg-muted rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold mb-1">12</div>
-                  <div className="text-xs text-muted-foreground">Active Jobs</div>
+                <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-4 text-center border border-primary/20">
+                  <div className="text-2xl font-bold mb-1 text-primary">9.4</div>
+                  <div className="text-xs text-muted-foreground">Technical Skills</div>
                 </div>
-                <div className="bg-muted rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold mb-1">48</div>
-                  <div className="text-xs text-muted-foreground">Candidates</div>
+                <div className="bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg p-4 text-center border border-accent/20">
+                  <div className="text-2xl font-bold mb-1 text-accent">8.7</div>
+                  <div className="text-xs text-muted-foreground">Communication</div>
                 </div>
-                <div className="bg-muted rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold mb-1">6</div>
-                  <div className="text-xs text-muted-foreground">Interviews</div>
+                <div className="bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-lg p-4 text-center border border-secondary/30">
+                  <div className="text-2xl font-bold mb-1">9.1</div>
+                  <div className="text-xs text-muted-foreground">Problem Solving</div>
                 </div>
-                <div className="bg-muted rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold mb-1">92%</div>
-                  <div className="text-xs text-muted-foreground">Match Rate</div>
+                <div className="bg-gradient-to-br from-primary/15 to-accent/10 rounded-lg p-4 text-center border border-primary/20">
+                  <div className="text-2xl font-bold mb-1 text-primary">92%</div>
+                  <div className="text-xs text-muted-foreground">Overall Fit</div>
                 </div>
               </div>
               
               <div className="space-y-3">
-                <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
-                  <div className="w-10 h-10 bg-primary rounded-lg flex-shrink-0"></div>
-                  <div className="flex-1">
-                    <div className="h-3 bg-muted rounded w-3/4 mb-2"></div>
-                    <div className="h-2 bg-muted/60 rounded w-1/2"></div>
+                {/* AI-Generated Questions */}
+                <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border border-primary/20">
+                  <div className="w-10 h-10 bg-primary rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <MessageSquare className="w-5 h-5 text-primary-foreground" />
                   </div>
-                  <div className="text-xs text-primary font-medium">95%</div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium mb-1">React Hooks Implementation</div>
+                    <div className="text-xs text-muted-foreground">AI-generated technical question based on resume</div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Award className="w-4 h-4 text-primary" />
+                    <span className="text-xs text-primary font-medium">Excellent</span>
+                  </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg">
-                  <div className="w-10 h-10 bg-secondary rounded-lg flex-shrink-0"></div>
-                  <div className="flex-1">
-                    <div className="h-3 bg-muted rounded w-2/3 mb-2"></div>
-                    <div className="h-2 bg-muted/60 rounded w-3/4"></div>
+                <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-accent/5 to-accent/10 rounded-lg border border-accent/20">
+                  <div className="w-10 h-10 bg-accent rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <Lightbulb className="w-5 h-5 text-accent-foreground" />
                   </div>
-                  <div className="text-xs text-muted-foreground">87%</div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium mb-1">System Design Approach</div>
+                    <div className="text-xs text-muted-foreground">Adaptive questioning based on experience level</div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Star className="w-4 h-4 text-accent" />
+                    <span className="text-xs text-accent font-medium">Strong</span>
+                  </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg">
-                  <div className="w-10 h-10 bg-accent rounded-lg flex-shrink-0"></div>
-                  <div className="flex-1">
-                    <div className="h-3 bg-muted rounded w-4/5 mb-2"></div>
-                    <div className="h-2 bg-muted/60 rounded w-1/3"></div>
+                <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-secondary/10 to-secondary/5 rounded-lg border border-secondary/30">
+                  <div className="w-10 h-10 bg-secondary rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-secondary-foreground" />
                   </div>
-                  <div className="text-xs text-muted-foreground">82%</div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium mb-1">Cultural Fit Assessment</div>
+                    <div className="text-xs text-muted-foreground">Values alignment and team collaboration</div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="w-4 h-4 text-accent" />
+                    <span className="text-xs font-medium">Good Fit</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -110,31 +188,69 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* New Hiring Companion Section */}
+      {/* AI Resume Analysis Section */}
       <div className="container mx-auto px-4 py-20">
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-8">
-            <div className="bg-background rounded-xl p-6 shadow-lg">
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <Calendar className="w-6 h-6 text-primary" />
-                  <div className="flex-1">
-                    <div className="font-medium">Interview scheduled</div>
-                    <div className="text-sm text-muted-foreground">Sarah Chen - Frontend Developer</div>
+          <div className="relative">
+            {/* Floating elements around the card */}
+            <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary/20 rounded-full animate-ping"></div>
+            <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-accent/20 rounded-full animate-ping delay-700"></div>
+            
+            <div className="bg-gradient-to-br from-primary/15 via-primary/10 to-accent/10 rounded-2xl p-8 border border-primary/30 relative overflow-hidden">
+              {/* AI processing visualization */}
+              <div className="absolute top-4 right-4 flex items-center space-x-2">
+                <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-200"></div>
+                <div className="w-2 h-2 bg-primary rounded-full animate-pulse delay-500"></div>
+                <span className="text-xs text-primary font-medium">AI Processing</span>
+              </div>
+
+              <div className="bg-background/95 backdrop-blur-sm rounded-xl p-6 shadow-lg">
+                <div className="space-y-4">
+                  {/* Resume Upload Visualization */}
+                  <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg">
+                    <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-primary-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">Resume Analyzed</div>
+                      <div className="text-sm text-muted-foreground">Sarah_Chen_Resume.pdf</div>
+                    </div>
+                    <div className="text-xs text-primary font-medium">100%</div>
                   </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Mail className="w-6 h-6 text-secondary" />
-                  <div className="flex-1">
-                    <div className="font-medium">Resume reviewed</div>
-                    <div className="text-sm text-muted-foreground">Match score: 94%</div>
+
+                  {/* AI Question Generation */}
+                  <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-lg">
+                    <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                      <Brain className="w-5 h-5 text-accent-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">Questions Generated</div>
+                      <div className="text-sm text-muted-foreground">12 tailored interview questions</div>
+                    </div>
+                    <div className="text-xs text-accent font-medium">Ready</div>
                   </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Target className="w-6 h-6 text-accent" />
-                  <div className="flex-1">
-                    <div className="font-medium">Skills assessed</div>
-                    <div className="text-sm text-muted-foreground">React, TypeScript, Node.js</div>
+
+                  {/* Skills Matching */}
+                  <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-secondary/15 to-secondary/10 rounded-lg">
+                    <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
+                      <Target className="w-5 h-5 text-secondary-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">Skills Matched</div>
+                      <div className="text-sm text-muted-foreground">React, TypeScript, Node.js, AWS</div>
+                    </div>
+                    <div className="text-xs text-primary font-medium">94%</div>
+                  </div>
+
+                  {/* AI Insights */}
+                  <div className="mt-4 p-3 bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg border border-primary/20">
+                    <div className="flex items-start space-x-2">
+                      <Lightbulb className="w-4 h-4 text-primary mt-0.5" />
+                      <div className="text-xs text-muted-foreground">
+                        <span className="font-medium text-primary">AI Insight:</span> Strong React experience with 5+ years. Consider deep-dive questions on hooks and state management.
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
