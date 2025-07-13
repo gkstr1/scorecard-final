@@ -50,10 +50,23 @@ const LandingPage = () => {
         </p>
         
         {/* Try free text */}
-        <div className="mb-6">
-          <p className="text-3xl font-handwriting text-accent/80 text-center -rotate-1">
+        <div className="mb-6 relative">
+          <p className="text-3xl font-handwriting text-white text-center">
             Try Scorecard free for 7 days
           </p>
+          {/* Cool arrow pointing to Get Started */}
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 translate-x-8">
+            <svg width="60" height="40" viewBox="0 0 60 40" className="text-white/70">
+              <path
+                d="M10 10 Q 20 5, 35 15 Q 40 18, 45 25 L 42 28 L 50 30 L 45 35 L 42 32 Q 35 25, 30 22"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
