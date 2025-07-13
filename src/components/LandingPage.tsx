@@ -9,10 +9,11 @@ const LandingPage = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 text-center">
-        <Badge variant="secondary" className="mb-6 text-sm px-3 py-1">
-          <Brain className="w-3 h-3 mr-1" />
-          AI-Powered
-        </Badge>
+        <div className="mb-6">
+          <div className="text-6xl md:text-8xl font-bold text-primary mb-2 tracking-tight">
+            Scorecard
+          </div>
+        </div>
         
         <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4 leading-tight max-w-4xl mx-auto">
           Make hiring a little
@@ -31,6 +32,18 @@ const LandingPage = () => {
           <Button size="lg" variant="outline" className="px-6 py-3">
             Watch demo
           </Button>
+        </div>
+
+        {/* Company Logos */}
+        <div className="mb-8">
+          <p className="text-sm text-muted-foreground mb-6">Trusted by teams at</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
+            <div className="text-xl font-bold">Notion</div>
+            <div className="text-xl font-bold">Salesforce</div>
+            <div className="text-xl font-bold">Harvard</div>
+            <div className="text-xl font-bold">HubSpot</div>
+            <div className="text-xl font-bold">McKinsey & Company</div>
+          </div>
         </div>
       </div>
 
@@ -277,18 +290,6 @@ const LandingPage = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Company Logos */}
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p className="text-sm text-muted-foreground mb-8">Trusted by teams at</p>
-        <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-          <div className="text-xl font-bold">Notion</div>
-          <div className="text-xl font-bold">Salesforce</div>
-          <div className="text-xl font-bold">Harvard</div>
-          <div className="text-xl font-bold">HubSpot</div>
-          <div className="text-xl font-bold">McKinsey & Company</div>
         </div>
       </div>
     </div>
