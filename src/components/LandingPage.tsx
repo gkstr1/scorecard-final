@@ -16,13 +16,12 @@ const LandingPage = () => {
         </div>
         
         <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4 leading-tight max-w-4xl mx-auto">
-          Make hiring a little
-          <br />
-          more human.
+          AI-Powered Interview
+          <span className="block text-primary"> Scorecards</span>
         </h1>
         
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Scorecard finds your highest-impact priorities from your inbox and calendar, then helps you complete them with a single click.
+          Generate detailed scorecards after every interview with AI analysis, structured feedback, and data-driven hiring decisions.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -144,23 +143,23 @@ const LandingPage = () => {
           
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-              Your new hiring companion.
+              Post-Interview Scorecards.
             </h2>
             <p className="text-lg text-muted-foreground mb-6">
-              AI-powered candidate screening, automated interview scheduling, and intelligent matching to find the perfect fit for your team.
+              AI automatically generates comprehensive scorecards after each interview, evaluating technical skills, communication, cultural fit, and overall candidate performance.
             </p>
             <div className="space-y-3 mb-8">
               <div className="flex items-center space-x-3">
                 <CheckCircle className="w-5 h-5 text-primary" />
-                <span className="text-muted-foreground">Intelligent resume parsing</span>
+                <span className="text-muted-foreground">AI-generated interview scorecards</span>
               </div>
               <div className="flex items-center space-x-3">
                 <CheckCircle className="w-5 h-5 text-primary" />
-                <span className="text-muted-foreground">Automated candidate ranking</span>
+                <span className="text-muted-foreground">Technical skills assessment</span>
               </div>
               <div className="flex items-center space-x-3">
                 <CheckCircle className="w-5 h-5 text-primary" />
-                <span className="text-muted-foreground">Smart interview scheduling</span>
+                <span className="text-muted-foreground">Cultural fit evaluation</span>
               </div>
             </div>
             <Button size="lg" className="px-6 py-3">
@@ -174,12 +173,12 @@ const LandingPage = () => {
       <div className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Smart features.
+            AI Interview Scorecards.
             <br />
-            Efficient work flow.
+            Powered by Intelligence.
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to streamline your hiring process and find the best candidates faster.
+            Generate comprehensive post-interview scorecards with AI analysis, structured evaluation, and actionable insights for better hiring decisions.
           </p>
         </div>
         
@@ -188,29 +187,29 @@ const LandingPage = () => {
             <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
               <Brain className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">AI Resume Analysis</h3>
+            <h3 className="text-xl font-semibold mb-2">AI Scorecard Generation</h3>
             <p className="text-muted-foreground">
-              Automatically extract and analyze candidate information from resumes with 95% accuracy.
+              Automatically generate detailed interview scorecards with AI analysis of candidate responses and performance.
             </p>
           </Card>
           
           <Card className="p-6">
             <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
-              <Users className="w-6 h-6 text-secondary" />
+              <BarChart className="w-6 h-6 text-secondary" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Candidate Matching</h3>
+            <h3 className="text-xl font-semibold mb-2">Interview Analysis</h3>
             <p className="text-muted-foreground">
-              Smart algorithms match candidates to job requirements with detailed compatibility scores.
+              Deep analysis of technical skills, communication, problem-solving, and cultural fit scores.
             </p>
           </Card>
           
           <Card className="p-6">
             <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
-              <Calendar className="w-6 h-6 text-accent" />
+              <Target className="w-6 h-6 text-accent" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Interview Scheduling</h3>
+            <h3 className="text-xl font-semibold mb-2">Structured Evaluation</h3>
             <p className="text-muted-foreground">
-              Automated calendar coordination with candidates and interview panels.
+              Consistent evaluation criteria across all interviews with standardized scoring and feedback.
             </p>
           </Card>
           
