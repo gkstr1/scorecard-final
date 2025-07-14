@@ -198,16 +198,16 @@ const LandingPage = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {/* Beginner Plan */}
-          <Card className="p-8 relative border-2 hover:border-primary/30 transition-colors">
-            <div className="text-center">
+          <Card className="p-8 relative border-2 hover:border-primary/30 transition-colors h-full flex flex-col">
+            <div className="text-center flex-1 flex flex-col">
               <h3 className="text-2xl font-bold mb-2">Beginner</h3>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-primary">$79</span>
                 <span className="text-muted-foreground">/month</span>
               </div>
-              <ul className="space-y-3 mb-6 text-left">
+              <ul className="space-y-3 mb-6 text-left flex-1">
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
                   <span>500 AI tokens included</span>
@@ -244,19 +244,19 @@ const LandingPage = () => {
           </Card>
 
           {/* Intermediate Plan */}
-          <Card className="p-8 relative border-2 border-primary bg-gradient-to-br from-primary/5 to-accent/5">
+          <Card className="p-8 relative border-2 border-primary bg-gradient-to-br from-primary/5 to-accent/5 h-full flex flex-col">
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
               <Badge className="bg-primary text-primary-foreground px-4 py-1">
                 Most Popular
               </Badge>
             </div>
-            <div className="text-center">
+            <div className="text-center flex-1 flex flex-col">
               <h3 className="text-2xl font-bold mb-2">Intermediate</h3>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-primary">$129</span>
                 <span className="text-muted-foreground">/month</span>
               </div>
-              <ul className="space-y-3 mb-6 text-left">
+              <ul className="space-y-3 mb-6 text-left flex-1">
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
                   <span>2000 AI tokens included</span>
@@ -297,14 +297,14 @@ const LandingPage = () => {
           </Card>
 
           {/* Custom Plan */}
-          <Card className="p-8 relative border-2 hover:border-accent/30 transition-colors">
-            <div className="text-center">
+          <Card className="p-8 relative border-2 hover:border-accent/30 transition-colors h-full flex flex-col">
+            <div className="text-center flex-1 flex flex-col">
               <h3 className="text-2xl font-bold mb-2">Custom</h3>
               <div className="mb-6">
                 <span className="text-2xl font-bold text-accent">Contact Us</span>
                 <div className="text-muted-foreground">for a quote</div>
               </div>
-              <ul className="space-y-3 mb-8 text-left">
+              <ul className="space-y-3 mb-8 text-left flex-1">
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-accent" />
                   <span>Unlimited scorecards</span>
