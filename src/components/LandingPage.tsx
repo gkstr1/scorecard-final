@@ -187,6 +187,129 @@ const LandingPage = () => {
         </div>
       </div>
 
+      {/* Pricing Section */}
+      <div className="container mx-auto px-4 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Choose Your Plan
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Select the perfect plan for your interview scorecard needs
+          </p>
+        </div>
+        
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {/* Beginner Plan */}
+          <Card className="p-8 relative border-2 hover:border-primary/30 transition-colors">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold mb-2">Beginner</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-primary">$29</span>
+                <span className="text-muted-foreground">/month</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-left">
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>5 interview scorecards/month</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>Basic AI analysis</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>Standard evaluation criteria</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>Email support</span>
+                </li>
+              </ul>
+              <Button className="w-full" size="lg">
+                Get Started
+              </Button>
+            </div>
+          </Card>
+
+          {/* Intermediate Plan */}
+          <Card className="p-8 relative border-2 border-primary bg-gradient-to-br from-primary/5 to-accent/5">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+              <Badge className="bg-primary text-primary-foreground px-4 py-1">
+                Most Popular
+              </Badge>
+            </div>
+            <div className="text-center">
+              <h3 className="text-2xl font-bold mb-2">Intermediate</h3>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-primary">$79</span>
+                <span className="text-muted-foreground">/month</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-left">
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>25 interview scorecards/month</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>Advanced AI analysis</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>Custom evaluation templates</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>Analytics dashboard</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>Priority support</span>
+                </li>
+              </ul>
+              <Button className="w-full" size="lg">
+                Get Started
+              </Button>
+            </div>
+          </Card>
+
+          {/* Custom Plan */}
+          <Card className="p-8 relative border-2 hover:border-accent/30 transition-colors">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold mb-2">Custom</h3>
+              <div className="mb-6">
+                <span className="text-2xl font-bold text-accent">Contact Us</span>
+                <div className="text-muted-foreground">for a quote</div>
+              </div>
+              <ul className="space-y-3 mb-8 text-left">
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-accent" />
+                  <span>Unlimited scorecards</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-accent" />
+                  <span>Enterprise AI features</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-accent" />
+                  <span>Custom integrations</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-accent" />
+                  <span>Dedicated support</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-accent" />
+                  <span>SLA guarantees</span>
+                </li>
+              </ul>
+              <Button variant="outline" className="w-full" size="lg">
+                Contact Sales
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+
       {/* AI Resume Analysis Section */}
       <div className="container mx-auto px-4 py-20">
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
@@ -357,53 +480,6 @@ const LandingPage = () => {
               One-click candidate actions: approve, schedule, reject, or request more information.
             </p>
           </Card>
-        </div>
-      </div>
-
-      {/* Pricing Section */}
-      <div className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl p-8 md:p-12 border border-primary/20">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                  Fair pricing.
-                  <br />
-                  No hidden fees.
-                </h2>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Start with our free plan and upgrade as your team grows. No setup fees, no hidden costs.
-                </p>
-                <div className="space-y-3 mb-8">
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="w-5 h-5 text-primary" />
-                    <span className="text-muted-foreground">Up to 50 candidates per month</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="w-5 h-5 text-primary" />
-                    <span className="text-muted-foreground">AI resume analysis</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="w-5 h-5 text-primary" />
-                    <span className="text-muted-foreground">Basic analytics</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="text-center">
-                <div className="bg-background rounded-xl p-8 shadow-lg">
-                  <div className="text-5xl font-bold text-primary mb-2">$59</div>
-                  <div className="text-muted-foreground mb-6">per month</div>
-                  <Button size="lg" className="w-full mb-4">
-                    Start free trial
-                  </Button>
-                  <p className="text-sm text-muted-foreground">
-                    7-day free trial. Cancel anytime.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
