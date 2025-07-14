@@ -520,13 +520,34 @@ const LandingPage = () => {
             </Badge>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-            From One Recruiter to Another
+            The Pain Points We Solve
           </h2>
+          <div className="grid md:grid-cols-2 gap-8 mb-12 text-left">
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-primary">Before Scorecard:</h3>
+              <ul className="space-y-3 text-muted-foreground">
+                <li>• Struggling to assess technical candidates without coding knowledge</li>
+                <li>• Getting pushback from hiring managers on candidate quality</li>
+                <li>• Spending hours on manual interview scheduling and coordination</li>
+                <li>• Lacking confidence in technical conversations</li>
+                <li>• No standardized way to measure candidate performance</li>
+                <li>• Difficulty proving ROI to leadership</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-primary">After Scorecard:</h3>
+              <ul className="space-y-3 text-muted-foreground">
+                <li>• AI generates perfect technical questions for every role</li>
+                <li>• Hiring managers trust your technical assessments</li>
+                <li>• Automated scheduling saves hours every week</li>
+                <li>• Data-driven scorecards give you confidence</li>
+                <li>• Standardized metrics across all interviews</li>
+                <li>• Clear KPIs that showcase your impact</li>
+              </ul>
+            </div>
+          </div>
           <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
-            I've been where you are - trying to assess technical candidates without a technical background. Getting pushback from hiring managers. Feeling like you're just forwarding resumes and hoping for the best.
-          </p>
-          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
-            That's why I built Scorecard. To give you the confidence to have technical conversations, ask the right questions, and deliver insights that make hiring managers see you as their most valuable partner.
+            We built Scorecard to eliminate these pain points and transform how recruiters handle technical hiring.
           </p>
           <div className="grid md:grid-cols-3 gap-8 mt-12">
             <div className="text-center">
@@ -538,8 +559,8 @@ const LandingPage = () => {
               <div className="text-sm text-muted-foreground">More confident in technical discussions</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">92%</div>
-              <div className="text-sm text-muted-foreground">Hiring manager satisfaction rate</div>
+              <div className="text-3xl font-bold text-primary mb-2">100%</div>
+              <div className="text-sm text-muted-foreground">Hiring manager satisfaction</div>
             </div>
           </div>
         </div>
