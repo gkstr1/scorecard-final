@@ -25,7 +25,7 @@ const LandingPage = () => {
           </div>
         </div>
         
-        <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight max-w-7xl mx-auto">
+        <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-4 leading-tight max-w-7xl mx-auto">
           Make ANY recruiter
           <span className="block text-primary relative">
             Technical
