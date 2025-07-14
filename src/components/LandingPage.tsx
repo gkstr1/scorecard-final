@@ -198,7 +198,7 @@ const LandingPage = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
           {/* Beginner Plan */}
           <Card className="p-8 relative border-2 hover:border-primary/30 transition-colors">
             <div className="text-center">
@@ -218,6 +218,10 @@ const LandingPage = () => {
                 </li>
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>Unlimited interview scorecards</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
                   <span>Basic AI analysis</span>
                 </li>
                 <li className="flex items-center space-x-3">
@@ -231,7 +235,6 @@ const LandingPage = () => {
               </ul>
               <div className="mb-6 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-lg border border-accent/20">
                 <p className="text-sm text-muted-foreground mb-2">Add-ons available:</p>
-                <p className="text-xs text-accent font-medium">Scorecards: $15/each</p>
                 <p className="text-xs text-accent font-medium">+1000 AI tokens: $15/month</p>
               </div>
               <Button className="w-full" size="lg">
@@ -264,6 +267,10 @@ const LandingPage = () => {
                 </li>
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>Unlimited interview scorecards</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
                   <span>Advanced AI analysis</span>
                 </li>
                 <li className="flex items-center space-x-3">
@@ -281,7 +288,6 @@ const LandingPage = () => {
               </ul>
               <div className="mb-6 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-lg border border-accent/20">
                 <p className="text-sm text-muted-foreground mb-2">Add-ons available:</p>
-                <p className="text-xs text-accent font-medium">Scorecards: $10/each</p>
                 <p className="text-xs text-accent font-medium">+5000 AI tokens: $10/month</p>
               </div>
               <Button className="w-full" size="lg">
