@@ -29,16 +29,20 @@ const LandingPage = () => {
         </div>
         
         <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4 leading-tight max-w-4xl mx-auto">
-          AI-Powered Interview
+          Make Non-Technical Recruiters
           <span className="block text-primary relative">
-            Scorecards
+            Technical
             {/* Underline effect */}
             <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary/0 via-primary/50 to-primary/0"></div>
           </span>
         </h1>
         
-        <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Generate detailed scorecards after every interview with AI analysis, structured feedback, and data-driven hiring decisions.
+        <p className="text-lg text-muted-foreground mb-4 max-w-3xl mx-auto">
+          Built by a recruiter for recruiters. Conduct professional technical interviews with AI-generated questions, automated scheduling, live assessments, and data-driven scorecards that turn hiring managers into your biggest fans.
+        </p>
+        
+        <p className="text-base text-muted-foreground/80 mb-8 max-w-2xl mx-auto font-medium">
+          No coding experience required. Just results that speak for themselves.
         </p>
         
         {/* Try free text */}
@@ -435,12 +439,12 @@ const LandingPage = () => {
       <div className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            AI Interview Scorecards.
+            Everything You Need to Conduct
             <br />
-            Powered by Intelligence.
+            <span className="text-primary">Professional Technical Interviews</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Generate comprehensive post-interview scorecards with AI analysis, structured evaluation, and actionable insights for better hiring decisions.
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            From AI-generated questions to automated scheduling and comprehensive metrics - we've built everything a recruiter needs to excel at technical hiring.
           </p>
         </div>
         
@@ -449,29 +453,29 @@ const LandingPage = () => {
             <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
               <Brain className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">AI Scorecard Generation</h3>
+            <h3 className="text-xl font-semibold mb-2">AI-Generated Questions</h3>
             <p className="text-muted-foreground">
-              Automatically generate detailed interview scorecards with AI analysis of candidate responses and performance.
+              Smart questions tailored to each candidate's resume and experience level. No more generic interviews - every question is personalized and relevant.
             </p>
           </Card>
           
           <Card className="p-6">
             <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
-              <BarChart className="w-6 h-6 text-secondary" />
+              <Users className="w-6 h-6 text-secondary" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Interview Analysis</h3>
+            <h3 className="text-xl font-semibold mb-2">Live & Automated Interviews</h3>
             <p className="text-muted-foreground">
-              Deep analysis of technical skills, communication, problem-solving, and cultural fit scores.
+              Conduct live technical interviews with real-time guidance, or set up automated assessments for initial screening.
             </p>
           </Card>
           
           <Card className="p-6">
             <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
-              <Target className="w-6 h-6 text-accent" />
+              <Calendar className="w-6 h-6 text-accent" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Structured Evaluation</h3>
+            <h3 className="text-xl font-semibold mb-2">Smart Calendar Integration</h3>
             <p className="text-muted-foreground">
-              Consistent evaluation criteria across all interviews with standardized scoring and feedback.
+              Automatically send Zoom or Teams invites when candidates reach the technical interview stage. No manual scheduling required.
             </p>
           </Card>
           
@@ -479,31 +483,65 @@ const LandingPage = () => {
             <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
               <BarChart className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Analytics Dashboard</h3>
+            <h3 className="text-xl font-semibold mb-2">Hiring Manager KPIs</h3>
             <p className="text-muted-foreground">
-              Track hiring metrics, candidate pipeline, and team performance in real-time.
+              Comprehensive metrics and reports that you can send directly to hiring managers. Show your impact with data-driven insights.
             </p>
           </Card>
           
           <Card className="p-6">
             <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
-              <Clock className="w-6 h-6 text-secondary" />
+              <Target className="w-6 h-6 text-secondary" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Time Management</h3>
+            <h3 className="text-xl font-semibold mb-2">AI Scorecard Analysis</h3>
             <p className="text-muted-foreground">
-              Reduce time-to-hire by 60% with automated workflows and smart prioritization.
+              Detailed post-interview scorecards with technical skills assessment, cultural fit evaluation, and hiring recommendations.
             </p>
           </Card>
           
           <Card className="p-6">
             <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
-              <Zap className="w-6 h-6 text-accent" />
+              <Clock className="w-6 h-6 text-accent" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Quick Actions</h3>
+            <h3 className="text-xl font-semibold mb-2">Pipeline Automation</h3>
             <p className="text-muted-foreground">
-              One-click candidate actions: approve, schedule, reject, or request more information.
+              Candidates automatically move through your pipeline based on scores and criteria. Spend less time on admin, more time on relationships.
             </p>
           </Card>
+        </div>
+      </div>
+
+      {/* Recruiter-to-Recruiter Section */}
+      <div className="container mx-auto px-4 py-20 bg-gradient-to-br from-primary/5 to-accent/5">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="mb-8">
+            <Badge className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm">
+              Built by a Recruiter
+            </Badge>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+            From One Recruiter to Another
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
+            I've been where you are - trying to assess technical candidates without a technical background. Getting pushback from hiring managers. Feeling like you're just forwarding resumes and hoping for the best.
+          </p>
+          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
+            That's why I built Scorecard. To give you the confidence to have technical conversations, ask the right questions, and deliver insights that make hiring managers see you as their most valuable partner.
+          </p>
+          <div className="grid md:grid-cols-3 gap-8 mt-12">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary mb-2">85%</div>
+              <div className="text-sm text-muted-foreground">Less time per technical interview</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary mb-2">3x</div>
+              <div className="text-sm text-muted-foreground">More confident in technical discussions</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary mb-2">92%</div>
+              <div className="text-sm text-muted-foreground">Hiring manager satisfaction rate</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
