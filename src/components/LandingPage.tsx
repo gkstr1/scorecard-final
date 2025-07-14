@@ -520,13 +520,13 @@ const LandingPage = () => {
             </Badge>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-            The Pain Points We Solve
+            The Complete Solution
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Struggling to assess technical candidates without coding knowledge? Getting pushback from hiring managers on candidate quality? Spending hours on manual interview scheduling and lacking confidence in technical conversations?
+            Scorecard gives non-technical recruiters the power to conduct professional technical interviews with confidence. AI generates perfect questions, automates scheduling, and creates data-driven scorecards that hiring managers trust.
           </p>
           <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
-            We built Scorecard to eliminate these pain points and transform how recruiters handle technical hiring.
+            Built by a recruiter who understands exactly what you need to succeed in technical hiring.
           </p>
           <div className="grid md:grid-cols-3 gap-8 mt-12">
             <div className="text-center">
