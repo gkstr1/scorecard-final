@@ -210,11 +210,11 @@ const LandingPage = () => {
               <ul className="space-y-3 mb-6 text-left">
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
-                  <span>10 interview scorecards/month</span>
+                  <span>500 AI tokens included</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
-                  <span>500 AI tokens included</span>
+                  <span>AI interview questions generation</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
@@ -231,7 +231,8 @@ const LandingPage = () => {
               </ul>
               <div className="mb-6 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-lg border border-accent/20">
                 <p className="text-sm text-muted-foreground mb-2">Add-ons available:</p>
-                <p className="text-xs text-accent font-medium">+1000 AI tokens for $15/month</p>
+                <p className="text-xs text-accent font-medium">Scorecards: $15/each</p>
+                <p className="text-xs text-accent font-medium">+1000 AI tokens: $15/month</p>
               </div>
               <Button className="w-full" size="lg">
                 Get Started
@@ -255,11 +256,11 @@ const LandingPage = () => {
               <ul className="space-y-3 mb-6 text-left">
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
-                  <span>50 interview scorecards/month</span>
+                  <span>2000 AI tokens included</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
-                  <span>2000 AI tokens included</span>
+                  <span>Advanced AI interview questions</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
@@ -280,7 +281,8 @@ const LandingPage = () => {
               </ul>
               <div className="mb-6 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-lg border border-accent/20">
                 <p className="text-sm text-muted-foreground mb-2">Add-ons available:</p>
-                <p className="text-xs text-accent font-medium">+5000 AI tokens for $25/month</p>
+                <p className="text-xs text-accent font-medium">Scorecards: $10/each</p>
+                <p className="text-xs text-accent font-medium">+5000 AI tokens: $10/month</p>
               </div>
               <Button className="w-full" size="lg">
                 Get Started
