@@ -204,13 +204,17 @@ const LandingPage = () => {
             <div className="text-center">
               <h3 className="text-2xl font-bold mb-2">Beginner</h3>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-primary">$29</span>
+                <span className="text-4xl font-bold text-primary">$79</span>
                 <span className="text-muted-foreground">/month</span>
               </div>
-              <ul className="space-y-3 mb-8 text-left">
+              <ul className="space-y-3 mb-6 text-left">
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
-                  <span>5 interview scorecards/month</span>
+                  <span>10 interview scorecards/month</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>500 AI tokens included</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
@@ -225,6 +229,10 @@ const LandingPage = () => {
                   <span>Email support</span>
                 </li>
               </ul>
+              <div className="mb-6 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-lg border border-accent/20">
+                <p className="text-sm text-muted-foreground mb-2">Add-ons available:</p>
+                <p className="text-xs text-accent font-medium">+1000 AI tokens for $15/month</p>
+              </div>
               <Button className="w-full" size="lg">
                 Get Started
               </Button>
@@ -241,13 +249,17 @@ const LandingPage = () => {
             <div className="text-center">
               <h3 className="text-2xl font-bold mb-2">Intermediate</h3>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-primary">$79</span>
+                <span className="text-4xl font-bold text-primary">$129</span>
                 <span className="text-muted-foreground">/month</span>
               </div>
-              <ul className="space-y-3 mb-8 text-left">
+              <ul className="space-y-3 mb-6 text-left">
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
-                  <span>25 interview scorecards/month</span>
+                  <span>50 interview scorecards/month</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-primary" />
+                  <span>2000 AI tokens included</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   <CheckCircle className="w-5 h-5 text-primary" />
@@ -266,6 +278,10 @@ const LandingPage = () => {
                   <span>Priority support</span>
                 </li>
               </ul>
+              <div className="mb-6 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-lg border border-accent/20">
+                <p className="text-sm text-muted-foreground mb-2">Add-ons available:</p>
+                <p className="text-xs text-accent font-medium">+5000 AI tokens for $25/month</p>
+              </div>
               <Button className="w-full" size="lg">
                 Get Started
               </Button>
