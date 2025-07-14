@@ -518,9 +518,7 @@ const LandingPage = () => {
           <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
             Scorecard gives non-technical recruiters the power to conduct professional technical interviews with confidence. AI generates perfect questions, automates scheduling, and creates data-driven scorecards that hiring managers trust.
           </p>
-          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Built by a recruiter who understands exactly what you need to succeed in technical hiring.
-          </p>
+          <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">We understand what you need to succeed in technical hiring.</p>
           <div className="grid md:grid-cols-3 gap-8 mt-12">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary mb-2">85%</div>
