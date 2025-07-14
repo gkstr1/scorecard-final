@@ -34,9 +34,7 @@ const LandingPage = () => {
           </span>
         </h1>
         
-        <p className="text-lg text-muted-foreground mb-4 max-w-3xl mx-auto">
-          Built by a recruiter for recruiters. Conduct professional technical interviews with AI-generated questions, automated scheduling, live assessments, and data-driven scorecards that turn hiring managers into your biggest fans.
-        </p>
+        <p className="text-lg text-muted-foreground mb-4 max-w-3xl mx-auto">Conduct professional technical interviews with AI-generated questions, automated scheduling, live assessments, and data-driven scorecards that turn hiring managers into your biggest fans.</p>
         
         <p className="text-base text-muted-foreground/80 mb-8 max-w-2xl mx-auto font-medium">
           Full-scale AI-powered ATS. Simple. Strong. Complete.
