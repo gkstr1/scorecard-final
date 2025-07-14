@@ -177,6 +177,92 @@ const LandingPage = () => {
         </div>
       </div>
 
+      {/* ATS Features Section */}
+      <div className="container mx-auto px-4 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Complete ATS Platform
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            Beyond AI interviews and scorecards, Scorecard provides a full-featured ATS to streamline your entire hiring process
+          </p>
+        </div>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <Card className="p-6 hover:shadow-lg transition-shadow">
+            <CardContent className="p-0">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Users className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Candidate Management</h3>
+              <p className="text-muted-foreground text-sm">
+                Organize candidates with custom pipelines, tags, and status tracking. Import from LinkedIn, job boards, or CSV files.
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="p-6 hover:shadow-lg transition-shadow">
+            <CardContent className="p-0">
+              <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
+                <Calendar className="w-6 h-6 text-accent" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Interview Scheduling</h3>
+              <p className="text-muted-foreground text-sm">
+                Automated calendar integration, interview reminders, and timezone handling. Send calendar invites with one click.
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="p-6 hover:shadow-lg transition-shadow">
+            <CardContent className="p-0">
+              <div className="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center mb-4">
+                <FileText className="w-6 h-6 text-secondary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Resume Parsing</h3>
+              <p className="text-muted-foreground text-sm">
+                AI-powered resume extraction automatically captures skills, experience, education, and contact information.
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="p-6 hover:shadow-lg transition-shadow">
+            <CardContent className="p-0">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Target className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Job Management</h3>
+              <p className="text-muted-foreground text-sm">
+                Create job descriptions, manage requirements, and track applications. Post to multiple job boards simultaneously.
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="p-6 hover:shadow-lg transition-shadow">
+            <CardContent className="p-0">
+              <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
+                <Mail className="w-6 h-6 text-accent" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Client Portal</h3>
+              <p className="text-muted-foreground text-sm">
+                Client dashboard with real-time updates, candidate progress, and collaborative feedback tools.
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="p-6 hover:shadow-lg transition-shadow">
+            <CardContent className="p-0">
+              <div className="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center mb-4">
+                <BarChart className="w-6 h-6 text-secondary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Analytics & Reporting</h3>
+              <p className="text-muted-foreground text-sm">
+                Track pipeline metrics, time-to-hire, conversion rates, and performance insights with custom dashboards.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
       {/* Pricing Section */}
       <div className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
