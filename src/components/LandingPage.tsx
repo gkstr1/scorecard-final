@@ -26,7 +26,7 @@ const LandingPage = () => {
         </div>
         
         <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-4 leading-tight max-w-7xl mx-auto">
-          Make ANY recruiter
+          Make Any Recruiter
           <span className="block text-primary relative">
             Technical
             {/* Underline effect */}
