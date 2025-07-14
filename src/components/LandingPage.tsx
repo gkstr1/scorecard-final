@@ -498,7 +498,7 @@ const LandingPage = () => {
       </div>
 
       {/* Recruiter-to-Recruiter Section */}
-      <div className="container mx-auto px-4 py-20 bg-gradient-to-br from-primary/5 to-accent/5">
+      <div className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center">
           <div className="mb-8">
             <div className="bg-primary/10 text-white border-primary/20 px-4 py-2 text-lg font-handwriting">Built by a Recruiter </div>
