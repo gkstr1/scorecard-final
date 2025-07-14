@@ -1,12 +1,9 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Brain, ArrowRight, CheckCircle, Calendar, Mail, Target, Users, Clock, Zap, BarChart, FileText, Star, TrendingUp, Lightbulb, MessageSquare, Award } from "lucide-react";
-
 const LandingPage = () => {
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 text-center relative overflow-hidden">
         {/* Artistic Background Elements */}
@@ -89,9 +86,7 @@ const LandingPage = () => {
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-5">
               <div className="grid grid-cols-8 grid-rows-8 h-full w-full">
-                {[...Array(64)].map((_, i) => (
-                  <div key={i} className="border border-primary/20"></div>
-                ))}
+                {[...Array(64)].map((_, i) => <div key={i} className="border border-primary/20"></div>)}
               </div>
             </div>
 
@@ -515,9 +510,7 @@ const LandingPage = () => {
       <div className="container mx-auto px-4 py-20 bg-gradient-to-br from-primary/5 to-accent/5">
         <div className="max-w-4xl mx-auto text-center">
           <div className="mb-8">
-            <div className="bg-primary/10 text-white border-primary/20 px-4 py-2 text-lg font-handwriting">
-              Try Scorecard for 7 days
-            </div>
+            <div className="bg-primary/10 text-white border-primary/20 px-4 py-2 text-lg font-handwriting">Built by a Recruiter </div>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
             The Complete Solution
@@ -544,8 +537,6 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default LandingPage;
