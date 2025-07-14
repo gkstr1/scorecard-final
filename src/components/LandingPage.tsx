@@ -72,13 +72,6 @@ const LandingPage = () => {
       {/* Artistic Scorecard Preview */}
       <div className="container mx-auto px-4 mb-20">
         <div className="max-w-4xl mx-auto relative">
-          {/* Floating AI Elements */}
-          <div className="absolute -top-8 -left-8 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-            <Brain className="w-8 h-8 text-primary" />
-          </div>
-          <div className="absolute -top-4 -right-12 w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-            <Star className="w-6 h-6 text-accent" />
-          </div>
 
           <div className="bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 rounded-3xl p-8 border border-primary/20 relative overflow-hidden">
             {/* Background pattern */}
