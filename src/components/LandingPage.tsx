@@ -42,7 +42,7 @@ const LandingPage = () => {
         </p>
         
         <p className="text-base text-muted-foreground/80 mb-8 max-w-2xl mx-auto font-medium">
-          No coding experience required. Just results that speak for themselves.
+          Full-scale AI-powered ATS. Simple. Strong. Complete.
         </p>
         
         {/* Try free text */}
