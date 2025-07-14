@@ -515,9 +515,9 @@ const LandingPage = () => {
       <div className="container mx-auto px-4 py-20 bg-gradient-to-br from-primary/5 to-accent/5">
         <div className="max-w-4xl mx-auto text-center">
           <div className="mb-8">
-            <Badge className="bg-primary/10 text-primary border-primary/20 px-4 py-2 text-sm">
-              Built by a Recruiter
-            </Badge>
+            <div className="bg-primary/10 text-white border-primary/20 px-4 py-2 text-lg font-handwriting">
+              Try Scorecard for 7 days
+            </div>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
             The Complete Solution
