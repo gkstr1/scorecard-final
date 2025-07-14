@@ -26,7 +26,7 @@ const LandingPage = () => {
         </div>
         
         <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight max-w-7xl mx-auto">
-          Makes Non-Technical Recruiters
+          Make ANY recruiter
           <span className="block text-primary relative">
             Technical
             {/* Underline effect */}
