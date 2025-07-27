@@ -1,52 +1,57 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Send, FileText, Users, Clock, Download, Eye, Calendar, Mail, CheckCircle, AlertCircle, Plus, Building } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar, Send, Users, Target, Clock, TrendingUp, Briefcase, CheckCircle, BarChart3, PieChart } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
 import { format, subDays, startOfWeek, endOfWeek } from 'date-fns';
-import { toast } from '@/hooks/use-toast';
 
-interface ClientJob {
+interface Candidate {
   id: string;
-  title: string;
-  client_name: string;
-  client_id: string;
+  name: string;
+  email: string;
+  position: string;
   status: string;
-  created_at: string;
-  candidates_count: number;
-  interviews_count: number;
-  hires_count: number;
+  applied_date: string;
+  job_id: string;
 }
 
-interface ReportData {
-  job: ClientJob;
-  candidates: Array<{
+interface JobDescription {
+  id: string;
+  title: string;
+  created_at: string;
+  client_id: string;
+  clients?: {
     id: string;
     name: string;
-    status: string;
-    applied_date: string;
-    position: string;
     email: string;
-  }>;
-  summary: {
-    totalApplications: number;
-    shortlisted: number;
-    interviewed: number;
-    offered: number;
-    hired: number;
-    rejected: number;
   };
 }
 
-const statusColors: Record<string, string> = {
-  applied: 'hsl(var(--muted))',
+interface Interview {
+  id: string;
+  candidate_id: string;
+  scheduled_date: string;
+  status: string;
+}
+
+interface WeeklyActivity {
+  weekStart: string;
+  newCandidates: number;
+  interviews: number;
+  offers: number;
+  hires: number;
+}
+
+const COLORS = {
+  applied: 'hsl(var(--muted-foreground))',
   screening: 'hsl(var(--primary))',
   interview: 'hsl(var(--accent))',
   offer: 'hsl(var(--warning))',
@@ -55,89 +60,62 @@ const statusColors: Record<string, string> = {
 };
 
 export function ReportsOverview() {
-  const [clientJobs, setClientJobs] = useState<ClientJob[]>([]);
-  const [selectedJob, setSelectedJob] = useState<string>('');
-  const [reportData, setReportData] = useState<ReportData | null>(null);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [jobs, setJobs] = useState<JobDescription[]>([]);
+  const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sendingReport, setSendingReport] = useState(false);
+  const [dateRange, setDateRange] = useState('30');
   const [showSendDialog, setShowSendDialog] = useState(false);
-  const [reportNotes, setReportNotes] = useState('');
   const [recipientEmail, setRecipientEmail] = useState('');
+  const [reportNotes, setReportNotes] = useState('');
+  const [sendingReport, setSendingReport] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
-    fetchClientJobs();
-  }, []);
+    fetchData();
+  }, [dateRange]);
 
-  useEffect(() => {
-    if (selectedJob) {
-      fetchReportData(selectedJob);
-    }
-  }, [selectedJob]);
-
-  const fetchClientJobs = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch jobs with client information
-      const { data: jobs } = await supabase
+      const daysAgo = parseInt(dateRange);
+      const fromDate = subDays(new Date(), daysAgo).toISOString();
+
+      // Fetch candidates
+      const { data: candidatesData } = await supabase
+        .from('candidates')
+        .select('*')
+        .gte('applied_date', fromDate)
+        .order('applied_date', { ascending: false });
+
+      // Fetch jobs with client info
+      const { data: jobsData } = await supabase
         .from('job_descriptions')
         .select(`
-          id,
-          title,
-          created_at,
-          is_active,
+          *,
           clients (
             id,
-            name
+            name,
+            email
           )
         `)
         .eq('is_active', true);
 
-      if (jobs) {
-        // Get candidate counts for each job
-        const jobsWithCounts = await Promise.all(
-          jobs.map(async (job) => {
-            const { count: candidatesCount } = await supabase
-              .from('candidates')
-              .select('*', { count: 'exact' })
-              .eq('job_id', job.id);
+      // Fetch interviews
+      const { data: interviewsData } = await supabase
+        .from('interviews')
+        .select('*')
+        .gte('scheduled_date', fromDate)
+        .order('scheduled_date', { ascending: false });
 
-            const { count: interviewsCount } = await supabase
-              .from('interviews')
-              .select('*', { count: 'exact' })
-              .in('candidate_id', 
-                (await supabase.from('candidates').select('id').eq('job_id', job.id)).data?.map(c => c.id) || []
-              );
-
-            const { count: hiresCount } = await supabase
-              .from('candidates')
-              .select('*', { count: 'exact' })
-              .eq('job_id', job.id)
-              .eq('status', 'hired');
-
-            return {
-              id: job.id,
-              title: job.title,
-              client_name: job.clients?.name || 'No Client',
-              client_id: job.clients?.id || '',
-              status: job.is_active ? 'Active' : 'Inactive',
-              created_at: job.created_at,
-              candidates_count: candidatesCount || 0,
-              interviews_count: interviewsCount || 0,
-              hires_count: hiresCount || 0,
-            };
-          })
-        );
-
-        setClientJobs(jobsWithCounts);
-        if (jobsWithCounts.length > 0) {
-          setSelectedJob(jobsWithCounts[0].id);
-        }
-      }
+      setCandidates(candidatesData || []);
+      setJobs(jobsData || []);
+      setInterviews(interviewsData || []);
     } catch (error) {
-      console.error('Error fetching client jobs:', error);
+      console.error('Error fetching data:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch client jobs",
+        description: "Failed to fetch analytics data",
         variant: "destructive",
       });
     } finally {
@@ -145,45 +123,11 @@ export function ReportsOverview() {
     }
   };
 
-  const fetchReportData = async (jobId: string) => {
-    try {
-      const job = clientJobs.find(j => j.id === jobId);
-      if (!job) return;
-
-      // Fetch candidates for this job
-      const { data: candidates } = await supabase
-        .from('candidates')
-        .select('*')
-        .eq('job_id', jobId)
-        .order('applied_date', { ascending: false });
-
-      if (candidates) {
-        // Calculate summary statistics
-        const summary = {
-          totalApplications: candidates.length,
-          shortlisted: candidates.filter(c => c.status === 'screening').length,
-          interviewed: candidates.filter(c => c.status === 'interview').length,
-          offered: candidates.filter(c => c.status === 'offer').length,
-          hired: candidates.filter(c => c.status === 'hired').length,
-          rejected: candidates.filter(c => c.status === 'rejected').length,
-        };
-
-        setReportData({
-          job,
-          candidates,
-          summary,
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching report data:', error);
-    }
-  };
-
-  const handleSendReport = async () => {
-    if (!reportData || !recipientEmail) {
+  const handleSendWeeklyReport = async () => {
+    if (!recipientEmail) {
       toast({
         title: "Error",
-        description: "Please select a job and enter recipient email",
+        description: "Please enter recipient email",
         variant: "destructive",
       });
       return;
@@ -191,12 +135,23 @@ export function ReportsOverview() {
 
     setSendingReport(true);
     try {
-      // Call edge function to send report email
+      const weeklyData = generateWeeklyActivityData();
+      const pipelineStats = calculatePipelineStats();
+      
       const { error } = await supabase.functions.invoke('send-client-report', {
         body: {
-          reportData,
+          type: 'weekly_activity',
           recipientEmail,
           notes: reportNotes,
+          data: {
+            weeklyActivity: weeklyData,
+            pipelineStats,
+            candidates: candidates.slice(0, 10),
+            totalJobs: jobs.length,
+            totalCandidates: candidates.length,
+            totalInterviews: interviews.length,
+            dateRange: `Last ${dateRange} days`,
+          },
         },
       });
 
@@ -204,7 +159,7 @@ export function ReportsOverview() {
 
       toast({
         title: "Success",
-        description: "Report sent successfully to client",
+        description: "Weekly activity report sent successfully",
       });
       
       setShowSendDialog(false);
@@ -222,19 +177,69 @@ export function ReportsOverview() {
     }
   };
 
-  const generatePDF = () => {
-    // This would generate a PDF version of the report
-    toast({
-      title: "Coming Soon",
-      description: "PDF generation will be available soon",
-    });
+  const calculatePipelineStats = () => {
+    const stats = {
+      applied: candidates.filter(c => c.status === 'applied').length,
+      screening: candidates.filter(c => c.status === 'screening').length,
+      interview: candidates.filter(c => c.status === 'interview').length,
+      offer: candidates.filter(c => c.status === 'offer').length,
+      hired: candidates.filter(c => c.status === 'hired').length,
+      rejected: candidates.filter(c => c.status === 'rejected').length,
+    };
+
+    const total = Object.values(stats).reduce((sum, val) => sum + val, 0);
+    const conversionRate = total > 0 ? ((stats.hired / total) * 100).toFixed(1) : '0';
+    
+    return { ...stats, total, conversionRate };
   };
+
+  const generateWeeklyActivityData = (): WeeklyActivity[] => {
+    const weeks: WeeklyActivity[] = [];
+    const daysAgo = parseInt(dateRange);
+    
+    for (let i = 0; i < Math.min(4, Math.ceil(daysAgo / 7)); i++) {
+      const weekStart = startOfWeek(subDays(new Date(), i * 7));
+      const weekEnd = endOfWeek(weekStart);
+      
+      const weekCandidates = candidates.filter(c => {
+        const appliedDate = new Date(c.applied_date);
+        return appliedDate >= weekStart && appliedDate <= weekEnd;
+      });
+
+      const weekInterviews = interviews.filter(i => {
+        const interviewDate = new Date(i.scheduled_date);
+        return interviewDate >= weekStart && interviewDate <= weekEnd;
+      });
+
+      weeks.push({
+        weekStart: format(weekStart, 'MMM dd'),
+        newCandidates: weekCandidates.length,
+        interviews: weekInterviews.length,
+        offers: weekCandidates.filter(c => c.status === 'offer').length,
+        hires: weekCandidates.filter(c => c.status === 'hired').length,
+      });
+    }
+    
+    return weeks.reverse();
+  };
+
+  const pipelineStats = calculatePipelineStats();
+  const weeklyData = generateWeeklyActivityData();
+
+  const pieData = [
+    { name: 'Applied', value: pipelineStats.applied, color: COLORS.applied },
+    { name: 'Screening', value: pipelineStats.screening, color: COLORS.screening },
+    { name: 'Interview', value: pipelineStats.interview, color: COLORS.interview },
+    { name: 'Offer', value: pipelineStats.offer, color: COLORS.offer },
+    { name: 'Hired', value: pipelineStats.hired, color: COLORS.hired },
+    { name: 'Rejected', value: pipelineStats.rejected, color: COLORS.rejected },
+  ].filter(item => item.value > 0);
 
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardContent className="p-6">
                 <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
@@ -247,71 +252,39 @@ export function ReportsOverview() {
     );
   }
 
-  if (clientJobs.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-        <Building className="h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-medium mb-2">No Active Jobs Found</h3>
-        <p className="text-muted-foreground mb-4">Create jobs with clients to generate recruitment reports</p>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Job
-        </Button>
-      </div>
-    );
-  }
-
-  const chartData = reportData ? [
-    { name: 'Applied', value: reportData.summary.totalApplications, color: statusColors.applied },
-    { name: 'Screening', value: reportData.summary.shortlisted, color: statusColors.screening },
-    { name: 'Interview', value: reportData.summary.interviewed, color: statusColors.interview },
-    { name: 'Offer', value: reportData.summary.offered, color: statusColors.offer },
-    { name: 'Hired', value: reportData.summary.hired, color: statusColors.hired },
-    { name: 'Rejected', value: reportData.summary.rejected, color: statusColors.rejected },
-  ].filter(item => item.value > 0) : [];
-
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Client Reports</h2>
-          <p className="text-muted-foreground">Generate and send recruitment progress reports to hiring managers</p>
+          <h2 className="text-2xl font-bold text-foreground">Analytics & Reports</h2>
+          <p className="text-muted-foreground">Track recruitment performance and send activity reports to hiring managers</p>
         </div>
         <div className="flex items-center gap-3">
-          <Select value={selectedJob} onValueChange={setSelectedJob}>
-            <SelectTrigger className="w-[280px]">
-              <SelectValue placeholder="Select job position" />
+          <Select value={dateRange} onValueChange={setDateRange}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {clientJobs.map((job) => (
-                <SelectItem key={job.id} value={job.id}>
-                  <div className="flex items-center gap-2">
-                    <span>{job.title}</span>
-                    <Badge variant="outline" className="text-xs">
-                      {job.client_name}
-                    </Badge>
-                  </div>
-                </SelectItem>
-              ))}
+              <SelectItem value="7">Last 7 days</SelectItem>
+              <SelectItem value="30">Last 30 days</SelectItem>
+              <SelectItem value="90">Last 90 days</SelectItem>
             </SelectContent>
           </Select>
           
-          <Button variant="outline" size="sm" onClick={generatePDF}>
-            <Download className="h-4 w-4 mr-2" />
-            Export PDF
-          </Button>
-          
           <Dialog open={showSendDialog} onOpenChange={setShowSendDialog}>
             <DialogTrigger asChild>
-              <Button size="sm">
+              <Button>
                 <Send className="h-4 w-4 mr-2" />
-                Send Report
+                Send Weekly Report
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Send Report to Client</DialogTitle>
+                <DialogTitle>Send Weekly Activity Report</DialogTitle>
+                <DialogDescription>
+                  Send a summary of recruitment activity to hiring managers
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
@@ -319,7 +292,7 @@ export function ReportsOverview() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="client@company.com"
+                    placeholder="manager@company.com"
                     value={recipientEmail}
                     onChange={(e) => setRecipientEmail(e.target.value)}
                   />
@@ -328,7 +301,7 @@ export function ReportsOverview() {
                   <Label htmlFor="notes">Additional Notes (Optional)</Label>
                   <Textarea
                     id="notes"
-                    placeholder="Add any additional context or updates for the client..."
+                    placeholder="Add any highlights or updates for this week..."
                     value={reportNotes}
                     onChange={(e) => setReportNotes(e.target.value)}
                     rows={3}
@@ -338,7 +311,7 @@ export function ReportsOverview() {
                   <Button variant="outline" onClick={() => setShowSendDialog(false)}>
                     Cancel
                   </Button>
-                  <Button onClick={handleSendReport} disabled={sendingReport}>
+                  <Button onClick={handleSendWeeklyReport} disabled={sendingReport}>
                     {sendingReport ? 'Sending...' : 'Send Report'}
                   </Button>
                 </div>
@@ -348,196 +321,195 @@ export function ReportsOverview() {
         </div>
       </div>
 
-      {reportData && (
-        <>
-          {/* Job Overview */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                {reportData.job.title} - Recruitment Report
-              </CardTitle>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <span>Client: {reportData.job.client_name}</span>
-                <span>Posted: {format(new Date(reportData.job.created_at), 'MMM dd, yyyy')}</span>
-                <Badge variant="outline">{reportData.job.status}</Badge>
-              </div>
-            </CardHeader>
-          </Card>
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Candidates</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{pipelineStats.total}</div>
+            <p className="text-xs text-muted-foreground">
+              Last {dateRange} days
+            </p>
+          </CardContent>
+        </Card>
 
-          {/* Key Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-foreground">{reportData.summary.totalApplications}</p>
-                  <p className="text-sm text-muted-foreground">Total Applications</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-blue-600">{reportData.summary.shortlisted}</p>
-                  <p className="text-sm text-muted-foreground">Screening</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-purple-600">{reportData.summary.interviewed}</p>
-                  <p className="text-sm text-muted-foreground">Interviewed</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-orange-600">{reportData.summary.offered}</p>
-                  <p className="text-sm text-muted-foreground">Offers</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-green-600">{reportData.summary.hired}</p>
-                  <p className="text-sm text-muted-foreground">Hired</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-red-600">{reportData.summary.rejected}</p>
-                  <p className="text-sm text-muted-foreground">Rejected</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Jobs</CardTitle>
+            <Briefcase className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{jobs.length}</div>
+            <p className="text-xs text-muted-foreground">
+              Currently open positions
+            </p>
+          </CardContent>
+        </Card>
 
-          {/* Charts and Details */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Pipeline Visualization */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Candidate Pipeline Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {chartData.length > 0 ? (
-                  <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={chartData}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={80}
-                          dataKey="value"
-                          label={({ name, value }) => `${name}: ${value}`}
-                        >
-                          {chartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Interviews Scheduled</CardTitle>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{interviews.length}</div>
+            <p className="text-xs text-muted-foreground">
+              Last {dateRange} days
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+            <Target className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{pipelineStats.conversionRate}%</div>
+            <p className="text-xs text-muted-foreground">
+              Application to hire rate
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Weekly Activity */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Weekly Activity</CardTitle>
+            <CardDescription>Recruitment activity over recent weeks</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={weeklyData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="weekStart" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="newCandidates" name="New Candidates" fill="hsl(var(--primary))" />
+                  <Bar dataKey="interviews" name="Interviews" fill="hsl(var(--accent))" />
+                  <Bar dataKey="offers" name="Offers" fill="hsl(var(--warning))" />
+                  <Bar dataKey="hires" name="Hires" fill="hsl(var(--success))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Pipeline Distribution */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Pipeline Distribution</CardTitle>
+            <CardDescription>Current candidate status breakdown</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px]">
+              {pieData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <RechartsPieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      dataKey="value"
+                      label={({ name, value }) => `${name}: ${value}`}
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </RechartsPieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  No candidate data available
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Candidates */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Candidates</CardTitle>
+            <CardDescription>Latest applications received</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {candidates.slice(0, 5).map((candidate) => (
+                <div key={candidate.id} className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{candidate.name}</p>
+                    <p className="text-sm text-muted-foreground">{candidate.position}</p>
                   </div>
-                ) : (
-                  <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                    No candidates data available
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Recent Candidates */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Candidates</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 max-h-[300px] overflow-y-auto">
-                  {reportData.candidates.slice(0, 8).map((candidate) => (
-                    <div key={candidate.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium">{candidate.name}</p>
-                        <p className="text-sm text-muted-foreground">{candidate.email}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Applied: {format(new Date(candidate.applied_date), 'MMM dd, yyyy')}
-                        </p>
-                      </div>
-                      <Badge 
-                        variant={candidate.status === 'hired' ? 'default' : 'outline'}
-                        className="capitalize"
-                      >
-                        {candidate.status.replace('_', ' ')}
-                      </Badge>
-                    </div>
-                  ))}
-                  {reportData.candidates.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
-                      No candidates yet
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Summary for Client */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Executive Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="prose max-w-none">
-                <p className="text-muted-foreground mb-4">
-                  Here's the latest recruitment progress for the <strong>{reportData.job.title}</strong> position:
-                </p>
-                
-                <ul className="space-y-2">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span>Received <strong>{reportData.summary.totalApplications}</strong> total applications</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-blue-600" />
-                    <span><strong>{reportData.summary.shortlisted}</strong> candidates are currently in screening</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-purple-600" />
-                    <span><strong>{reportData.summary.interviewed}</strong> candidates have been interviewed</span>
-                  </li>
-                  {reportData.summary.hired > 0 && (
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span><strong>{reportData.summary.hired}</strong> candidates have been successfully hired</span>
-                    </li>
-                  )}
-                </ul>
-
-                {reportData.summary.totalApplications > 0 && (
-                  <div className="mt-4 p-4 bg-muted rounded-lg">
-                    <p className="text-sm">
-                      <strong>Conversion Rate:</strong> {' '}
-                      {reportData.summary.totalApplications > 0 
-                        ? Math.round((reportData.summary.interviewed / reportData.summary.totalApplications) * 100)
-                        : 0}% of applicants reached the interview stage
+                  <div className="text-right">
+                    <Badge variant={candidate.status === 'hired' ? 'default' : 'outline'}>
+                      {candidate.status}
+                    </Badge>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {format(new Date(candidate.applied_date), 'MMM dd')}
                     </p>
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </>
-      )}
+                </div>
+              ))}
+              {candidates.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  No candidates found for the selected period
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Upcoming Interviews */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Upcoming Interviews</CardTitle>
+            <CardDescription>Scheduled interviews</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {interviews
+                .filter(i => new Date(i.scheduled_date) > new Date())
+                .slice(0, 5)
+                .map((interview) => {
+                  const candidate = candidates.find(c => c.id === interview.candidate_id);
+                  return (
+                    <div key={interview.id} className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">{candidate?.name || 'Unknown Candidate'}</p>
+                        <p className="text-sm text-muted-foreground">{candidate?.position}</p>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant="outline">{interview.status}</Badge>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {format(new Date(interview.scheduled_date), 'MMM dd, HH:mm')}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              {interviews.filter(i => new Date(i.scheduled_date) > new Date()).length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  No upcoming interviews scheduled
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
