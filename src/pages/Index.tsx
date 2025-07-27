@@ -20,6 +20,7 @@ import AddCandidateForm from "@/components/AddCandidateForm";
 import CandidateImportModal from "@/components/CandidateImportModal";
 import JobManagement from "@/components/JobManagement";
 import { AIChatPanel } from "@/components/AIChatPanel";
+import { ReportsOverview } from "@/components/ReportsOverview";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("candidates");
@@ -348,32 +349,35 @@ const Index = () => {
 
         {activeTab === "analytics" && (
           <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">
-                Hiring Reports
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Track your recruitment performance and insights
-              </p>
-            </div>
-            <Card className="bg-card border-border">
-              <CardContent className="p-8">
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <BarChart3 className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold text-foreground mb-3">
-                    Pipeline Analytics
-                  </h3>
+            {!hasJobs || !hasCandidates ? (
+              <>
+                <div>
+                  <h2 className="text-xl font-bold text-foreground mb-1">
+                    Hiring Reports
+                  </h2>
                   <p className="text-sm text-muted-foreground">
-                    {!hasJobs || !hasCandidates 
-                      ? "Add jobs and candidates to see analytics and performance metrics"
-                      : "Coming soon - Track hiring metrics and identify bottlenecks in your process"
-                    }
+                    Track your recruitment performance and insights
                   </p>
                 </div>
-              </CardContent>
-            </Card>
+                <Card className="bg-card border-border">
+                  <CardContent className="p-8">
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <BarChart3 className="h-8 w-8 text-primary" />
+                      </div>
+                      <h3 className="text-xl font-bold text-foreground mb-3">
+                        Pipeline Analytics
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Add jobs and candidates to see analytics and performance metrics
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            ) : (
+              <ReportsOverview />
+            )}
           </div>
         )}
 
