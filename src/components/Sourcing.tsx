@@ -469,76 +469,142 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
             </TabsContent>
 
             <TabsContent value="manual" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center space-x-2">
-                      <Users className="h-3 w-3" />
-                      <span>Job Titles & Skills</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Experience Filter */}
+                <Card className="p-4">
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm flex items-center">
+                      <GraduationCap className="h-4 w-4 mr-2 text-primary" />
+                      Experience Level
+                    </h4>
                     <div className="space-y-2">
-                      <Input placeholder="Job titles..." className="text-sm h-8" />
-                      <Input placeholder="Required skills..." className="text-sm h-8" />
-                      <Input placeholder="Years of experience..." className="text-sm h-8" />
+                      {["0-2 years", "3-5 years", "5-7 years", "7-10 years", "10+ years"].map((exp) => (
+                        <label key={exp} className="flex items-center space-x-2 cursor-pointer">
+                          <input type="checkbox" className="rounded text-primary" />
+                          <span className="text-sm">{exp}</span>
+                        </label>
+                      ))}
                     </div>
-                  </CardContent>
+                  </div>
                 </Card>
 
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center space-x-2">
-                      <Building2 className="h-3 w-3" />
-                      <span>Company & Industry</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
+                {/* Location Filter */}
+                <Card className="p-4">
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm flex items-center">
+                      <MapPin className="h-4 w-4 mr-2 text-primary" />
+                      Location
+                    </h4>
                     <div className="space-y-2">
-                      <Input placeholder="Current/past companies..." className="text-sm h-8" />
-                      <Input placeholder="Industry experience..." className="text-sm h-8" />
-                      <Input placeholder="Company size/stage..." className="text-sm h-8" />
+                      <Input placeholder="Enter city or state..." className="text-sm" />
+                      <div className="space-y-2">
+                        {["San Francisco, CA", "New York, NY", "Remote", "Austin, TX", "Seattle, WA"].map((loc) => (
+                          <label key={loc} className="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" className="rounded text-primary" />
+                            <span className="text-sm">{loc}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                  </CardContent>
+                  </div>
                 </Card>
 
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center space-x-2">
-                      <GraduationCap className="h-3 w-3" />
-                      <span>Education</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
+                {/* Skills Filter */}
+                <Card className="p-4">
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm flex items-center">
+                      <Zap className="h-4 w-4 mr-2 text-primary" />
+                      Skills & Technologies
+                    </h4>
                     <div className="space-y-2">
-                      <Input placeholder="Universities..." className="text-sm h-8" />
-                      <Input placeholder="Degree level..." className="text-sm h-8" />
-                      <Input placeholder="Field of study..." className="text-sm h-8" />
+                      <Input placeholder="Add skills..." className="text-sm" />
+                      <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {["React", "TypeScript", "Node.js", "Python", "AWS", "Docker", "GraphQL", "PostgreSQL"].map((skill) => (
+                          <label key={skill} className="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" className="rounded text-primary" />
+                            <span className="text-sm">{skill}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                  </CardContent>
+                  </div>
                 </Card>
 
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center space-x-2">
-                      <MapPin className="h-3 w-3" />
-                      <span>Location</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
+                {/* Industry Filter */}
+                <Card className="p-4">
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm flex items-center">
+                      <Building2 className="h-4 w-4 mr-2 text-primary" />
+                      Industry
+                    </h4>
                     <div className="space-y-2">
-                      <Input placeholder="Current location..." className="text-sm h-8" />
-                      <Input placeholder="Open to relocate..." className="text-sm h-8" />
-                      <Input placeholder="Remote work..." className="text-sm h-8" />
+                      {["Technology", "Fintech", "Healthcare", "E-commerce", "SaaS", "Enterprise", "Startup"].map((industry) => (
+                        <label key={industry} className="flex items-center space-x-2 cursor-pointer">
+                          <input type="checkbox" className="rounded text-primary" />
+                          <span className="text-sm">{industry}</span>
+                        </label>
+                      ))}
                     </div>
-                  </CardContent>
+                  </div>
+                </Card>
+
+                {/* Company Stage Filter */}
+                <Card className="p-4">
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm flex items-center">
+                      <Building2 className="h-4 w-4 mr-2 text-primary" />
+                      Company Stage
+                    </h4>
+                    <div className="space-y-2">
+                      {["Early Startup", "Series A", "Series B+", "Fortune 500", "Public Company"].map((stage) => (
+                        <label key={stage} className="flex items-center space-x-2 cursor-pointer">
+                          <input type="checkbox" className="rounded text-primary" />
+                          <span className="text-sm">{stage}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Education Filter */}
+                <Card className="p-4">
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-sm flex items-center">
+                      <GraduationCap className="h-4 w-4 mr-2 text-primary" />
+                      Education
+                    </h4>
+                    <div className="space-y-2">
+                      <Input placeholder="University or degree..." className="text-sm" />
+                      <div className="space-y-2">
+                        {["Bachelor's Degree", "Master's Degree", "PhD", "Bootcamp", "Self-taught"].map((edu) => (
+                          <label key={edu} className="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" className="rounded text-primary" />
+                            <span className="text-sm">{edu}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </Card>
               </div>
-              
-              <Button size="sm" className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-                <Search className="h-3 w-3 mr-1" />
-                Search with Filters
-              </Button>
+
+              {/* Action Buttons */}
+              <div className="flex justify-between items-center pt-4 border-t">
+                <Button variant="outline" size="sm">
+                  Clear All Filters
+                </Button>
+                <div className="space-x-2">
+                  <Button variant="outline" size="sm">
+                    Save Filter Set
+                  </Button>
+                  <Button 
+                    size="sm"
+                    className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+                  >
+                    Apply Filters & Search
+                  </Button>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </CardContent>
