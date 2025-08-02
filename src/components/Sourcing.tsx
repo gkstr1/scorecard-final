@@ -36,6 +36,19 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<Candidate[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [detectedFilters, setDetectedFilters] = useState<{
+    experience: string[];
+    location: string[];
+    skills: string[];
+    industry: string[];
+    company: string[];
+  }>({
+    experience: [],
+    location: [],
+    skills: [],
+    industry: [],
+    company: []
+  });
 
   // Mock candidate data
   const mockCandidates: Candidate[] = [
@@ -123,13 +136,111 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
     }
   ];
 
-  const quickSearches = [
-    { text: "Senior React Developer in SF", count: "342 profiles" },
-    { text: "ML Engineers at Series A startups", count: "189 profiles" },
-    { text: "Full Stack Engineers with 5+ years", count: "1,247 profiles" },
-    { text: "DevOps Engineers at FAANG companies", count: "89 profiles" },
-    { text: "Technical Leads in fintech", count: "567 profiles" }
-  ];
+  // Detect filters from natural language input
+  const detectFiltersFromQuery = (query: string) => {
+    const lowerQuery = query.toLowerCase();
+    const filters = {
+      experience: [] as string[],
+      location: [] as string[],
+      skills: [] as string[],
+      industry: [] as string[],
+      company: [] as string[]
+    };
+
+    // Experience patterns
+    const expPatterns = [
+      { pattern: /(\d+)\s*\+?\s*years?/g, extract: (match: string) => match },
+      { pattern: /senior/g, extract: () => "5+ years" },
+      { pattern: /junior/g, extract: () => "1-3 years" },
+      { pattern: /lead/g, extract: () => "7+ years" },
+      { pattern: /principal/g, extract: () => "10+ years" }
+    ];
+
+    expPatterns.forEach(({ pattern, extract }) => {
+      const matches = lowerQuery.match(pattern);
+      if (matches) {
+        matches.forEach(match => {
+          const exp = extract(match);
+          if (!filters.experience.includes(exp)) {
+            filters.experience.push(exp);
+          }
+        });
+      }
+    });
+
+    // Location patterns
+    const locationPatterns = [
+      "san francisco", "sf", "new york", "nyc", "los angeles", "la", 
+      "seattle", "austin", "boston", "chicago", "remote", "california",
+      "bay area", "silicon valley"
+    ];
+    locationPatterns.forEach(loc => {
+      if (lowerQuery.includes(loc)) {
+        const displayLoc = loc === "sf" ? "San Francisco" : 
+                          loc === "nyc" ? "New York" :
+                          loc === "la" ? "Los Angeles" :
+                          loc.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        if (!filters.location.includes(displayLoc)) {
+          filters.location.push(displayLoc);
+        }
+      }
+    });
+
+    // Skills patterns
+    const skillPatterns = [
+      "react", "javascript", "typescript", "python", "java", "node.js", "vue",
+      "angular", "aws", "kubernetes", "docker", "graphql", "mongodb", "postgresql"
+    ];
+    skillPatterns.forEach(skill => {
+      if (lowerQuery.includes(skill)) {
+        const displaySkill = skill === "node.js" ? "Node.js" :
+                           skill.charAt(0).toUpperCase() + skill.slice(1);
+        if (!filters.skills.includes(displaySkill)) {
+          filters.skills.push(displaySkill);
+        }
+      }
+    });
+
+    // Industry patterns
+    const industryPatterns = [
+      "fintech", "healthcare", "saas", "b2b", "enterprise", "startup",
+      "e-commerce", "gaming", "edtech", "blockchain", "ai", "machine learning"
+    ];
+    industryPatterns.forEach(industry => {
+      if (lowerQuery.includes(industry)) {
+        const displayIndustry = industry === "b2b" ? "B2B" :
+                              industry === "saas" ? "SaaS" :
+                              industry === "ai" ? "AI" :
+                              industry.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        if (!filters.industry.includes(displayIndustry)) {
+          filters.industry.push(displayIndustry);
+        }
+      }
+    });
+
+    // Company patterns
+    const companyPatterns = [
+      "google", "apple", "microsoft", "amazon", "meta", "netflix", "stripe",
+      "airbnb", "uber", "series a", "fortune 500", "faang", "startup"
+    ];
+    companyPatterns.forEach(company => {
+      if (lowerQuery.includes(company)) {
+        const displayCompany = company === "faang" ? "FAANG" :
+                              company === "series a" ? "Series A" :
+                              company.charAt(0).toUpperCase() + company.slice(1);
+        if (!filters.company.includes(displayCompany)) {
+          filters.company.push(displayCompany);
+        }
+      }
+    });
+
+    setDetectedFilters(filters);
+  };
+
+  const handleQueryChange = (value: string) => {
+    setSearchQuery(value);
+    detectFiltersFromQuery(value);
+  };
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -152,6 +263,7 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
 
   const handleQuickSearch = (text: string) => {
     setSearchQuery(text);
+    detectFiltersFromQuery(text);
   };
 
   return (
@@ -198,7 +310,7 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                   <Textarea
                     placeholder="e.g., 'Senior React developers in San Francisco with 5+ years experience at high-growth B2B SaaS companies'"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => handleQueryChange(e.target.value)}
                     className="min-h-20 text-sm resize-none border border-border focus:border-primary rounded-lg"
                   />
                   <div className="absolute bottom-2 right-2">
@@ -222,6 +334,85 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                     </Button>
                   </div>
                 </div>
+
+                {/* Dynamic Filter Buttons */}
+                {(detectedFilters.experience.length > 0 || detectedFilters.location.length > 0 || 
+                  detectedFilters.skills.length > 0 || detectedFilters.industry.length > 0 || 
+                  detectedFilters.company.length > 0) && (
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-medium text-foreground">Detected Filters:</h4>
+                    <div className="space-y-2">
+                      {detectedFilters.experience.length > 0 && (
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-muted-foreground min-w-16">Experience:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {detectedFilters.experience.map((exp, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                {exp}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {detectedFilters.location.length > 0 && (
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-muted-foreground min-w-16">Location:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {detectedFilters.location.map((loc, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                <MapPin className="h-3 w-3 mr-1" />
+                                {loc}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {detectedFilters.skills.length > 0 && (
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-muted-foreground min-w-16">Skills:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {detectedFilters.skills.map((skill, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                <Zap className="h-3 w-3 mr-1" />
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {detectedFilters.industry.length > 0 && (
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-muted-foreground min-w-16">Industry:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {detectedFilters.industry.map((industry, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                <Building2 className="h-3 w-3 mr-1" />
+                                {industry}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {detectedFilters.company.length > 0 && (
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-muted-foreground min-w-16">Company:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {detectedFilters.company.map((company, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                <Building2 className="h-3 w-3 mr-1" />
+                                {company}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 <div className="bg-muted/30 rounded-lg p-3">
                   <h4 className="font-medium text-foreground mb-1 text-sm">Pro Tips:</h4>
@@ -350,33 +541,6 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
         </CardContent>
       </Card>
 
-      {/* Quick Searches */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">Quick Searches</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {quickSearches.map((search, index) => (
-              <div
-                key={index}
-                onClick={() => handleQuickSearch(search.text)}
-                className="group p-3 border border-border rounded-lg cursor-pointer hover:border-primary/50 hover:bg-accent/20 transition-all"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-foreground group-hover:text-primary">
-                      {search.text}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">{search.count}</p>
-                  </div>
-                  <Search className="h-3 w-3 text-muted-foreground group-hover:text-primary" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Search Results */}
       <Card>
