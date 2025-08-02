@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCap, MapPin, Mail, Phone, ExternalLink, Star } from "lucide-react";
 import { FilterModal } from "@/components/FilterModal";
 import ContactModal from "@/components/ContactModal";
+import JobDescriptionUpload from "@/components/JobDescriptionUpload";
 
 interface Candidate {
   id: string;
@@ -432,8 +433,12 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
 
             <TabsContent value="job-description" className="space-y-3">
               <div className="space-y-3">
+                <JobDescriptionUpload 
+                  onContentExtracted={(content) => setJobDescription(content)} 
+                />
+                
                 <Textarea
-                  placeholder="Paste your job description here..."
+                  placeholder="Paste your job description here or upload a file above..."
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
                   className="min-h-32 resize-none border border-border focus:border-primary rounded-lg text-sm"
