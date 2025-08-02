@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCap, MapPin, Mail, Phone, ExternalLink, Star } from "lucide-react";
+import { FilterModal } from "@/components/FilterModal";
 
 interface Candidate {
   id: string;
@@ -469,141 +470,24 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
             </TabsContent>
 
             <TabsContent value="manual" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Experience Filter */}
-                <Card className="p-4">
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm flex items-center">
-                      <GraduationCap className="h-4 w-4 mr-2 text-primary" />
-                      Experience Level
-                    </h4>
-                    <div className="space-y-2">
-                      {["0-2 years", "3-5 years", "5-7 years", "7-10 years", "10+ years"].map((exp) => (
-                        <label key={exp} className="flex items-center space-x-2 cursor-pointer">
-                          <input type="checkbox" className="rounded text-primary" />
-                          <span className="text-sm">{exp}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Location Filter */}
-                <Card className="p-4">
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm flex items-center">
-                      <MapPin className="h-4 w-4 mr-2 text-primary" />
-                      Location
-                    </h4>
-                    <div className="space-y-2">
-                      <Input placeholder="Enter city or state..." className="text-sm" />
-                      <div className="space-y-2">
-                        {["San Francisco, CA", "New York, NY", "Remote", "Austin, TX", "Seattle, WA"].map((loc) => (
-                          <label key={loc} className="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" className="rounded text-primary" />
-                            <span className="text-sm">{loc}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Skills Filter */}
-                <Card className="p-4">
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm flex items-center">
-                      <Zap className="h-4 w-4 mr-2 text-primary" />
-                      Skills & Technologies
-                    </h4>
-                    <div className="space-y-2">
-                      <Input placeholder="Add skills..." className="text-sm" />
-                      <div className="space-y-2 max-h-32 overflow-y-auto">
-                        {["React", "TypeScript", "Node.js", "Python", "AWS", "Docker", "GraphQL", "PostgreSQL"].map((skill) => (
-                          <label key={skill} className="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" className="rounded text-primary" />
-                            <span className="text-sm">{skill}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Industry Filter */}
-                <Card className="p-4">
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm flex items-center">
-                      <Building2 className="h-4 w-4 mr-2 text-primary" />
-                      Industry
-                    </h4>
-                    <div className="space-y-2">
-                      {["Technology", "Fintech", "Healthcare", "E-commerce", "SaaS", "Enterprise", "Startup"].map((industry) => (
-                        <label key={industry} className="flex items-center space-x-2 cursor-pointer">
-                          <input type="checkbox" className="rounded text-primary" />
-                          <span className="text-sm">{industry}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Company Stage Filter */}
-                <Card className="p-4">
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm flex items-center">
-                      <Building2 className="h-4 w-4 mr-2 text-primary" />
-                      Company Stage
-                    </h4>
-                    <div className="space-y-2">
-                      {["Early Startup", "Series A", "Series B+", "Fortune 500", "Public Company"].map((stage) => (
-                        <label key={stage} className="flex items-center space-x-2 cursor-pointer">
-                          <input type="checkbox" className="rounded text-primary" />
-                          <span className="text-sm">{stage}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Education Filter */}
-                <Card className="p-4">
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm flex items-center">
-                      <GraduationCap className="h-4 w-4 mr-2 text-primary" />
-                      Education
-                    </h4>
-                    <div className="space-y-2">
-                      <Input placeholder="University or degree..." className="text-sm" />
-                      <div className="space-y-2">
-                        {["Bachelor's Degree", "Master's Degree", "PhD", "Bootcamp", "Self-taught"].map((edu) => (
-                          <label key={edu} className="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" className="rounded text-primary" />
-                            <span className="text-sm">{edu}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex justify-between items-center pt-4 border-t">
-                <Button variant="outline" size="sm">
-                  Clear All Filters
-                </Button>
-                <div className="space-x-2">
-                  <Button variant="outline" size="sm">
-                    Save Filter Set
-                  </Button>
+              <div className="text-center py-8">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Filter className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <h3 className="text-base font-medium text-foreground mb-2">Advanced Filters</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Use detailed filters to find exactly what you're looking for
+                </p>
+                
+                <FilterModal>
                   <Button 
                     size="sm"
                     className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
                   >
-                    Apply Filters & Search
+                    <Filter className="h-4 w-4 mr-2" />
+                    Open Filter Builder
                   </Button>
-                </div>
+                </FilterModal>
               </div>
             </TabsContent>
           </Tabs>
