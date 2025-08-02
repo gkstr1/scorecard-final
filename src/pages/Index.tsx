@@ -14,7 +14,7 @@ import StatsOverview from "@/components/StatsOverview";
 import KanbanBoard from "@/components/KanbanBoard";
 import JobCreator from "@/components/JobCreator";
 import PipelineSettings from "@/components/PipelineSettings";
-import ResumeUpload from "@/components/ResumeUpload";
+import Sourcing from "@/components/Sourcing";
 import EmptyStateGuide from "@/components/EmptyStateGuide";
 import AddCandidateForm from "@/components/AddCandidateForm";
 import CandidateImportModal from "@/components/CandidateImportModal";
@@ -319,7 +319,7 @@ const Index = () => {
                       Sourcing Center
                     </h3>
                     <p className="text-sm text-muted-foreground mb-6">
-                      Create jobs first so candidates can be assigned to specific roles
+                      Create jobs first to start sourcing candidates for specific roles
                     </p>
                     <Button 
                       onClick={() => setActiveTab("jobs")}
@@ -337,11 +337,11 @@ const Index = () => {
                     Sourcing
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Upload resumes and automatically create candidate profiles
+                    Find and source candidates from multiple channels
                   </p>
                 </div>
                 
-                <ResumeUpload onCandidateCreated={handleCandidateCreated} />
+                <Sourcing onCandidateCreated={handleCandidateCreated} />
               </>
             )}
           </div>

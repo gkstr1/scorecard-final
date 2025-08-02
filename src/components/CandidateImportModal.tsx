@@ -1,12 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, FileText, Users, Plus, File, Files } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Upload, FileText, Users, Plus, File, Files, Type, Briefcase } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import mammoth from "mammoth";
+
+interface Job {
+  id: string;
+  title: string;
+  department?: string;
+  clients?: {
+    name: string;
+  };
+}
 
 interface CandidateImportModalProps {
   isOpen: boolean;
@@ -18,8 +31,177 @@ const CandidateImportModal = ({ isOpen, onOpenChange, onCandidatesImported }: Ca
   const [singleResume, setSingleResume] = useState<File | null>(null);
   const [bulkResumes, setBulkResumes] = useState<FileList | null>(null);
   const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [resumeText, setResumeText] = useState("");
+  const [selectedJobId, setSelectedJobId] = useState<string>("");
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [isImporting, setIsImporting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchJobs();
+    }
+  }, [isOpen]);
+
+  const fetchJobs = async (): Promise<void> => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("job_descriptions")
+        .select(`
+          id,
+          title,
+          department,
+          clients (
+            name
+          )
+        `)
+        .eq("is_active", true);
+
+      if (error) {
+        console.error("Error fetching jobs:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch available jobs",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setJobs(data as Job[]);
+      if (data && data.length > 0) {
+        setSelectedJobId(data[0].id);
+      }
+    } catch (error) {
+      console.error("Error in fetchJobs:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred while fetching jobs",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const extractTextFromDOCX = async (file: File): Promise<string> => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      return result.value;
+    } catch (error) {
+      console.error("Error extracting text from DOCX:", error);
+      throw new Error("Failed to extract text from DOCX file");
+    }
+  };
+
+  const parseAndCreateCandidate = async (text: string, jobId: string): Promise<void> => {
+    console.log("Starting resume parsing with text length:", text.length);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('parse-resume', {
+        body: { 
+          resumeText: text,
+          jobId: jobId
+        }
+      });
+
+      if (error) {
+        console.error("Supabase function error:", error);
+        throw new Error(error.message || "Failed to parse resume");
+      }
+
+      if (!data?.candidate) {
+        console.error("No candidate data returned from parsing");
+        throw new Error("Failed to extract candidate information from resume");
+      }
+
+      console.log("Parsed candidate data:", data.candidate);
+
+      // Insert the candidate into the database
+      const { error: insertError } = await supabase
+        .from("candidates")
+        .insert([{
+          ...data.candidate,
+          job_id: jobId,
+          status: 'applied'
+        }]);
+
+      if (insertError) {
+        console.error("Database insertion error:", insertError);
+        throw new Error("Failed to save candidate to database");
+      }
+
+      console.log("Candidate successfully created");
+    } catch (error) {
+      console.error("Error in parseAndCreateCandidate:", error);
+      throw error;
+    }
+  };
+
+  const handleResumeFileUpload = async (file: File): Promise<string> => {
+    const fileType = file.type;
+    let extractedText = "";
+
+    if (fileType === "text/plain") {
+      extractedText = await file.text();
+    } else if (fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || 
+               fileType === "application/msword") {
+      extractedText = await extractTextFromDOCX(file);
+    } else {
+      throw new Error("Unsupported file format. Please use .txt or .docx files, or copy/paste text for PDF files.");
+    }
+
+    return extractedText;
+  };
+
+  const handleParseResume = async (): Promise<void> => {
+    if (!selectedJobId) {
+      toast({
+        title: "Error",
+        description: "Please select a job for this candidate",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!resumeText.trim()) {
+      toast({
+        title: "Error", 
+        description: "Please provide resume text to parse",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsImporting(true);
+
+    try {
+      await parseAndCreateCandidate(resumeText, selectedJobId);
+      
+      toast({
+        title: "Success",
+        description: "Resume parsed and candidate created successfully!",
+      });
+
+      // Reset form
+      setResumeText("");
+      setSingleResume(null);
+      
+      onCandidatesImported?.();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error parsing resume:", error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to parse resume",
+        variant: "destructive"
+      });
+    } finally {
+      setIsImporting(false);
+    }
+  };
 
   const handleSingleResumeImport = async () => {
     if (!singleResume) {
@@ -31,12 +213,20 @@ const CandidateImportModal = ({ isOpen, onOpenChange, onCandidatesImported }: Ca
       return;
     }
 
+    if (!selectedJobId) {
+      toast({
+        title: "Error", 
+        description: "Please select a job for this candidate",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsImporting(true);
     
     try {
-      // Here you would implement the actual resume parsing logic
-      // For now, we'll just simulate success
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const extractedText = await handleResumeFileUpload(singleResume);
+      await parseAndCreateCandidate(extractedText, selectedJobId);
 
       toast({
         title: "Success",
@@ -44,6 +234,7 @@ const CandidateImportModal = ({ isOpen, onOpenChange, onCandidatesImported }: Ca
       });
 
       setSingleResume(null);
+      setResumeText("");
       onCandidatesImported?.();
       onOpenChange(false);
     } catch (error) {
@@ -127,10 +318,20 @@ const CandidateImportModal = ({ isOpen, onOpenChange, onCandidatesImported }: Ca
     }
   };
 
-  const handleSingleResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSingleResumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && (file.type === 'application/pdf' || file.type.includes('word') || file.type === 'text/plain')) {
       setSingleResume(file);
+      
+      // Auto-extract text from supported formats
+      try {
+        if (file.type !== 'application/pdf') {
+          const extractedText = await handleResumeFileUpload(file);
+          setResumeText(extractedText);
+        }
+      } catch (error) {
+        console.error("Error extracting text:", error);
+      }
     } else {
       toast({
         title: "Invalid File",
@@ -191,10 +392,14 @@ const CandidateImportModal = ({ isOpen, onOpenChange, onCandidatesImported }: Ca
         </DialogHeader>
 
         <Tabs defaultValue="single" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="single" className="flex items-center space-x-2">
               <File className="h-4 w-4" />
               <span>Single Resume</span>
+            </TabsTrigger>
+            <TabsTrigger value="parse" className="flex items-center space-x-2">
+              <Type className="h-4 w-4" />
+              <span>Parse Resume</span>
             </TabsTrigger>
             <TabsTrigger value="bulk" className="flex items-center space-x-2">
               <Files className="h-4 w-4" />
@@ -213,6 +418,23 @@ const CandidateImportModal = ({ isOpen, onOpenChange, onCandidatesImported }: Ca
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
+                  <Label htmlFor="jobSelect">Select Job Position</Label>
+                  <Select value={selectedJobId} onValueChange={setSelectedJobId}>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="Select a job position" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {jobs.map((job) => (
+                        <SelectItem key={job.id} value={job.id}>
+                          {job.clients?.name ? `${job.clients.name} - ${job.title}` : job.title}
+                          {job.department && ` (${job.department})`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
                   <Label htmlFor="singleResume">Resume File</Label>
                   <Input
                     id="singleResume"
@@ -229,18 +451,32 @@ const CandidateImportModal = ({ isOpen, onOpenChange, onCandidatesImported }: Ca
                   <div className="bg-muted/30 border border-border rounded-lg p-4 mt-4">
                     <h4 className="font-medium text-foreground mb-2">Supported Formats:</h4>
                     <div className="text-sm text-muted-foreground space-y-1">
-                      <p>• PDF documents (.pdf)</p>
-                      <p>• Microsoft Word documents (.doc, .docx)</p>
-                      <p>• Plain text files (.txt)</p>
+                      <p>• PDF documents (.pdf) - copy/paste text below</p>
+                      <p>• Microsoft Word documents (.doc, .docx) - auto-extracted</p>
+                      <p>• Plain text files (.txt) - auto-extracted</p>
                       <p className="mt-3 text-xs">
-                        <strong>Note:</strong> The system will automatically extract candidate information from the resume and create a new candidate profile.
+                        <strong>Note:</strong> AI will extract candidate information and create a profile.
                       </p>
                     </div>
                   </div>
                 </div>
+
+                {resumeText && (
+                  <div>
+                    <Label htmlFor="resumePreview">Extracted Resume Text</Label>
+                    <Textarea
+                      id="resumePreview"
+                      value={resumeText}
+                      onChange={(e) => setResumeText(e.target.value)}
+                      placeholder="Resume text will appear here..."
+                      className="min-h-32 mt-2"
+                    />
+                  </div>
+                )}
+
                 <Button
                   onClick={handleSingleResumeImport}
-                  disabled={isImporting || !singleResume}
+                  disabled={isImporting || !singleResume || !selectedJobId}
                   className="w-full"
                 >
                   {isImporting ? (
@@ -251,7 +487,71 @@ const CandidateImportModal = ({ isOpen, onOpenChange, onCandidatesImported }: Ca
                   ) : (
                     <>
                       <File className="h-4 w-4 mr-2" />
-                      Import Single Resume
+                      Import & Parse Resume
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="parse" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Parse Resume Text</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="jobSelectParse">Select Job Position</Label>
+                  <Select value={selectedJobId} onValueChange={setSelectedJobId}>
+                    <SelectTrigger className="mt-2">
+                      <SelectValue placeholder="Select a job position" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {jobs.map((job) => (
+                        <SelectItem key={job.id} value={job.id}>
+                          {job.clients?.name ? `${job.clients.name} - ${job.title}` : job.title}
+                          {job.department && ` (${job.department})`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="resumeTextArea">Resume Text</Label>
+                  <Textarea
+                    id="resumeTextArea"
+                    value={resumeText}
+                    onChange={(e) => setResumeText(e.target.value)}
+                    placeholder="Paste the resume text here..."
+                    className="min-h-48 mt-2"
+                  />
+                  <div className="bg-muted/30 border border-border rounded-lg p-4 mt-4">
+                    <h4 className="font-medium text-foreground mb-2">How to use:</h4>
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      <p>• Copy resume text from PDF files or any source</p>
+                      <p>• Paste the full resume content in the text area above</p>
+                      <p>• AI will extract candidate information automatically</p>
+                      <p>• Candidate will be assigned to the selected job</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleParseResume}
+                  disabled={isImporting || !resumeText.trim() || !selectedJobId}
+                  className="w-full"
+                >
+                  {isImporting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
+                      Parsing Resume...
+                    </>
+                  ) : (
+                    <>
+                      <Type className="h-4 w-4 mr-2" />
+                      Parse Resume Text
                     </>
                   )}
                 </Button>
