@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCap, MapPin, Mail, Phone, ExternalLink, Star } from "lucide-react";
 import { FilterModal } from "@/components/FilterModal";
+import ContactModal from "@/components/ContactModal";
 
 interface Candidate {
   id: string;
@@ -580,10 +581,12 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                         </div>
                         
                         <div className="flex items-center space-x-2 pt-1">
-                          <Button size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 h-7 text-xs">
-                            <Mail className="h-3 w-3 mr-1" />
-                            Contact
-                          </Button>
+                          <ContactModal candidate={candidate}>
+                            <Button size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 h-7 text-xs">
+                              <Mail className="h-3 w-3 mr-1" />
+                              Contact
+                            </Button>
+                          </ContactModal>
                           <Button size="sm" variant="outline" className="h-7 text-xs">
                             <ExternalLink className="h-3 w-3 mr-1" />
                             View
