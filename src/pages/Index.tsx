@@ -23,7 +23,7 @@ import { AIChatPanel } from "@/components/AIChatPanel";
 import { ReportsOverview } from "@/components/ReportsOverview";
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState("candidates");
+  const [activeTab, setActiveTab] = useState("sourcing");
   const [selectedRole, setSelectedRole] = useState("");
   const [hasJobs, setHasJobs] = useState(false);
   const [hasCandidates, setHasCandidates] = useState(false);
@@ -154,6 +154,10 @@ const Index = () => {
         <div className="max-w-full px-6">
           <div className="flex space-x-0">
             {[{
+            id: "sourcing",
+            label: "Sourcing",
+            icon: Search
+          }, {
             id: "candidates",
             label: "Candidate Pipeline",
             icon: Users
@@ -165,10 +169,6 @@ const Index = () => {
             id: "interviews",
             label: "Interview Center",
             icon: Calendar
-          }, {
-            id: "parsing",
-            label: "Resume Upload",
-            icon: Mail
           }, {
             id: "analytics",
             label: "Reports",
@@ -192,7 +192,7 @@ const Index = () => {
       {/* Main Content */}
       <main className="max-w-full px-6 py-6">
         {/* Show dashboard overview when no jobs exist */}
-        {!hasJobs && activeTab === "candidates" && (
+        {!hasJobs && activeTab === "sourcing" && (
           <EmptyStateGuide 
             type="dashboard" 
             onCreateJob={() => setActiveTab("jobs")}
@@ -306,17 +306,17 @@ const Index = () => {
           </div>
         )}
 
-        {activeTab === "parsing" && (
+        {activeTab === "sourcing" && (
           <div className="space-y-6">
             {!hasJobs ? (
               <Card className="w-full">
                 <CardContent className="p-8">
                   <div className="text-center py-12">
                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Mail className="h-8 w-8 text-primary" />
+                      <Search className="h-8 w-8 text-primary" />
                     </div>
                     <h3 className="text-xl font-bold text-foreground mb-3">
-                      Resume Upload Center
+                      Sourcing Center
                     </h3>
                     <p className="text-sm text-muted-foreground mb-6">
                       Create jobs first so candidates can be assigned to specific roles
@@ -334,7 +334,7 @@ const Index = () => {
               <>
                 <div className="mb-4">
                   <h2 className="text-xl font-bold text-foreground mb-1">
-                    Resume Upload & Candidate Creation
+                    Sourcing
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     Upload resumes and automatically create candidate profiles
