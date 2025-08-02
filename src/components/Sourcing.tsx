@@ -4,8 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCap, MapPin } from "lucide-react";
+import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCap, MapPin, Mail, Phone, ExternalLink, Star } from "lucide-react";
+
+interface Candidate {
+  id: string;
+  name: string;
+  title: string;
+  company: string;
+  location: string;
+  experience: string;
+  skills: string[];
+  education: string;
+  email?: string;
+  phone?: string;
+  linkedinUrl?: string;
+  matchScore: number;
+  openToWork: boolean;
+  avatar?: string;
+}
 
 interface SourcingProps {
   onCandidateCreated?: () => void;
@@ -16,6 +34,94 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
   const [jobDescription, setJobDescription] = useState("");
   const [booleanQuery, setBooleanQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<Candidate[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  // Mock candidate data
+  const mockCandidates: Candidate[] = [
+    {
+      id: "1",
+      name: "Sarah Chen",
+      title: "Senior React Developer",
+      company: "Stripe",
+      location: "San Francisco, CA",
+      experience: "6 years",
+      skills: ["React", "TypeScript", "Node.js", "GraphQL", "AWS"],
+      education: "Stanford University - BS Computer Science",
+      email: "sarah.chen@email.com",
+      matchScore: 95,
+      openToWork: true,
+      avatar: "/placeholder.svg"
+    },
+    {
+      id: "2", 
+      name: "Marcus Johnson",
+      title: "Full Stack Engineer",
+      company: "Airbnb",
+      location: "San Francisco, CA",
+      experience: "5 years",
+      skills: ["React", "Python", "Django", "PostgreSQL", "Docker"],
+      education: "UC Berkeley - BS Electrical Engineering",
+      email: "marcus.j@email.com",
+      matchScore: 92,
+      openToWork: false,
+      avatar: "/placeholder.svg"
+    },
+    {
+      id: "3",
+      name: "Emily Rodriguez",
+      title: "Frontend Developer",
+      company: "Figma",
+      location: "San Francisco, CA", 
+      experience: "4 years",
+      skills: ["React", "Vue.js", "CSS", "JavaScript", "Figma"],
+      education: "Carnegie Mellon - BS Computer Science",
+      email: "emily.r@email.com",
+      matchScore: 88,
+      openToWork: true,
+      avatar: "/placeholder.svg"
+    },
+    {
+      id: "4",
+      name: "David Kim",
+      title: "Senior Software Engineer",
+      company: "Google",
+      location: "Mountain View, CA",
+      experience: "7 years",
+      skills: ["React", "Go", "Kubernetes", "GCP", "Microservices"],
+      education: "MIT - MS Computer Science",
+      matchScore: 94,
+      openToWork: false,
+      avatar: "/placeholder.svg"
+    },
+    {
+      id: "5",
+      name: "Alexandra Turner",
+      title: "React Developer",
+      company: "Notion",
+      location: "San Francisco, CA",
+      experience: "3 years",
+      skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
+      education: "Harvard University - BS Computer Science",
+      email: "alex.turner@email.com",
+      matchScore: 89,
+      openToWork: true,
+      avatar: "/placeholder.svg"
+    },
+    {
+      id: "6",
+      name: "James Wilson",
+      title: "Senior Frontend Engineer",
+      company: "Shopify",
+      location: "Remote (US)",
+      experience: "8 years",
+      skills: ["React", "Redux", "JavaScript", "PHP", "MySQL"],
+      education: "University of Washington - BS Computer Science",
+      matchScore: 91,
+      openToWork: false,
+      avatar: "/placeholder.svg"
+    }
+  ];
 
   const quickSearches = [
     { text: "Senior React Developer in SF", count: "342 profiles" },
@@ -29,8 +135,18 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
     if (!searchQuery.trim()) return;
     
     setIsSearching(true);
-    // Simulate search
+    setHasSearched(false);
+    
+    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Set mock results based on search query
+    const results = mockCandidates.filter(candidate => 
+      searchQuery.toLowerCase().includes('react') ? true : Math.random() > 0.3
+    );
+    
+    setSearchResults(results);
+    setHasSearched(true);
     setIsSearching(false);
   };
 
@@ -260,21 +376,112 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
         </CardContent>
       </Card>
 
-      {/* Search Results Placeholder */}
+      {/* Search Results */}
       <Card>
         <CardHeader>
-          <CardTitle>Search Results</CardTitle>
+          <CardTitle className="flex items-center justify-between">
+            <span>Search Results</span>
+            {hasSearched && (
+              <Badge variant="secondary" className="text-sm">
+                {searchResults.length} candidates found
+              </Badge>
+            )}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-16">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="h-8 w-8 text-muted-foreground" />
+          {!hasSearched ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-medium text-foreground mb-2">Ready to find your next hire?</h3>
+              <p className="text-muted-foreground">
+                Use AI-powered search above to discover candidates from 30+ sources
+              </p>
             </div>
-            <h3 className="text-lg font-medium text-foreground mb-2">Ready to find your next hire?</h3>
-            <p className="text-muted-foreground">
-              Use AI-powered search above to discover candidates from 30+ sources
-            </p>
-          </div>
+          ) : (
+            <div className="space-y-4">
+              {searchResults.map((candidate) => (
+                <Card key={candidate.id} className="border border-border hover:border-primary/50 transition-colors">
+                  <CardContent className="p-6">
+                    <div className="flex items-start space-x-4">
+                      <Avatar className="w-16 h-16">
+                        <AvatarImage src={candidate.avatar} />
+                        <AvatarFallback className="bg-gradient-to-r from-purple-500 to-blue-500 text-white text-lg">
+                          {candidate.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      <div className="flex-1 space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold text-foreground">{candidate.name}</h3>
+                            <p className="text-muted-foreground">{candidate.title} at {candidate.company}</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant={candidate.openToWork ? "default" : "secondary"} className="text-xs">
+                              {candidate.openToWork ? "Open to work" : "Not actively looking"}
+                            </Badge>
+                            <div className="flex items-center space-x-1">
+                              <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                              <span className="text-sm font-medium">{candidate.matchScore}% match</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                          <div className="flex items-center space-x-2">
+                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                            <span>{candidate.location}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                            <span>{candidate.experience} experience</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <GraduationCap className="h-4 w-4 text-muted-foreground" />
+                            <span>{candidate.education}</span>
+                          </div>
+                          {candidate.email && (
+                            <div className="flex items-center space-x-2">
+                              <Mail className="h-4 w-4 text-muted-foreground" />
+                              <span>{candidate.email}</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-medium text-foreground">Skills:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {candidate.skills.map((skill, index) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-3 pt-2">
+                          <Button size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
+                            <Mail className="h-4 w-4 mr-2" />
+                            Contact
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            View Profile
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <Users className="h-4 w-4 mr-2" />
+                            Add to Pipeline
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
