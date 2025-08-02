@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, Send, X } from 'lucide-react';
+import { Bot, Send, X, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -62,9 +62,9 @@ export const AIChatPanel: React.FC<AIChatPanelProps> = ({ className }) => {
         <Button
           onClick={() => setIsOpen(!isOpen)}
           size="icon"
-          className="h-14 w-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-200"
+          className="h-16 w-16 rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-200"
         >
-          <Bot className="h-6 w-6 text-primary-foreground" />
+          <MessageCircle className="h-7 w-7 text-primary-foreground" />
         </Button>
       </div>
 
