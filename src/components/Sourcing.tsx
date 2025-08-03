@@ -357,27 +357,31 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                     { 
                       key: "location", 
                       label: "Location", 
-                      active: detectedFilters.location.length > 0 || searchQuery.toLowerCase().includes('location') || searchQuery.toLowerCase().includes('san francisco') || searchQuery.toLowerCase().includes('sf') || searchQuery.toLowerCase().includes('new york') || searchQuery.toLowerCase().includes('remote')
+                      active: detectedFilters.location.length > 0 || 
+                        /san francisco|sf|new york|nyc|los angeles|la|seattle|austin|boston|chicago|remote|california|bay area|silicon valley/i.test(searchQuery)
                     },
                     { 
                       key: "jobTitle", 
                       label: "Job Title", 
-                      active: searchQuery.toLowerCase().includes('senior') || searchQuery.toLowerCase().includes('developer') || searchQuery.toLowerCase().includes('engineer') || searchQuery.toLowerCase().includes('manager') || searchQuery.toLowerCase().includes('lead')
+                      active: /senior|junior|lead|principal|developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|consultant/i.test(searchQuery)
                     },
                     { 
                       key: "experience", 
                       label: "Years of Experience", 
-                      active: detectedFilters.experience.length > 0 || /\d+\s*\+?\s*years?/i.test(searchQuery) || searchQuery.toLowerCase().includes('experience')
+                      active: detectedFilters.experience.length > 0 || 
+                        /\d+\s*\+?\s*years?|experience|senior|junior|lead|principal/i.test(searchQuery)
                     },
                     { 
                       key: "industry", 
                       label: "Industry", 
-                      active: detectedFilters.industry.length > 0 || searchQuery.toLowerCase().includes('fintech') || searchQuery.toLowerCase().includes('saas') || searchQuery.toLowerCase().includes('startup') || searchQuery.toLowerCase().includes('tech')
+                      active: detectedFilters.industry.length > 0 || 
+                        /fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|ai|machine learning|financial|finance|banking|insurance|tech|technology|software|consulting|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom/i.test(searchQuery)
                     },
                     { 
                       key: "skills", 
                       label: "Skills", 
-                      active: detectedFilters.skills.length > 0 || searchQuery.toLowerCase().includes('react') || searchQuery.toLowerCase().includes('javascript') || searchQuery.toLowerCase().includes('python') || searchQuery.toLowerCase().includes('skills')
+                      active: detectedFilters.skills.length > 0 || 
+                        /react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|skills/i.test(searchQuery)
                     }
                   ].map((filter) => (
                     <Button
