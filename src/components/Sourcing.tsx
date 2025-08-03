@@ -363,25 +363,25 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                     { 
                       key: "jobTitle", 
                       label: "Job Title", 
-                      active: /senior|junior|lead|principal|developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|consultant/i.test(searchQuery)
+                      active: /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery)
                     },
                     { 
                       key: "experience", 
                       label: "Years of Experience", 
                       active: detectedFilters.experience.length > 0 || 
-                        /\d+\s*\+?\s*years?|experience|senior|junior|lead|principal/i.test(searchQuery)
+                        /\d+\s*\+?\s*years?|experience|\b(senior|junior|lead|principal)\b/i.test(searchQuery)
                     },
                     { 
                       key: "industry", 
                       label: "Industry", 
                       active: detectedFilters.industry.length > 0 || 
-                        /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|ai|machine learning|financial|finance|banking|insurance|consulting|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)\b/i.test(searchQuery)
+                        /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|financial|finance|banking|insurance|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)\b/i.test(searchQuery)
                     },
                     { 
                       key: "skills", 
                       label: "Skills", 
                       active: detectedFilters.skills.length > 0 || 
-                        /react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|skills/i.test(searchQuery)
+                        /react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|css|html|git/i.test(searchQuery)
                     }
                   ].map((filter) => (
                     <Button
