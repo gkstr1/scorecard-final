@@ -525,13 +525,6 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                             <p className="text-sm text-muted-foreground">{candidate.title} at {candidate.company}</p>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <Badge variant={candidate.openToWork ? "default" : "secondary"} className="text-xs">
-                              {candidate.openToWork ? "Open to work" : "Not looking"}
-                            </Badge>
-                            <div className="flex items-center space-x-1">
-                              <Star className="h-3 w-3 text-yellow-500 fill-current" />
-                              <span className="text-xs font-medium">{candidate.matchScore}%</span>
-                            </div>
                           </div>
                         </div>
                         
