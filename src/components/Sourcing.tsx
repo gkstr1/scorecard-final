@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCap, MapPin, Mail, Phone, ExternalLink, Star } from "lucide-react";
+import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCap, MapPin, Mail, Phone, ExternalLink, Star, CheckCircle } from "lucide-react";
 import { FilterModal } from "@/components/FilterModal";
 import ContactModal from "@/components/ContactModal";
 import JobDescriptionUpload from "@/components/JobDescriptionUpload";
@@ -349,6 +349,32 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                       )}
                     </Button>
                   </div>
+                </div>
+
+                {/* Filter Chips */}
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { key: "location", label: "Location", active: true },
+                    { key: "jobTitle", label: "Job Title", active: true },
+                    { key: "experience", label: "Years of Experience", active: true },
+                    { key: "industry", label: "Industry", active: true },
+                    { key: "skills", label: "Skills", active: false }
+                  ].map((filter) => (
+                    <Button
+                      key={filter.key}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => console.log(`Opening ${filter.key} filter`)}
+                      className={`h-9 rounded-full border-2 transition-all duration-200 ${
+                        filter.active 
+                          ? "bg-primary/10 border-primary text-primary hover:bg-primary/20" 
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      {filter.active && <CheckCircle className="h-3 w-3 mr-1" />}
+                      {filter.label}
+                    </Button>
+                  ))}
                 </div>
 
                 {/* Dynamic Filter Buttons */}

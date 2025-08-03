@@ -92,25 +92,6 @@ const StructuredFilterInterface = ({ onSearch, isSearching = false }: Structured
           </Button>
         </div>
 
-        {/* Filter Chips */}
-        <div className="flex flex-wrap gap-2">
-          {filterOptions.map((filter) => (
-            <Button
-              key={filter.key}
-              variant="outline"
-              size="sm"
-              onClick={() => handleFilterToggle(filter.key)}
-              className={`h-9 rounded-full border-2 transition-all duration-200 ${
-                filter.active 
-                  ? "bg-primary/10 border-primary text-primary hover:bg-primary/20" 
-                  : "border-border hover:border-primary/50"
-              }`}
-            >
-              {filter.active && <CheckCircle className="h-3 w-3 mr-1" />}
-              {filter.label}
-            </Button>
-          ))}
-        </div>
 
       </CardContent>
     </Card>
