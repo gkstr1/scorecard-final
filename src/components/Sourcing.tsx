@@ -375,7 +375,7 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                       key: "industry", 
                       label: "Industry", 
                       active: detectedFilters.industry.length > 0 || 
-                        /fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|ai|machine learning|financial|finance|banking|insurance|tech|technology|software|consulting|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom/i.test(searchQuery)
+                        /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|ai|machine learning|financial|finance|banking|insurance|consulting|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)\b/i.test(searchQuery)
                     },
                     { 
                       key: "skills", 
