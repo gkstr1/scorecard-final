@@ -354,11 +354,31 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                 {/* Filter Chips */}
                 <div className="flex flex-wrap gap-2">
                   {[
-                    { key: "location", label: "Location", active: true },
-                    { key: "jobTitle", label: "Job Title", active: true },
-                    { key: "experience", label: "Years of Experience", active: true },
-                    { key: "industry", label: "Industry", active: true },
-                    { key: "skills", label: "Skills", active: false }
+                    { 
+                      key: "location", 
+                      label: "Location", 
+                      active: detectedFilters.location.length > 0 || searchQuery.toLowerCase().includes('location') || searchQuery.toLowerCase().includes('san francisco') || searchQuery.toLowerCase().includes('sf') || searchQuery.toLowerCase().includes('new york') || searchQuery.toLowerCase().includes('remote')
+                    },
+                    { 
+                      key: "jobTitle", 
+                      label: "Job Title", 
+                      active: searchQuery.toLowerCase().includes('senior') || searchQuery.toLowerCase().includes('developer') || searchQuery.toLowerCase().includes('engineer') || searchQuery.toLowerCase().includes('manager') || searchQuery.toLowerCase().includes('lead')
+                    },
+                    { 
+                      key: "experience", 
+                      label: "Years of Experience", 
+                      active: detectedFilters.experience.length > 0 || /\d+\s*\+?\s*years?/i.test(searchQuery) || searchQuery.toLowerCase().includes('experience')
+                    },
+                    { 
+                      key: "industry", 
+                      label: "Industry", 
+                      active: detectedFilters.industry.length > 0 || searchQuery.toLowerCase().includes('fintech') || searchQuery.toLowerCase().includes('saas') || searchQuery.toLowerCase().includes('startup') || searchQuery.toLowerCase().includes('tech')
+                    },
+                    { 
+                      key: "skills", 
+                      label: "Skills", 
+                      active: detectedFilters.skills.length > 0 || searchQuery.toLowerCase().includes('react') || searchQuery.toLowerCase().includes('javascript') || searchQuery.toLowerCase().includes('python') || searchQuery.toLowerCase().includes('skills')
+                    }
                   ].map((filter) => (
                     <Button
                       key={filter.key}
