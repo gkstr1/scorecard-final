@@ -112,28 +112,6 @@ const StructuredFilterInterface = ({ onSearch, isSearching = false }: Structured
           ))}
         </div>
 
-        {/* Active Filter Values Preview */}
-        {Object.entries(activeFilters).some(([_, values]) => values.length > 0) && (
-          <div className="space-y-2 pt-2 border-t border-border/50">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Active Filters</p>
-            <div className="space-y-1">
-              {Object.entries(activeFilters).map(([key, values]) => 
-                values.length > 0 && (
-                  <div key={key} className="flex items-center gap-2 text-sm">
-                    <span className="min-w-20 text-muted-foreground capitalize">{key}:</span>
-                    <div className="flex flex-wrap gap-1">
-                      {values.map((value, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {value}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
