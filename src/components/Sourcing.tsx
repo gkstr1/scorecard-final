@@ -209,8 +209,8 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
     const industryPatterns = [
       "fintech", "healthcare", "saas", "b2b", "enterprise", "startup",
       "e-commerce", "gaming", "edtech", "blockchain", "ai", "machine learning",
-      "financial", "finance", "banking", "insurance", "tech", "technology",
-      "software", "consulting", "retail", "manufacturing", "media", "advertising",
+      "financial", "finance", "banking", "insurance", "technology",
+      "consulting", "retail", "manufacturing", "media", "advertising",
       "biotech", "pharma", "pharmaceutical", "telecommunications", "telecom"
     ];
     industryPatterns.forEach(industry => {
