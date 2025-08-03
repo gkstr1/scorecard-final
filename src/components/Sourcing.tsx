@@ -11,6 +11,7 @@ import { FilterModal } from "@/components/FilterModal";
 import ContactModal from "@/components/ContactModal";
 import JobDescriptionUpload from "@/components/JobDescriptionUpload";
 import StructuredFilterInterface from "@/components/StructuredFilterInterface";
+import SourcingCandidateModal from "@/components/SourcingCandidateModal";
 
 interface Candidate {
   id: string;
@@ -566,10 +567,12 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                               Contact
                             </Button>
                           </ContactModal>
-                          <Button size="sm" variant="outline" className="h-7 text-xs">
-                            <ExternalLink className="h-3 w-3 mr-1" />
-                            View
-                          </Button>
+                          <SourcingCandidateModal candidate={candidate}>
+                            <Button size="sm" variant="outline" className="h-7 text-xs">
+                              <ExternalLink className="h-3 w-3 mr-1" />
+                              View
+                            </Button>
+                          </SourcingCandidateModal>
                           <Button size="sm" variant="outline" className="h-7 text-xs">
                             <Users className="h-3 w-3 mr-1" />
                             Add

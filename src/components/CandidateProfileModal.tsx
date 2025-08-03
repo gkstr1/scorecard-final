@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -436,17 +435,25 @@ const CandidateProfileModal = ({ candidate, isOpen, onClose, jobDescription }: C
                 </CardContent>
               </Card>
             </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Additional Documents</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Button variant="outline" className="w-full justify-start">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Upload Additional Document
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    Upload portfolio, certifications, or other relevant documents
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
-
-        <div className="flex justify-end space-x-2 mt-6">
-          <Button variant="outline" onClick={onClose}>
-            Close
-          </Button>
-          <Button onClick={() => console.log("Save assessment", assessment)}>
-            Save Assessment
-          </Button>
-        </div>
       </DialogContent>
     </Dialog>
   );
