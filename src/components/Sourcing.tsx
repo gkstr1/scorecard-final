@@ -10,6 +10,7 @@ import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCa
 import { FilterModal } from "@/components/FilterModal";
 import ContactModal from "@/components/ContactModal";
 import JobDescriptionUpload from "@/components/JobDescriptionUpload";
+import StructuredFilterInterface from "@/components/StructuredFilterInterface";
 
 interface Candidate {
   id: string;
@@ -286,6 +287,15 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
           </div>
         </div>
       </div>
+
+      {/* Structured Filter Interface */}
+      <StructuredFilterInterface 
+        onSearch={(query, filters) => {
+          setSearchQuery(query);
+          handleSearch();
+        }}
+        isSearching={isSearching}
+      />
 
       {/* Main Search Interface */}
       <Card className="border border-primary/20">
