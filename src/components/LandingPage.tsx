@@ -4,6 +4,28 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Brain, ArrowRight, CheckCircle, Calendar, Mail, Target, Users, Clock, Zap, BarChart, FileText, Star, TrendingUp, Lightbulb, MessageSquare, Award } from "lucide-react";
 const LandingPage = () => {
   return <div className="min-h-screen bg-background">
+      {/* Header Navigation */}
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-sm">S</span>
+              </div>
+              <span className="text-xl font-bold text-foreground">Scorecard</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Button variant="ghost" size="sm" asChild>
+                <a href="/auth">Sign In</a>
+              </Button>
+              <Button size="sm" asChild>
+                <a href="/auth?mode=signup">Get Started</a>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 text-center relative overflow-hidden">
         {/* Artistic Background Elements */}
@@ -49,7 +71,7 @@ const LandingPage = () => {
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Button size="lg" className="px-6 py-3" asChild>
-            <a href="/auth">Get started</a>
+            <a href="/auth?mode=signup">Get started</a>
           </Button>
           <Button size="lg" variant="outline" className="px-6 py-3">
             Watch demo
