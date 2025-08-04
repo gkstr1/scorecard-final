@@ -16,10 +16,10 @@ const LandingPage = () => {
             </div>
             <div className="flex items-center space-x-3">
               <Button variant="ghost" size="sm" asChild>
-                <a href="/auth">Sign In</a>
+                <a href="/auth">Log In</a>
               </Button>
               <Button size="sm" asChild>
-                <a href="/auth?mode=signup">Get Started</a>
+                <a href="/auth?mode=signup">Sign Up</a>
               </Button>
             </div>
           </div>
