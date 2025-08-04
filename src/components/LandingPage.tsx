@@ -48,8 +48,8 @@ const LandingPage = () => {
         </div>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Button size="lg" className="px-6 py-3">
-            Get started
+          <Button size="lg" className="px-6 py-3" asChild>
+            <a href="/auth">Get started</a>
           </Button>
           <Button size="lg" variant="outline" className="px-6 py-3">
             Watch demo

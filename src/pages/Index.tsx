@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import type { User, Session } from '@supabase/supabase-js';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -31,11 +33,40 @@ const Index = () => {
   const [availableRoles, setAvailableRoles] = useState<{value: string, label: string}[]>([]);
   const [isAddCandidateModalOpen, setIsAddCandidateModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    checkDataExists();
-    fetchAvailableRoles();
-  }, []);
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Redirect unauthenticated users to auth page
+        if (!session?.user) {
+          navigate('/auth');
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (!session?.user) {
+        navigate('/auth');
+      } else {
+        // Only load data if user is authenticated
+        checkDataExists();
+        fetchAvailableRoles();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const fetchAvailableRoles = async () => {
     try {
@@ -143,6 +174,13 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => supabase.auth.signOut()}
+              >
+                Sign Out
+              </Button>
               <AIChatPanel />
             </div>
           </div>
