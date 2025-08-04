@@ -58,7 +58,7 @@ const LandingPage = () => {
 
         {/* Company Logos */}
         <div className="mb-8">
-          <p className="text-sm text-muted-foreground mb-6">Trusted by teams at</p>
+          <p className="text-sm text-muted-foreground mb-6">Join 500+ technical recruiters already using Scorecard</p>
           <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
             <div className="text-xl font-bold">Notion</div>
             <div className="text-xl font-bold">Salesforce</div>
@@ -183,6 +183,9 @@ const LandingPage = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Complete ATS Platform
           </h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-4">
+            Unlike generic ATS platforms, we're built specifically for technical recruiting
+          </p>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Beyond AI interviews and scorecards, Scorecard provides a full-featured ATS to streamline your entire hiring process
           </p>
