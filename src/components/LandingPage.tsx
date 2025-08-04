@@ -56,9 +56,51 @@ const LandingPage = () => {
           </Button>
         </div>
 
+        {/* User Social Proof */}
+        <div className="mb-8">
+          {/* User Avatars */}
+          <div className="flex justify-center items-center mb-4">
+            <div className="flex -space-x-2">
+              <img 
+                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=64&h=64&fit=crop&crop=face" 
+                alt="User testimonial" 
+                className="w-10 h-10 rounded-full border-2 border-background"
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=64&h=64&fit=crop&crop=face" 
+                alt="User testimonial" 
+                className="w-10 h-10 rounded-full border-2 border-background"
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=64&h=64&fit=crop&crop=face" 
+                alt="User testimonial" 
+                className="w-10 h-10 rounded-full border-2 border-background"
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=64&h=64&fit=crop&crop=face" 
+                alt="User testimonial" 
+                className="w-10 h-10 rounded-full border-2 border-background"
+              />
+              <div className="w-10 h-10 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
+                +500
+              </div>
+            </div>
+          </div>
+          
+          <p className="text-sm text-muted-foreground mb-2">Join 500+ technical recruiters already using Scorecard</p>
+          <div className="flex justify-center items-center gap-1 text-xs text-muted-foreground">
+            <div className="flex text-yellow-400">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-3 h-3 fill-current" />
+              ))}
+            </div>
+            <span className="ml-1">4.9/5 from 200+ reviews</span>
+          </div>
+        </div>
+
         {/* Company Logos */}
         <div className="mb-8">
-          <p className="text-sm text-muted-foreground mb-6">Join 500+ technical recruiters already using Scorecard</p>
+          <p className="text-xs text-muted-foreground mb-4">Trusted by teams at</p>
           <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
             <div className="text-xl font-bold">Notion</div>
             <div className="text-xl font-bold">Salesforce</div>
