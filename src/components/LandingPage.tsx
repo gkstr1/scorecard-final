@@ -88,14 +88,6 @@ const LandingPage = () => {
           </div>
           
           <p className="text-sm text-muted-foreground mb-2">Join 500+ technical recruiters already using Scorecard</p>
-          <div className="flex justify-center items-center gap-1 text-xs text-muted-foreground">
-            <div className="flex text-yellow-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3 h-3 fill-current" />
-              ))}
-            </div>
-            <span className="ml-1">4.9/5 from 200+ reviews</span>
-          </div>
         </div>
 
         {/* Company Logos */}
