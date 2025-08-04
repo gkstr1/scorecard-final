@@ -277,13 +277,13 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
   return (
     <div className="max-w-6xl mx-auto space-y-4">
       {/* Hero Section */}
-      <div className="text-center space-y-2">
-        <div className="flex items-center justify-center space-x-2 mb-3">
-          <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-white" />
+      <div className="text-center space-y-3 mb-6">
+        <div className="flex items-center justify-center space-x-3">
+          <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+            <Sparkles className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground">AI Candidate Search</h1>
+            <h1 className="text-2xl font-bold text-foreground">AI Candidate Search</h1>
             <p className="text-sm text-muted-foreground">Find qualified talent using natural language</p>
           </div>
         </div>
@@ -299,8 +299,8 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
       />
 
       {/* Main Search Interface */}
-      <Card className="border border-primary/20">
-        <CardContent className="p-4">
+      <Card className="border border-primary/20 shadow-sm">
+        <CardContent className="p-6">
           <Tabs defaultValue="prompt" className="w-full">
             <TabsList className="grid w-full grid-cols-4 mb-4">
               <TabsTrigger value="prompt" className="flex items-center space-x-1 text-xs">
@@ -321,16 +321,16 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="prompt" className="space-y-3">
-              <div className="space-y-3">
-                <div className="relative">
+            <TabsContent value="prompt" className="space-y-4">
+              <div className="space-y-4">
+                <div className="space-y-3">
                   <Textarea
                     placeholder="e.g., 'Senior React developers in San Francisco with 5+ years experience at high-growth B2B SaaS companies'"
                     value={searchQuery}
                     onChange={(e) => handleQueryChange(e.target.value)}
-                    className="min-h-20 text-sm resize-none border border-border focus:border-primary rounded-lg"
+                    className="min-h-16 max-h-20 text-sm resize-none border border-border focus:border-primary rounded-lg"
                   />
-                  <div className="absolute bottom-2 right-2">
+                  <div className="flex justify-end">
                     <Button 
                       onClick={handleSearch}
                       disabled={!searchQuery.trim() || isSearching}
@@ -402,8 +402,11 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                   ))}
                 </div>
 
-                <div className="bg-muted/30 rounded-lg p-3">
-                  <h4 className="font-medium text-foreground mb-1 text-sm">Pro Tips:</h4>
+                <div className="bg-muted/40 rounded-lg p-3 border border-border/50">
+                  <h4 className="font-medium text-foreground mb-2 text-sm flex items-center">
+                    <Sparkles className="h-3 w-3 mr-1 text-primary" />
+                    Pro Tips:
+                  </h4>
                   <div className="text-xs text-muted-foreground space-y-1">
                     <p>• Be specific about location, skills, experience level, and company types</p>
                     <p>• Include industry experience: "fintech", "healthcare", "enterprise SaaS"</p>
@@ -423,7 +426,7 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                   placeholder="Paste your job description here or upload a file above..."
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
-                  className="min-h-32 resize-none border border-border focus:border-primary rounded-lg text-sm"
+                  className="min-h-24 max-h-32 resize-none border border-border focus:border-primary rounded-lg text-sm"
                 />
                 <Button 
                   onClick={() => {/* Handle JD search */}}
