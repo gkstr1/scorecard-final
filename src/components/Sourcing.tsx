@@ -358,27 +358,31 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                     { 
                       key: "location", 
                       label: "Location", 
-                      active: detectedFilters.location.length > 0
+                      active: detectedFilters.location.length > 0 || 
+                        /san francisco|sf|new york|nyc|los angeles|la|seattle|austin|boston|chicago|remote|california|bay area|silicon valley/i.test(searchQuery)
                     },
                     { 
                       key: "jobTitle", 
                       label: "Job Title", 
-                      active: /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer|programmer|consultant|technician)\b/i.test(searchQuery)
+                      active: /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery)
                     },
                     { 
                       key: "experience", 
                       label: "Years of Experience", 
-                      active: detectedFilters.experience.length > 0
+                      active: detectedFilters.experience.length > 0 || 
+                        /\d+\s*\+?\s*years?|experience|\b(senior|junior|lead|principal)\b/i.test(searchQuery)
                     },
                     { 
                       key: "industry", 
                       label: "Industry", 
-                      active: detectedFilters.industry.length > 0
+                      active: detectedFilters.industry.length > 0 || 
+                        /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|financial|finance|banking|insurance|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)\b/i.test(searchQuery)
                     },
                     { 
                       key: "skills", 
                       label: "Skills", 
-                      active: detectedFilters.skills.length > 0
+                      active: detectedFilters.skills.length > 0 || 
+                        /react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|css|html|git/i.test(searchQuery)
                     }
                   ].map((filter) => (
                     <Button
