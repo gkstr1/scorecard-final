@@ -7,16 +7,24 @@ import { GraduationCap, MapPin, Zap, Building2, Filter } from "lucide-react";
 
 interface FilterModalProps {
   children: React.ReactNode;
+  currentFilters?: {
+    experience: string[];
+    location: string[];
+    skills: string[];
+    industry: string[];
+    company: string[];
+  };
+  onFiltersApply?: (filters: any) => void;
 }
 
-export const FilterModal = ({ children }: FilterModalProps) => {
+export const FilterModal = ({ children, currentFilters, onFiltersApply }: FilterModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState({
-    experience: [] as string[],
-    location: [] as string[],
-    skills: [] as string[],
-    industry: [] as string[],
-    companyStage: [] as string[],
+    experience: currentFilters?.experience || [],
+    location: currentFilters?.location || [],
+    skills: currentFilters?.skills || [],
+    industry: currentFilters?.industry || [],
+    companyStage: currentFilters?.company || [],
     education: [] as string[]
   });
 
@@ -41,8 +49,15 @@ export const FilterModal = ({ children }: FilterModalProps) => {
   };
 
   const applyFilters = () => {
-    // Handle filter application logic here
-    console.log('Applied filters:', filters);
+    if (onFiltersApply) {
+      onFiltersApply({
+        experience: filters.experience,
+        location: filters.location,
+        skills: filters.skills,
+        industry: filters.industry,
+        company: filters.companyStage
+      });
+    }
     setIsOpen(false);
   };
 
