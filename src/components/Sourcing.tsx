@@ -328,7 +328,7 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                     placeholder="e.g., 'Senior React developers in San Francisco with 5+ years experience at high-growth B2B SaaS companies'"
                     value={searchQuery}
                     onChange={(e) => handleQueryChange(e.target.value)}
-                    className="min-h-16 max-h-20 text-sm resize-none border border-border focus:border-primary rounded-lg"
+                    className="min-h-16 max-h-20 max-w-3xl text-sm resize-none border border-border focus:border-primary rounded-lg"
                   />
                   <div className="flex justify-end">
                     <Button 
