@@ -91,8 +91,8 @@ const LandingPage = () => {
         </div>
 
         {/* Company Logos */}
-        <div className="mb-8">
-          <p className="text-xs text-muted-foreground mb-4">Trusted by teams at</p>
+        <div className="mb-16">
+          <p className="text-xs text-muted-foreground mb-6">Trusted by teams at</p>
           <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
             <div className="text-xl font-bold">Notion</div>
             <div className="text-xl font-bold">Salesforce</div>
@@ -103,8 +103,11 @@ const LandingPage = () => {
         </div>
       </div>
 
+      {/* Section Divider */}
+      <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mb-20"></div>
+
       {/* Artistic Scorecard Preview */}
-      <div className="container mx-auto px-4 mb-20">
+      <div className="container mx-auto px-4 mb-32">
         <div className="max-w-4xl mx-auto relative">
 
           <div className="bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10 rounded-3xl p-8 border border-primary/20 relative overflow-hidden">
