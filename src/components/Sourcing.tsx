@@ -505,8 +505,10 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
                       handleSearch();
                     }}
                   >
-                    <Button variant="outline" size="sm" className="h-8 text-xs">
-                      <Filter className="h-3 w-3 mr-1" />
+                    <Button 
+                      className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-6 py-2 h-11 text-sm font-semibold border-0"
+                    >
+                      <Filter className="h-4 w-4 mr-2" />
                       Edit Filters
                     </Button>
                   </FilterModal>
@@ -516,48 +518,6 @@ const Sourcing = ({ onCandidateCreated }: SourcingProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          {/* Active Filters Display */}
-          {hasSearched && (Object.keys(detectedFilters).some(key => detectedFilters[key as keyof typeof detectedFilters].length > 0)) && (
-            <div className="mb-4 p-3 bg-muted/30 border border-border rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-medium text-foreground">Active Filters:</h4>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => setDetectedFilters({
-                    experience: [],
-                    location: [],
-                    skills: [],
-                    industry: [],
-                    company: []
-                  })}
-                  className="text-xs h-6 px-2"
-                >
-                  Clear All
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {Object.entries(detectedFilters).map(([category, values]) => 
-                  values.map((value) => (
-                    <Badge key={`${category}-${value}`} variant="secondary" className="text-xs">
-                      {category}: {value}
-                      <button 
-                        onClick={() => {
-                          setDetectedFilters(prev => ({
-                            ...prev,
-                            [category]: prev[category as keyof typeof prev].filter(v => v !== value)
-                          }));
-                        }}
-                        className="ml-1 hover:text-destructive"
-                      >
-                        ×
-                      </button>
-                    </Badge>
-                  ))
-                )}
-              </div>
-            </div>
-          )}
           {!hasSearched ? (
             <div className="text-center py-8">
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
