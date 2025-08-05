@@ -346,7 +346,7 @@ const Sourcing = ({
                 }, {
                   key: "experience",
                   label: "Years of Experience",
-                  active: detectedFilters.experience.length > 0 || /\b(\d+\s*[\+\-]\s*years?(\s+(of\s+)?experience)?|\d+\s*to\s*\d+\s*years?|experience\s*:\s*\d+|\d+\s*years?\s+(of\s+)?experience)\b/i.test(searchQuery)
+                  active: detectedFilters.experience.length > 0 || /\b(\d+\s*[\+\-]\s*years?\s+(of\s+)?(experience|exp)|\d+\s*to\s*\d+\s*years?\s+(of\s+)?(experience|exp)|experience\s*:\s*\d+|(experience|exp)\s*:\s*\d+\s*[\+\-]?\s*years?)\b/i.test(searchQuery)
                 }, {
                   key: "industry",
                   label: "Industry",
