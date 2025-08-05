@@ -342,11 +342,11 @@ const Sourcing = ({
                 }, {
                   key: "jobTitle",
                   label: "Job Title",
-                  active: /\b(senior|junior|lead|principal|staff)\s+(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) || /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery)
+                  active: /\b(senior|junior|lead|principal|staff)\s+(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) || /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) || /\b\d+\s*[\+\-]?\s*years?\s+(of\s+)?experience\b/i.test(searchQuery)
                 }, {
                   key: "experience",
                   label: "Years of Experience",
-                  active: detectedFilters.experience.length > 0 || /\b(\d+\s*[\+\-]\s*years?\s+(of\s+)?(experience|exp)|\d+\s*to\s*\d+\s*years?\s+(of\s+)?(experience|exp)|experience\s*:\s*\d+|(experience|exp)\s*:\s*\d+\s*[\+\-]?\s*years?)\b/i.test(searchQuery)
+                  active: detectedFilters.experience.length > 0 || /\b(experience\s*level|experience\s*:\s*\d+|minimum\s+\d+\s*years|requires?\s+\d+\s*years)\b/i.test(searchQuery)
                 }, {
                   key: "industry",
                   label: "Industry",
