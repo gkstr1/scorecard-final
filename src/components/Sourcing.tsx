@@ -346,7 +346,7 @@ const Sourcing = ({
                 }, {
                   key: "experience",
                   label: "Years of Experience",
-                  active: detectedFilters.experience.length > 0 || /\b(\d+\s*\+?\s*years?|experience|senior|junior|lead|principal)\b/i.test(searchQuery)
+                  active: detectedFilters.experience.length > 0 || /\b(\d+\s*\+?\s*years?\s+(of\s+)?experience|\d+\s*\+?\s*years?\s+exp)\b/i.test(searchQuery)
                 }, {
                   key: "industry",
                   label: "Industry",
