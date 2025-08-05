@@ -148,11 +148,10 @@ const SourcingCandidateModal = ({ candidate, children }: SourcingCandidateModalP
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="technical">Technical</TabsTrigger>
             <TabsTrigger value="recruitment">Recruitment</TabsTrigger>
-            <TabsTrigger value="assessment">Assessment</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -436,67 +435,6 @@ const SourcingCandidateModal = ({ candidate, children }: SourcingCandidateModalP
             </Card>
           </TabsContent>
 
-          <TabsContent value="assessment" className="space-y-4">
-            {/* Assessment Scores */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Technical Assessment</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { key: "technical", label: "Technical Skills", icon: <Target className="h-4 w-4" /> },
-                    { key: "communication", label: "Communication", icon: <MessageSquare className="h-4 w-4" /> },
-                    { key: "experience", label: "Experience Level", icon: <Award className="h-4 w-4" /> },
-                    { key: "cultural_fit", label: "Cultural Fit", icon: <Star className="h-4 w-4" /> }
-                  ].map((item) => (
-                    <div key={item.key} className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        {item.icon}
-                        <Label>{item.label}</Label>
-                      </div>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="Score (0-100)"
-                        value={assessmentScores[item.key as keyof typeof assessmentScores] || ""}
-                        onChange={(e) => setAssessmentScores({
-                          ...assessmentScores,
-                          [item.key]: parseInt(e.target.value) || 0
-                        })}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Notes */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Recruiter Notes</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Textarea
-                  placeholder="Add your assessment notes, interview feedback, and next steps..."
-                  value={recruiterNotes}
-                  onChange={(e) => setRecruiterNotes(e.target.value)}
-                  className="min-h-32"
-                />
-                <div className="flex space-x-2">
-                  <Button className="flex-1">
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Save Assessment
-                  </Button>
-                  <Button variant="outline">
-                    <FileText className="h-4 w-4 mr-2" />
-                    Generate Report
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>
