@@ -305,10 +305,10 @@ const Sourcing = ({
 
                 {/* Filter Chips */}
                 <div className="flex flex-wrap gap-2">
-                  {[{
+                {[{
                   key: "location",
                   label: "Location",
-                  active: detectedFilters.location.length > 0 || /san francisco|sf|new york|nyc|los angeles|la|seattle|austin|boston|chicago|remote|california|bay area|silicon valley/i.test(searchQuery)
+                  active: detectedFilters.location.length > 0 || /\b(san francisco|sf|new york|nyc|los angeles|la|seattle|austin|boston|chicago|remote|california|bay area|silicon valley)\b/i.test(searchQuery)
                 }, {
                   key: "jobTitle",
                   label: "Job Title",
@@ -316,15 +316,15 @@ const Sourcing = ({
                 }, {
                   key: "experience",
                   label: "Years of Experience",
-                  active: detectedFilters.experience.length > 0 || /\d+\s*\+?\s*years?|experience|\b(senior|junior|lead|principal)\b/i.test(searchQuery)
+                  active: detectedFilters.experience.length > 0 || /\b(\d+\s*\+?\s*years?|experience|senior|junior|lead|principal)\b/i.test(searchQuery)
                 }, {
                   key: "industry",
                   label: "Industry",
-                  active: detectedFilters.industry.length > 0 || /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|financial|finance|banking|insurance|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)\b/i.test(searchQuery)
+                  active: detectedFilters.industry.length > 0 || /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|ai|financial|finance|banking|insurance|technology|consulting|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)\b/i.test(searchQuery)
                 }, {
                   key: "skills",
                   label: "Skills",
-                  active: detectedFilters.skills.length > 0 || /react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|css|html|git/i.test(searchQuery)
+                  active: detectedFilters.skills.length > 0 || /\b(react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|css|html|git)\b/i.test(searchQuery)
                 }].map(filter => <Button key={filter.key} variant="outline" size="sm" onClick={() => console.log(`Opening ${filter.key} filter`)} className={`h-9 rounded-full border-2 transition-all duration-200 ${filter.active ? "bg-primary/10 border-primary text-primary hover:bg-primary/20" : "border-border hover:border-primary/50"}`}>
                       {filter.active && <CheckCircle className="h-3 w-3 mr-1" />}
                       {filter.label}
