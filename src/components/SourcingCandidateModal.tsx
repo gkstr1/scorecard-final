@@ -148,10 +148,11 @@ const SourcingCandidateModal = ({ candidate, children }: SourcingCandidateModalP
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="technical">Technical</TabsTrigger>
             <TabsTrigger value="recruitment">Recruitment</TabsTrigger>
+            <TabsTrigger value="assessment">Assessment</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -496,7 +497,6 @@ const SourcingCandidateModal = ({ candidate, children }: SourcingCandidateModalP
               </CardContent>
             </Card>
           </TabsContent>
-
         </Tabs>
       </DialogContent>
     </Dialog>
