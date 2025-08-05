@@ -335,27 +335,38 @@ const Sourcing = ({
 
                 {/* Filter Chips */}
                 <div className="flex flex-wrap gap-2">
-                {[{
-                  key: "location",
-                  label: "Location",
-                  active: detectedFilters.location.length > 0 || /\b(in|from|located|based)\s+(san francisco|sf|new york|nyc|los angeles|la|seattle|austin|boston|chicago|remote|california|bay area|silicon valley)\b/i.test(searchQuery)
-                }, {
-                  key: "jobTitle",
-                  label: "Job Title",
-                  active: /\b(senior|junior|lead|principal|staff)\s+(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) || /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) || /\b\d+\s*[\+\-]?\s*years?\s+(of\s+)?experience\b/i.test(searchQuery)
-                }, {
-                  key: "experience",
-                  label: "Years of Experience",
-                  active: detectedFilters.experience.length > 0 || /\b(experience\s*level|experience\s*:\s*\d+|minimum\s+\d+\s*years|requires?\s+\d+\s*years)\b/i.test(searchQuery)
-                }, {
-                  key: "industry",
-                  label: "Industry",
-                  active: detectedFilters.industry.length > 0 || /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|ai|financial|finance|banking|insurance|technology|consulting|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)(\s+(industry|sector|company|companies|background|experience))?\b/i.test(searchQuery)
-                }, {
-                  key: "skills",
-                  label: "Skills",
-                  active: detectedFilters.skills.length > 0 || /\b(react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|css|html|git)(\s+(developer|engineer|experience|skills?))?\b/i.test(searchQuery)
-                }].map(filter => <Button key={filter.key} variant="outline" size="sm" onClick={() => console.log(`Opening ${filter.key} filter`)} className={`h-9 rounded-full border-2 transition-all duration-200 ${filter.active ? "bg-primary/10 border-primary text-primary hover:bg-primary/20" : "border-border hover:border-primary/50"}`}>
+                {(() => {
+                  const searchLower = searchQuery.toLowerCase();
+                  
+                  // Check for experience level patterns (should NOT highlight experience filter if it's job requirements)
+                  const isJobRequirement = /\b\d+\s*[\+\-]?\s*years?\s+(of\s+)?(experience|exp)\b/i.test(searchQuery) || 
+                                          /\brequires?\s+\d+\s*years?\b/i.test(searchQuery) ||
+                                          /\bminimum\s+\d+\s*years?\b/i.test(searchQuery);
+                  
+                  return [{
+                    key: "location",
+                    label: "Location",
+                    active: detectedFilters.location.length > 0 || /\b(in|from|located|based)\s+(san francisco|sf|new york|nyc|los angeles|la|seattle|austin|boston|chicago|remote|california|bay area|silicon valley)\b/i.test(searchQuery)
+                  }, {
+                    key: "jobTitle",
+                    label: "Job Title",
+                    active: /\b(senior|junior|lead|principal|staff)\s+(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) || 
+                           /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) ||
+                           isJobRequirement
+                  }, {
+                    key: "experience",
+                    label: "Years of Experience",
+                    active: !isJobRequirement && (detectedFilters.experience.length > 0 || /\b(experience\s*level|seniority|junior|senior|mid[-\s]level)\b/i.test(searchQuery))
+                  }, {
+                    key: "industry",
+                    label: "Industry",
+                    active: detectedFilters.industry.length > 0 || /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|ai|financial|finance|banking|insurance|technology|consulting|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)(\s+(industry|sector|company|companies|background|experience))?\b/i.test(searchQuery)
+                  }, {
+                    key: "skills",
+                    label: "Skills",
+                    active: detectedFilters.skills.length > 0 || /\b(react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|css|html|git)(\s+(developer|engineer|experience|skills?))?\b/i.test(searchQuery)
+                  }];
+                 })().map(filter => <Button key={filter.key} variant="outline" size="sm" onClick={() => console.log(`Opening ${filter.key} filter`)} className={`h-9 rounded-full border-2 transition-all duration-200 ${filter.active ? "bg-primary/10 border-primary text-primary hover:bg-primary/20" : "border-border hover:border-primary/50"}`}>
                       {filter.active && <CheckCircle className="h-3 w-3 mr-1" />}
                       {filter.label}
                     </Button>)}
