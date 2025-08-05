@@ -12,6 +12,7 @@ import ContactModal from "@/components/ContactModal";
 import JobDescriptionUpload from "@/components/JobDescriptionUpload";
 import StructuredFilterInterface from "@/components/StructuredFilterInterface";
 import SourcingCandidateModal from "@/components/SourcingCandidateModal";
+import JobSelectionModal from "@/components/JobSelectionModal";
 interface Candidate {
   id: string;
   name: string;
@@ -58,6 +59,8 @@ const Sourcing = ({
     company: []
   });
   const [revealedContacts, setRevealedContacts] = useState<Set<string>>(new Set());
+  const [jobModalOpen, setJobModalOpen] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
 
   // Mock candidate data
   const mockCandidates: Candidate[] = [{
@@ -552,7 +555,15 @@ const Sourcing = ({
                               View
                             </Button>
                           </SourcingCandidateModal>
-                          <Button size="sm" variant="outline" className="h-7 text-xs">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="h-7 text-xs"
+                            onClick={() => {
+                              setSelectedCandidate(candidate);
+                              setJobModalOpen(true);
+                            }}
+                          >
                             <Users className="h-3 w-3 mr-1" />
                             Add
                           </Button>
@@ -564,6 +575,21 @@ const Sourcing = ({
             </div>}
         </CardContent>
       </Card>
+
+      {/* Job Selection Modal */}
+      {selectedCandidate && (
+        <JobSelectionModal
+          isOpen={jobModalOpen}
+          onClose={() => {
+            setJobModalOpen(false);
+            setSelectedCandidate(null);
+          }}
+          candidate={selectedCandidate}
+          onCandidateAdded={() => {
+            onCandidateCreated?.();
+          }}
+        />
+      )}
     </div>;
 };
 export default Sourcing;
