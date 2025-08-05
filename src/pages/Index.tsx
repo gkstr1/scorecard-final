@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Mail, Calendar, FileText, Plus, Search, Zap, ClipboardCheck, BarChart3, Settings, ChevronDown, ArrowLeft, Building2, Upload } from "lucide-react";
+import { useCredits } from "@/hooks/useCredits";
+import { CreditBalance } from "@/components/CreditBalance";
+import { CreditDisplay } from "@/components/CreditDisplay";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
@@ -36,11 +39,30 @@ const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
+  
+  // Credit system hook
+  const { credits, transactions, loading: creditsLoading, useCreditsForReveal } = useCredits(user);
 
   useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+    });
+
     // Load data without authentication requirement
     checkDataExists();
     fetchAvailableRoles();
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchAvailableRoles = async () => {
@@ -149,6 +171,13 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {credits && (
+                <CreditBalance 
+                  balance={credits.credits_balance} 
+                  size="sm"
+                  showButton={true}
+                />
+              )}
               <Button
                 variant="outline"
                 size="sm"
@@ -403,6 +432,22 @@ const Index = () => {
               <p className="text-sm text-muted-foreground">
                 Configure your system settings and integrations
               </p>
+            </div>
+            
+            {/* Credits Section */}
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-3">
+                Credits & Billing
+              </h3>
+              <CreditDisplay 
+                credits={credits}
+                transactions={transactions}
+                loading={creditsLoading}
+                onPurchaseCredits={() => {
+                  // Will implement Stripe integration later
+                  console.log("Purchase credits clicked");
+                }}
+              />
             </div>
             
             {/* Email Integration */}

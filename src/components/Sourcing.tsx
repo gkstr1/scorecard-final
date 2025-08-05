@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCap, MapPin, Mail, Phone, ExternalLink, Star, CheckCircle } from "lucide-react";
+import { Search, Sparkles, FileText, Filter, Zap, Users, Building2, GraduationCap, MapPin, Mail, Phone, ExternalLink, Star, CheckCircle, Eye, Lock } from "lucide-react";
 import { FilterModal } from "@/components/FilterModal";
 import ContactModal from "@/components/ContactModal";
 import JobDescriptionUpload from "@/components/JobDescriptionUpload";
@@ -30,9 +30,13 @@ interface Candidate {
 }
 interface SourcingProps {
   onCandidateCreated?: () => void;
+  useCreditsForReveal?: (contactInfo: any) => Promise<boolean>;
+  userCredits?: { credits_balance: number } | null;
 }
 const Sourcing = ({
-  onCandidateCreated
+  onCandidateCreated,
+  useCreditsForReveal,
+  userCredits
 }: SourcingProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -53,6 +57,7 @@ const Sourcing = ({
     industry: [],
     company: []
   });
+  const [revealedContacts, setRevealedContacts] = useState<Set<string>>(new Set());
 
   // Mock candidate data
   const mockCandidates: Candidate[] = [{
@@ -65,6 +70,7 @@ const Sourcing = ({
     skills: ["React", "TypeScript", "Node.js", "GraphQL", "AWS"],
     education: "Stanford University - BS Computer Science",
     email: "sarah.chen@email.com",
+    phone: "(415) 555-0123",
     matchScore: 95,
     openToWork: true,
     avatar: "/placeholder.svg"
@@ -78,6 +84,7 @@ const Sourcing = ({
     skills: ["React", "Python", "Django", "PostgreSQL", "Docker"],
     education: "UC Berkeley - BS Electrical Engineering",
     email: "marcus.j@email.com",
+    phone: "(415) 555-0456",
     matchScore: 92,
     openToWork: false,
     avatar: "/placeholder.svg"
@@ -91,6 +98,7 @@ const Sourcing = ({
     skills: ["React", "Vue.js", "CSS", "JavaScript", "Figma"],
     education: "Carnegie Mellon - BS Computer Science",
     email: "emily.r@email.com",
+    phone: "(415) 555-0789",
     matchScore: 88,
     openToWork: true,
     avatar: "/placeholder.svg"
@@ -103,6 +111,7 @@ const Sourcing = ({
     experience: "7 years",
     skills: ["React", "Go", "Kubernetes", "GCP", "Microservices"],
     education: "MIT - MS Computer Science",
+    phone: "(650) 555-0234",
     matchScore: 94,
     openToWork: false,
     avatar: "/placeholder.svg"
@@ -116,6 +125,7 @@ const Sourcing = ({
     skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
     education: "Harvard University - BS Computer Science",
     email: "alex.turner@email.com",
+    phone: "(415) 555-0567",
     matchScore: 89,
     openToWork: true,
     avatar: "/placeholder.svg"
@@ -128,6 +138,7 @@ const Sourcing = ({
     experience: "8 years",
     skills: ["React", "Redux", "JavaScript", "PHP", "MySQL"],
     education: "University of Washington - BS Computer Science",
+    phone: "(206) 555-0890",
     matchScore: 91,
     openToWork: false,
     avatar: "/placeholder.svg"
@@ -242,6 +253,22 @@ const Sourcing = ({
   const handleQuickSearch = (text: string) => {
     setSearchQuery(text);
     detectFiltersFromQuery(text);
+  };
+
+  const handleRevealContact = async (candidate: Candidate) => {
+    if (!useCreditsForReveal) return false;
+    
+    const success = await useCreditsForReveal({
+      name: candidate.name,
+      email: candidate.email,
+      phone: candidate.phone
+    });
+    
+    if (success) {
+      setRevealedContacts(prev => new Set([...prev, candidate.id]));
+    }
+    
+    return success;
   };
   return <div className="max-w-6xl mx-auto space-y-4">
       {/* Hero Section */}
@@ -471,13 +498,54 @@ const Sourcing = ({
                           </div>
                         </div>
                         
+                        {/* Contact Information Section */}
+                        {revealedContacts.has(candidate.id) ? (
+                          <div className="space-y-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <h4 className="text-xs font-medium text-green-800">Contact Information:</h4>
+                            <div className="space-y-1 text-xs">
+                              {candidate.email && (
+                                <div className="flex items-center space-x-1 text-green-700">
+                                  <Mail className="h-3 w-3" />
+                                  <span>{candidate.email}</span>
+                                </div>
+                              )}
+                              {candidate.phone && (
+                                <div className="flex items-center space-x-1 text-green-700">
+                                  <Phone className="h-3 w-3" />
+                                  <span>{candidate.phone}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="p-3 bg-muted/30 border border-border rounded-lg">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-2">
+                                <Lock className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-xs text-muted-foreground">Contact info requires 1 credit</span>
+                              </div>
+                              <Button 
+                                size="sm" 
+                                onClick={() => handleRevealContact(candidate)}
+                                disabled={!userCredits || userCredits.credits_balance < 1}
+                                className="h-7 text-xs bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+                              >
+                                <Eye className="h-3 w-3 mr-1" />
+                                Reveal (1 credit)
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                        
                         <div className="flex items-center space-x-2 pt-1">
-                          <ContactModal candidate={candidate}>
-                            <Button size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 h-7 text-xs">
-                              <Mail className="h-3 w-3 mr-1" />
-                              Contact
-                            </Button>
-                          </ContactModal>
+                          {revealedContacts.has(candidate.id) && (
+                            <ContactModal candidate={candidate}>
+                              <Button size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 h-7 text-xs">
+                                <Mail className="h-3 w-3 mr-1" />
+                                Contact
+                              </Button>
+                            </ContactModal>
+                          )}
                           <SourcingCandidateModal candidate={candidate}>
                             <Button size="sm" variant="outline" className="h-7 text-xs">
                               <ExternalLink className="h-3 w-3 mr-1" />
