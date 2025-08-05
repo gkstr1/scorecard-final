@@ -289,7 +289,7 @@ const Sourcing = ({
             <TabsContent value="prompt" className="space-y-4">
               <div className="space-y-4">
                 <div className="space-y-3">
-                  <Textarea placeholder="e.g., 'Senior React developers in San Francisco with 5+ years experience at high-growth B2B SaaS companies'" value={searchQuery} onChange={e => handleQueryChange(e.target.value)} className="min-h-16 max-h-20 w-full text-sm resize-none border border-border focus:border-primary rounded-lg" />
+                  <Textarea placeholder="e.g., 'Senior React developers in San Francisco with 5+ years experience at high-growth B2B SaaS companies'" value={searchQuery} onChange={e => handleQueryChange(e.target.value)} className="min-h-24 max-h-32 w-full text-sm resize-none border border-border focus:border-primary rounded-lg" />
                   <div className="flex justify-end">
                     <Button onClick={handleSearch} disabled={!searchQuery.trim() || isSearching} size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
                       {isSearching ? <>
