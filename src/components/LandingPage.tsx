@@ -7,7 +7,7 @@ const LandingPage = () => {
       {/* Header Navigation */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-end items-center h-16">
             <div className="flex items-center space-x-3">
               <Button variant="ghost" size="sm" asChild>
                 <a href="/auth">Log In</a>
