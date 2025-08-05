@@ -9,12 +9,6 @@ const LandingPage = () => {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">S</span>
-              </div>
-              <span className="text-xl font-bold text-foreground">Scorecard</span>
-            </div>
-            <div className="flex items-center space-x-3">
               <Button variant="ghost" size="sm" asChild>
                 <a href="/auth">Log In</a>
               </Button>
