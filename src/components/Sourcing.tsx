@@ -338,23 +338,23 @@ const Sourcing = ({
                 {[{
                   key: "location",
                   label: "Location",
-                  active: detectedFilters.location.length > 0 || /\b(san francisco|sf|new york|nyc|los angeles|la|seattle|austin|boston|chicago|remote|california|bay area|silicon valley)\b/i.test(searchQuery)
+                  active: detectedFilters.location.length > 0 || /\b(in|from|located|based)\s+(san francisco|sf|new york|nyc|los angeles|la|seattle|austin|boston|chicago|remote|california|bay area|silicon valley)\b/i.test(searchQuery)
                 }, {
                   key: "jobTitle",
                   label: "Job Title",
-                  active: /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery)
+                  active: /\b(senior|junior|lead|principal|staff)\s+(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) || /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery)
                 }, {
                   key: "experience",
                   label: "Years of Experience",
-                  active: detectedFilters.experience.length > 0 || /\b(\d+\s*\+?\s*years?\s+(of\s+)?experience|\d+\s*\+?\s*years?\s+exp)\b/i.test(searchQuery)
+                  active: detectedFilters.experience.length > 0 || /\b(\d+\s*[\+\-]\s*years?(\s+(of\s+)?experience)?|\d+\s*to\s*\d+\s*years?|experience\s*:\s*\d+|\d+\s*years?\s+(of\s+)?experience)\b/i.test(searchQuery)
                 }, {
                   key: "industry",
                   label: "Industry",
-                  active: detectedFilters.industry.length > 0 || /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|ai|financial|finance|banking|insurance|technology|consulting|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)\b/i.test(searchQuery)
+                  active: detectedFilters.industry.length > 0 || /\b(fintech|healthcare|saas|b2b|enterprise|startup|e-commerce|gaming|edtech|blockchain|ai|financial|finance|banking|insurance|technology|consulting|retail|manufacturing|media|advertising|biotech|pharma|pharmaceutical|telecommunications|telecom)(\s+(industry|sector|company|companies|background|experience))?\b/i.test(searchQuery)
                 }, {
                   key: "skills",
                   label: "Skills",
-                  active: detectedFilters.skills.length > 0 || /\b(react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|css|html|git)\b/i.test(searchQuery)
+                  active: detectedFilters.skills.length > 0 || /\b(react|javascript|typescript|python|java|node\.js|vue|angular|aws|kubernetes|docker|graphql|mongodb|postgresql|css|html|git)(\s+(developer|engineer|experience|skills?))?\b/i.test(searchQuery)
                 }].map(filter => <Button key={filter.key} variant="outline" size="sm" onClick={() => console.log(`Opening ${filter.key} filter`)} className={`h-9 rounded-full border-2 transition-all duration-200 ${filter.active ? "bg-primary/10 border-primary text-primary hover:bg-primary/20" : "border-border hover:border-primary/50"}`}>
                       {filter.active && <CheckCircle className="h-3 w-3 mr-1" />}
                       {filter.label}
