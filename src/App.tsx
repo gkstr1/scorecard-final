@@ -8,6 +8,7 @@ import LandingPage from "./components/LandingPage";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import LinkedInCallback from "./pages/LinkedInCallback";
 
 // Create QueryClient with proper default options for React 18
 const queryClient = new QueryClient({
@@ -32,6 +33,7 @@ const App = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Index />} />
+            <Route path="/linkedin-callback" element={<LinkedInCallback />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

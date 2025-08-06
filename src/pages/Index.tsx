@@ -4,7 +4,7 @@ import type { User, Session } from '@supabase/supabase-js';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Mail, Calendar, FileText, Plus, Search, Zap, ClipboardCheck, BarChart3, Settings, ChevronDown, ArrowLeft, Building2, Upload } from "lucide-react";
+import { Users, Mail, Calendar, FileText, Plus, Search, Zap, ClipboardCheck, BarChart3, Settings, ChevronDown, ArrowLeft, Building2, Upload, Filter } from "lucide-react";
 import { useCredits } from "@/hooks/useCredits";
 import { CreditBalance } from "@/components/CreditBalance";
 import { CreditDisplay } from "@/components/CreditDisplay";
@@ -18,6 +18,7 @@ import InterviewCalendar from "@/components/InterviewCalendar";
 import StatsOverview from "@/components/StatsOverview";
 import KanbanBoard from "@/components/KanbanBoard";
 import JobCreator from "@/components/JobCreator";
+import { FilterModal } from "@/components/FilterModal";
 import PipelineSettings from "@/components/PipelineSettings";
 import Sourcing from "@/components/Sourcing";
 import EmptyStateGuide from "@/components/EmptyStateGuide";
@@ -39,6 +40,21 @@ const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
+  
+  // Filter state for sourcing
+  const [sourcingFilters, setSourcingFilters] = useState<{
+    experience: string[];
+    location: string[];
+    skills: string[];
+    industry: string[];
+    company: string[];
+  }>({
+    experience: [],
+    location: [],
+    skills: [],
+    industry: [],
+    company: []
+  });
   
   // Credit system hook
   const { credits, transactions, loading: creditsLoading, useCreditsForReveal } = useCredits(user);
@@ -388,10 +404,47 @@ const Index = () => {
                   </p>
                 </div>
                 
+                {/* Dedicated Filter Bar */}
+                <Card className="mb-6">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <h3 className="text-sm font-medium text-foreground">Search Filters</h3>
+                        {(sourcingFilters.experience.length > 0 || 
+                          sourcingFilters.location.length > 0 || 
+                          sourcingFilters.skills.length > 0 || 
+                          sourcingFilters.industry.length > 0 || 
+                          sourcingFilters.company.length > 0) && (
+                          <Badge variant="secondary" className="text-xs">
+                            {sourcingFilters.experience.length + 
+                             sourcingFilters.location.length + 
+                             sourcingFilters.skills.length + 
+                             sourcingFilters.industry.length + 
+                             sourcingFilters.company.length} active
+                          </Badge>
+                        )}
+                      </div>
+                      <FilterModal 
+                        currentFilters={sourcingFilters} 
+                        onFiltersApply={(newFilters) => {
+                          setSourcingFilters(newFilters);
+                        }}
+                      >
+                        <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-6 py-2 h-11 text-sm font-semibold border-0">
+                          <Filter className="h-4 w-4 mr-2" />
+                          Edit Filters
+                        </Button>
+                      </FilterModal>
+                    </div>
+                  </CardContent>
+                </Card>
+                
                 <Sourcing 
                   onCandidateCreated={handleCandidateCreated} 
                   onRevealContact={useCreditsForReveal}
                   userCredits={credits}
+                  externalFilters={sourcingFilters}
+                  onFiltersChange={setSourcingFilters}
                 />
               </>
             )}

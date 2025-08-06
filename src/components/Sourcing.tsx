@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -39,11 +39,27 @@ interface SourcingProps {
   onCandidateCreated?: () => void;
   onRevealContact?: (contactInfo: ContactInfo) => Promise<boolean>;
   userCredits?: { credits_balance: number } | null;
+  externalFilters?: {
+    experience: string[];
+    location: string[];
+    skills: string[];
+    industry: string[];
+    company: string[];
+  };
+  onFiltersChange?: (filters: {
+    experience: string[];
+    location: string[];
+    skills: string[];
+    industry: string[];
+    company: string[];
+  }) => void;
 }
 const Sourcing = ({
   onCandidateCreated,
   onRevealContact,
-  userCredits
+  userCredits,
+  externalFilters,
+  onFiltersChange
 }: SourcingProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -57,7 +73,7 @@ const Sourcing = ({
     skills: string[];
     industry: string[];
     company: string[];
-  }>({
+  }>(externalFilters || {
     experience: [],
     location: [],
     skills: [],
@@ -67,6 +83,13 @@ const Sourcing = ({
   const [revealedContacts, setRevealedContacts] = useState<Set<string>>(new Set());
   const [jobModalOpen, setJobModalOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+
+  // Sync filter changes back to parent component
+  useEffect(() => {
+    if (onFiltersChange) {
+      onFiltersChange(detectedFilters);
+    }
+  }, [detectedFilters, onFiltersChange]);
 
   // Mock candidate data
   const mockCandidates: Candidate[] = [{
@@ -432,21 +455,11 @@ const Sourcing = ({
           <CardTitle className="flex items-center justify-between text-base">
             <span>Search Results</span>
             <div className="flex items-center space-x-2">
-              {hasSearched && <>
-                  <Badge variant="secondary" className="text-xs">
-                    {searchResults.length} candidates found
-                  </Badge>
-                  <FilterModal currentFilters={detectedFilters} onFiltersApply={newFilters => {
-                setDetectedFilters(newFilters);
-                // Optionally trigger a new search with updated filters
-                handleSearch();
-              }}>
-                    <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-6 py-2 h-11 text-sm font-semibold border-0">
-                      <Filter className="h-4 w-4 mr-2" />
-                      Edit Filters
-                    </Button>
-                  </FilterModal>
-                </>}
+              {hasSearched && (
+                <Badge variant="secondary" className="text-xs">
+                  {searchResults.length} candidates found
+                </Badge>
+              )}
             </div>
           </CardTitle>
         </CardHeader>
@@ -477,6 +490,9 @@ const Sourcing = ({
                             <p className="text-sm text-muted-foreground">{candidate.title} at {candidate.company}</p>
                           </div>
                           <div className="flex items-center space-x-2">
+                            <Badge variant="secondary" className="text-xs">
+                              {candidate.matchScore}% match
+                            </Badge>
                           </div>
                         </div>
                         

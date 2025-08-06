@@ -59,6 +59,7 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- LinkedIn API (OAuth 2.0)
 
 ## How can I deploy this project?
 
@@ -71,3 +72,38 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## LinkedIn OAuth Integration
+
+This application features LinkedIn API integration for contact sourcing. To set up the LinkedIn OAuth connection:
+
+### 1. Register a LinkedIn Developer Application
+
+1. Go to [LinkedIn Developer Portal](https://www.linkedin.com/developers/)
+2. Click on "Create App" and complete the application information
+3. Under Products, select "Sign In with LinkedIn" 
+4. Note your Client ID and Client Secret
+
+### 2. Configure OAuth Settings
+
+1. In your LinkedIn app settings, add authorized redirect URLs:
+   - For development: `http://localhost:3000/linkedin-callback`
+   - For production: `https://your-domain.com/linkedin-callback`
+
+### 3. Configure Environment Variables
+
+1. Copy `.env.example` to `.env`:
+   ```sh
+   cp .env.example .env
+   ```
+
+2. Update the LinkedIn OAuth variables in your `.env` file:
+   ```
+   REACT_APP_LINKEDIN_CLIENT_ID=your_client_id_here
+   REACT_APP_LINKEDIN_CLIENT_SECRET=your_client_secret_here
+   REACT_APP_LINKEDIN_REDIRECT_URI=http://localhost:3000/linkedin-callback
+   ```
+
+### 4. Security Considerations
+
+For production deployment, it's recommended to implement a backend service to handle the OAuth token exchange step rather than performing it client-side. This prevents exposing your client secret in the frontend code.

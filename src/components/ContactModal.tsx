@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,8 +18,18 @@ import {
   Video,
   Zap,
   Star,
-  DollarSign
+  DollarSign,
+  Linkedin,
+  CheckCircle,
+  AlertCircle
 } from "lucide-react";
+
+// Import our new LinkedIn components
+import LinkedInConnectButton from "./LinkedInConnectButton";
+import LinkedInProfilePreview from "./LinkedInProfilePreview";
+import LinkedInDetailedProfile from "./LinkedInDetailedProfile";
+import { LinkedInProfile } from "@/services/linkedinService";
+import { useLinkedIn } from "@/hooks/useLinkedIn";
 
 interface ContactModalProps {
   candidate: {
@@ -27,6 +37,8 @@ interface ContactModalProps {
     name: string;
     email?: string;
     phone?: string;
+    linkedInId?: string;
+    linkedInProfile?: Partial<LinkedInProfile>;
   };
   children: React.ReactNode;
 }
@@ -36,6 +48,17 @@ const ContactModal = ({ candidate, children }: ContactModalProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState("");
   const [emailContent, setEmailContent] = useState("");
   const [selectedSequence, setSelectedSequence] = useState("");
+  const [selectedEmailFromLinkedIn, setSelectedEmailFromLinkedIn] = useState("");
+  
+  // Use the LinkedIn hook for real LinkedIn integration
+  const { 
+    isConnected: isLinkedInConnected, 
+    isLoading: isLoadingLinkedInProfile, 
+    profile: linkedInProfile, 
+    error: linkedInError,
+    connect: connectLinkedIn,
+    fetchProfile: refreshLinkedInProfile
+  } = useLinkedIn();
 
   const emailTemplates = [
     { id: "intro", name: "Introduction", preview: "Hi {name}, I came across your profile..." },
@@ -50,11 +73,73 @@ const ContactModal = ({ candidate, children }: ContactModalProps) => {
     { id: "executive-search", name: "Executive Search", steps: 4 }
   ];
 
-  const mockEmails = [
-    { email: "sarah.chen@stripe.com", confidence: 95, source: "LinkedIn" },
-    { email: "s.chen@work-email.com", confidence: 87, source: "Company Website" },
-    { email: "sarah.c.dev@gmail.com", confidence: 72, source: "GitHub" }
-  ];
+  // Determine email options based on LinkedIn and candidate data
+  const [emailOptions, setEmailOptions] = useState<Array<{ email: string; confidence: number; source: string }>>([]);
+
+  // Update email options whenever LinkedIn profile changes
+  useEffect(() => {
+    const options: Array<{ email: string; confidence: number; source: string }> = [];
+    
+    // Add LinkedIn email if available (highest confidence)
+    if (linkedInProfile?.email) {
+      options.push({
+        email: linkedInProfile.email,
+        confidence: 95,
+        source: "LinkedIn"
+      });
+    }
+    
+    // Add candidate email if available and different from LinkedIn email
+    if (candidate.email && (!linkedInProfile?.email || candidate.email !== linkedInProfile.email)) {
+      options.push({
+        email: candidate.email,
+        confidence: 90,
+        source: "Scorecard Database"
+      });
+    }
+    
+    // Add work email based on name and company if available
+    if (linkedInProfile?.firstName && linkedInProfile?.lastName && linkedInProfile?.currentPosition?.company) {
+      const companyName = linkedInProfile.currentPosition.company.toLowerCase().replace(/\s+/g, '');
+      const firstName = linkedInProfile.firstName.toLowerCase();
+      const lastName = linkedInProfile.lastName.toLowerCase();
+      
+      // Format: first.last@company.com
+      const workEmail = `${firstName}.${lastName}@${companyName}.com`;
+      options.push({
+        email: workEmail,
+        confidence: 75,
+        source: "Generated"
+      });
+    }
+    
+    // Update state with new options
+    setEmailOptions(options.length > 0 ? options : [{ 
+      email: candidate.email || `${candidate.name.toLowerCase().replace(/\s+/g, '.')}@example.com`, 
+      confidence: 50, 
+      source: "Default" 
+    }]);
+    
+  }, [linkedInProfile, candidate.email, candidate.name]);
+
+  // Update email content with LinkedIn data if connected
+  useEffect(() => {
+    if (isLinkedInConnected && linkedInProfile) {
+      // Replace placeholders with LinkedIn data
+      const updatedContent = emailContent
+        .replace(/{name}/g, `${linkedInProfile.firstName || ''}`)
+        .replace(/{full_name}/g, `${linkedInProfile.firstName || ''} ${linkedInProfile.lastName || ''}`)
+        .replace(/{company}/g, linkedInProfile.currentPosition?.company || '')
+        .replace(/{position}/g, linkedInProfile.currentPosition?.title || '');
+      
+      setEmailContent(updatedContent);
+    }
+  }, [isLinkedInConnected, linkedInProfile, emailContent]);
+
+  // Function to handle LinkedIn connection
+  const handleLinkedInConnect = useCallback(() => {
+    connectLinkedIn();
+  }, [connectLinkedIn]);
 
   const handlePhoneCall = () => {
     if (candidate.phone) {
@@ -85,8 +170,46 @@ const ContactModal = ({ candidate, children }: ContactModalProps) => {
             <span>Contact {candidate.name}</span>
           </DialogTitle>
         </DialogHeader>
+        
+        {/* LinkedIn Connect Button */}
+        <div className="mb-4">
+          <LinkedInConnectButton 
+            onConnect={handleLinkedInConnect} 
+            isConnected={isLinkedInConnected} 
+            className="w-full"
+          />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* LinkedIn Profile Preview - Shown when connected or loading */}
+          {(isLinkedInConnected || isLoadingLinkedInProfile) && (
+            <div className="md:col-span-2 mb-2">
+              <LinkedInProfilePreview 
+                profile={linkedInProfile}
+                isLoading={isLoadingLinkedInProfile}
+                onRefresh={refreshLinkedInProfile}
+              />
+            </div>
+          )}
+          
+          {/* LinkedIn Detailed Profile - Shown when connected and data loaded */}
+          {isLinkedInConnected && !isLoadingLinkedInProfile && (
+            <div className="md:col-span-2 mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-sm font-medium flex items-center">
+                  <Linkedin className="h-4 w-4 mr-2 text-blue-600" />
+                  LinkedIn Professional Details
+                </h3>
+                <Badge variant="outline" className="text-xs">
+                  Verified Data
+                </Badge>
+              </div>
+              <LinkedInDetailedProfile 
+                profile={linkedInProfile} 
+                isLoading={isLoadingLinkedInProfile} 
+              />
+            </div>
+          )}
           {/* Email Section */}
           <Card>
             <CardHeader className="pb-3">
@@ -101,14 +224,25 @@ const ContactModal = ({ candidate, children }: ContactModalProps) => {
                 <div className="flex items-center space-x-2">
                   <Search className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm font-medium">Find Email</span>
-                  <Badge variant="secondary" className="text-xs">
-                    <DollarSign className="h-3 w-3 mr-1" />
-                    1 Credit
-                  </Badge>
+                  {!isLinkedInConnected && (
+                    <Badge variant="secondary" className="text-xs">
+                      <DollarSign className="h-3 w-3 mr-1" />
+                      1 Credit
+                    </Badge>
+                  )}
+                  {isLinkedInConnected && (
+                    <Badge variant="outline" className="bg-blue-50 text-blue-600 border-blue-200 text-xs">
+                      <Linkedin className="h-3 w-3 mr-1" />
+                      LinkedIn Data
+                    </Badge>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  {mockEmails.map((email, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 border rounded-lg">
+                  {emailOptions.map((email, index) => (
+                    <div 
+                      key={index} 
+                      className={`flex items-center justify-between p-2 border rounded-lg ${selectedEmailFromLinkedIn === email.email ? 'bg-blue-50 border-blue-200' : ''}`}
+                    >
                       <div className="flex-1">
                         <div className="text-sm font-medium">{email.email}</div>
                         <div className="text-xs text-muted-foreground">{email.source}</div>
@@ -118,8 +252,13 @@ const ContactModal = ({ candidate, children }: ContactModalProps) => {
                           <Star className="h-3 w-3 text-yellow-500 fill-current" />
                           <span className="text-xs">{email.confidence}%</span>
                         </div>
-                        <Button size="sm" variant="outline" className="h-6 text-xs">
-                          Use
+                        <Button 
+                          size="sm" 
+                          variant={selectedEmailFromLinkedIn === email.email ? "default" : "outline"} 
+                          className="h-6 text-xs"
+                          onClick={() => setSelectedEmailFromLinkedIn(email.email)}
+                        >
+                          {selectedEmailFromLinkedIn === email.email ? "Selected" : "Use"}
                         </Button>
                       </div>
                     </div>
@@ -156,7 +295,15 @@ const ContactModal = ({ candidate, children }: ContactModalProps) => {
                 <label className="text-sm font-medium">Message</label>
                 <Textarea
                   placeholder="Compose your message..."
-                  value={emailContent}
+                  value={emailContent || (linkedInProfile && isLinkedInConnected ? 
+                    `Hi ${linkedInProfile.firstName},
+
+I came across your profile and was impressed with your experience at ${linkedInProfile.currentPosition?.company}. I'm reaching out about a potential opportunity that might be a good fit for someone with your background in ${linkedInProfile.skills?.slice(0, 3).join(', ')}.
+
+Would you be open to a quick chat about this role?
+
+Best regards,
+[Your Name]` : '')}
                   onChange={(e) => setEmailContent(e.target.value)}
                   className="min-h-24"
                 />
