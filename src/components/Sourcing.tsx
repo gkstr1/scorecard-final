@@ -29,14 +29,20 @@ interface Candidate {
   openToWork: boolean;
   avatar?: string;
 }
+interface ContactInfo {
+  name: string;
+  email?: string;
+  phone?: string;
+}
+
 interface SourcingProps {
   onCandidateCreated?: () => void;
-  useCreditsForReveal?: (contactInfo: any) => Promise<boolean>;
+  onRevealContact?: (contactInfo: ContactInfo) => Promise<boolean>;
   userCredits?: { credits_balance: number } | null;
 }
 const Sourcing = ({
   onCandidateCreated,
-  useCreditsForReveal,
+  onRevealContact,
   userCredits
 }: SourcingProps) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -163,17 +169,8 @@ const Sourcing = ({
       pattern: /(\d+)\s*\+?\s*years?/g,
       extract: (match: string) => match
     }, {
-      pattern: /senior/g,
-      extract: () => "5+ years"
-    }, {
-      pattern: /junior/g,
-      extract: () => "1-3 years"
-    }, {
-      pattern: /lead/g,
-      extract: () => "7+ years"
-    }, {
-      pattern: /principal/g,
-      extract: () => "10+ years"
+      pattern: /(one|two|three|four|five|six|seven|eight|nine|ten)\s*years?/g,
+      extract: (match: string) => match
     }];
     expPatterns.forEach(({
       pattern,
@@ -259,9 +256,9 @@ const Sourcing = ({
   };
 
   const handleRevealContact = async (candidate: Candidate) => {
-    if (!useCreditsForReveal) return false;
-    
-    const success = await useCreditsForReveal({
+    if (!onRevealContact) return false;
+
+    const success = await onRevealContact({
       name: candidate.name,
       email: candidate.email,
       phone: candidate.phone
@@ -339,7 +336,7 @@ const Sourcing = ({
                   const searchLower = searchQuery.toLowerCase();
                   
                   // Check for experience level patterns (should NOT highlight experience filter if it's job requirements)
-                  const isJobRequirement = /\b\d+\s*[\+\-]?\s*years?\s+(of\s+)?(experience|exp)\b/i.test(searchQuery) || 
+                  const isJobRequirement = /\b\d+\s*[+-]?\s*years?\s+(of\s+)?(experience|exp)\b/i.test(searchQuery) || 
                                           /\brequires?\s+\d+\s*years?\b/i.test(searchQuery) ||
                                           /\bminimum\s+\d+\s*years?\b/i.test(searchQuery);
                   
@@ -350,13 +347,11 @@ const Sourcing = ({
                   }, {
                     key: "jobTitle",
                     label: "Job Title",
-                    active: /\b(senior|junior|lead|principal|staff)\s+(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) || 
-                           /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery) ||
-                           isJobRequirement
+                    active: /\b(senior|junior|lead|principal|staff|entry|mid[-\s]level)/i.test(searchQuery) || (isJobRequirement && /\b(developer|engineer|manager|architect|director|analyst|designer|specialist|coordinator|administrator|researcher|scientist|officer)\b/i.test(searchQuery))
                   }, {
                     key: "experience",
                     label: "Years of Experience",
-                    active: !isJobRequirement && (detectedFilters.experience.length > 0 || /\b(experience\s*level|seniority|junior|senior|mid[-\s]level)\b/i.test(searchQuery))
+                    active: detectedFilters.experience.length > 0
                   }, {
                     key: "industry",
                     label: "Industry",

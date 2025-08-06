@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import type { User, Session } from '@supabase/supabase-js';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,29 +43,7 @@ const Index = () => {
   // Credit system hook
   const { credits, transactions, loading: creditsLoading, useCreditsForReveal } = useCredits(user);
 
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-    });
-
-    // Load data without authentication requirement
-    checkDataExists();
-    fetchAvailableRoles();
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const fetchAvailableRoles = async () => {
+  const fetchAvailableRoles = useCallback(async () => {
     try {
       const { data: jobsData } = await supabase
         .from("job_descriptions")
@@ -93,9 +71,9 @@ const Index = () => {
     } catch (error) {
       console.error("Error fetching available roles:", error);
     }
-  };
+  }, [selectedRole]);
 
-  const checkDataExists = async () => {
+  const checkDataExists = useCallback(async () => {
     setIsLoading(true);
     try {
       // Check for jobs
@@ -122,7 +100,29 @@ const Index = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+    });
+
+    // Load data without authentication requirement
+    checkDataExists();
+    fetchAvailableRoles();
+
+    return () => subscription.unsubscribe();
+  }, [checkDataExists, fetchAvailableRoles]);
 
   const handleJobCreated = () => {
     console.log("Job created, refreshing data...");
@@ -152,21 +152,25 @@ const Index = () => {
 
   return <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-card border-b border-border">
+      {/* Header */}
+      <header className="bg-card border-b border-border shadow-sm">
         <div className="max-w-full px-6">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-4">
-              <Link to="/" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-105">
                 <ArrowLeft className="h-4 w-4" />
                 
               </Link>
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                  <ClipboardCheck className="h-6 w-6 text-primary-foreground" />
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <div className="w-14 h-14 bg-gradient-to-br from-primary via-primary to-primary/70 rounded-xl flex items-center justify-center shadow-lg ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
+                    <ClipboardCheck className="h-7 w-7 text-primary-foreground drop-shadow-sm" />
+                  </div>
+                  <div className="absolute -inset-1 bg-gradient-to-br from-primary/20 to-transparent rounded-xl blur-sm -z-10"></div>
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-foreground">Scorecard</h1>
-                  <p className="text-sm text-muted-foreground">Smart Hiring Platform</p>
+                <div className="space-y-0.5">
+                  <h1 className="text-2xl font-bold text-foreground tracking-tight">Scorecard</h1>
+                  <p className="text-sm text-muted-foreground font-medium tracking-wide">AI-Powered Recruitment Suite</p>
                 </div>
               </div>
             </div>
@@ -192,7 +196,8 @@ const Index = () => {
       </header>
 
       {/* Navigation */}
-      <nav className="bg-card border-b border-border">
+      {/* Navigation */}
+      <nav className="bg-muted/30 border-b border-border border-t border-border/50">
         <div className="max-w-full px-6">
           <div className="flex space-x-0">
             {[{
@@ -383,7 +388,11 @@ const Index = () => {
                   </p>
                 </div>
                 
-                <Sourcing onCandidateCreated={handleCandidateCreated} />
+                <Sourcing 
+                  onCandidateCreated={handleCandidateCreated} 
+                  onRevealContact={useCreditsForReveal}
+                  userCredits={credits}
+                />
               </>
             )}
           </div>
