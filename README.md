@@ -1,73 +1,189 @@
-# Welcome to your Lovable project
+# Scorecard - AI-Powered Recruitment Suite
 
-## Project info
+> Smart Hiring Platform with LinkedIn Integration and Advanced Candidate Sourcing
 
-**URL**: https://lovable.dev/projects/b3865c15-4b7c-4a6e-b91a-b5091e52abf1
+## 🚀 Overview
 
-## How can I edit this code?
+Scorecard is a comprehensive AI-powered recruitment platform designed to streamline the hiring process. It combines intelligent candidate sourcing, LinkedIn integration, and advanced analytics to help recruiters find and connect with the best talent efficiently.
 
-There are several ways of editing your application.
+### Key Features
 
-**Use Lovable**
+- **🎯 Smart Candidate Sourcing**: AI-powered candidate discovery and filtering
+- **🔗 LinkedIn Integration**: OAuth 2.0 authentication with profile data sync
+- **📊 Advanced Analytics**: Real-time insights and recruitment metrics
+- **💬 Contact Management**: Streamlined candidate communication tools
+- **🎨 Modern UI/UX**: Clean, responsive design with shadcn-ui components
+- **⚡ Real-time Updates**: Live data synchronization and notifications
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b3865c15-4b7c-4a6e-b91a-b5091e52abf1) and start prompting.
+## 🛠️ Technology Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS + shadcn-ui
+- **Authentication**: LinkedIn OAuth 2.0
+- **Backend**: Supabase
+- **HTTP Client**: Axios
+- **Routing**: React Router DOM
+- **State Management**: React Hooks + Context API
 
-**Use your preferred IDE**
+## 🚦 Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js (v18 or higher)
+- npm or yarn
+- LinkedIn Developer Account (for OAuth integration)
 
-Follow these steps:
+### Installation
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/gkstr1/scorecard-final.git
+   cd scorecard-final
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+3. **Environment Setup**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Fill in your environment variables:
+   ```env
+   REACT_APP_LINKEDIN_CLIENT_ID=your_linkedin_client_id
+   REACT_APP_LINKEDIN_CLIENT_SECRET=your_linkedin_client_secret
+   REACT_APP_LINKEDIN_REDIRECT_URI=http://localhost:5173/linkedin/callback
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+   The application will be available at `http://localhost:5173`
+
+## 🔐 LinkedIn OAuth Setup
+
+### 1. Create LinkedIn App
+
+1. Visit [LinkedIn Developer Portal](https://developer.linkedin.com/)
+2. Create a new app for your organization
+3. Add the following redirect URLs:
+   - `http://localhost:5173/linkedin/callback` (development)
+   - `https://yourdomain.com/linkedin/callback` (production)
+
+### 2. Configure OAuth Settings
+
+- **Scopes Required**: `r_liteprofile`, `r_emailaddress`
+- **OAuth 2.0 settings**: Enable Authorization Code Flow
+- **Redirect URLs**: Must match your environment configuration
+
+### 3. Security Considerations
+
+- Never commit your `.env` file to version control
+- Use environment-specific client secrets
+- Implement proper token refresh logic for production
+- Consider using a backend proxy for token exchange in production
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── LinkedInConnectButton.tsx
+│   ├── LinkedInProfilePreview.tsx
+│   ├── LinkedInDetailedProfile.tsx
+│   └── ContactModal.tsx
+├── hooks/              # Custom React hooks
+│   └── useLinkedIn.ts
+├── pages/              # Page components
+│   ├── Index.tsx
+│   ├── Sourcing.tsx
+│   └── LinkedInCallback.tsx
+├── services/           # API services
+│   └── linkedinService.ts
+├── lib/               # Utility functions
+└── types/             # TypeScript type definitions
 ```
 
-**Edit a file directly in GitHub**
+## 🔄 Development Workflow
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Branch Strategy
 
-**Use GitHub Codespaces**
+- `main`: Production-ready code
+- `feature/*`: New features (e.g., `feature/linkedin-integration`)
+- `fix/*`: Bug fixes
+- `docs/*`: Documentation updates
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Commit Convention
 
-## What technologies are used for this project?
+```
+type(scope): description
 
-This project is built with:
+Types: feat, fix, docs, style, refactor, test, chore
+Example: feat(linkedin): implement OAuth 2.0 authentication flow
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Testing
 
-## How can I deploy this project?
+```bash
+# Run tests
+npm test
 
-Simply open [Lovable](https://lovable.dev/projects/b3865c15-4b7c-4a6e-b91a-b5091e52abf1) and click on Share -> Publish.
+# Run tests with coverage
+npm run test:coverage
 
-## Can I connect a custom domain to my Lovable project?
+# Run linting
+npm run lint
+```
 
-Yes, you can!
+## 📚 Documentation
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- [LinkedIn Integration Guide](./docs-linkedin-integration.md)
+- [API Documentation](./docs/api.md)
+- [Component Library](./docs/components.md)
+- [Deployment Guide](./docs/deployment.md)
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🚀 Deployment
+
+### Production Build
+
+```bash
+npm run build
+```
+
+### Environment Variables (Production)
+
+```env
+REACT_APP_LINKEDIN_CLIENT_ID=prod_client_id
+REACT_APP_LINKEDIN_CLIENT_SECRET=prod_client_secret
+REACT_APP_LINKEDIN_REDIRECT_URI=https://yourdomain.com/linkedin/callback
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+For support and questions:
+
+- Create an issue in this repository
+- Contact the development team
+- Check the documentation in the `/docs` folder
+
+---
+
+**Built with ❤️ for modern recruitment teams**
