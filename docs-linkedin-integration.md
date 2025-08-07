@@ -1,7 +1,5 @@
 # LinkedIn Integration Feature Documentation
 
-_This is a test commit to verify the Git push functionality._
-
 ## Feature Overview
 Integration of LinkedIn OAuth 2.0 authentication and profile data into the Scorecard contact modal, enabling auto-population of contact fields from LinkedIn profiles.
 
