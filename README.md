@@ -13,7 +13,10 @@ Recruiting app for clients, jobs, candidates, interviews, and reports. The inter
 
 Node.js 18 or newer.
 
+Copy `.env.example` to `.env` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from the Supabase dashboard (Project Settings → API). Use the publishable or anon key. Do not put the service role key in this file. `.env` is gitignored.
+
 ```bash
+cp .env.example .env
 npm install
 npm run dev
 ```
@@ -38,7 +41,7 @@ The dashboard loads jobs and candidates from Supabase and shows Sourcing, Candid
 
 ## Data
 
-The Supabase URL and anon key are in `src/integrations/supabase/client.ts`.
+The browser client in `src/integrations/supabase/client.ts` reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. See `.env.example`.
 
 `parse-resume` sends resume text to the DeepSeek chat API. It reads `DEEPSEEK_API_KEY` from the function environment. `send-client-report` emails an HTML hiring report through Resend and reads `RESEND_API_KEY`.
 
